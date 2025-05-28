@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -48,7 +49,19 @@ function Sidebar() {
       breakpoint="lg"
       collapsedWidth="0"
     >
-      <div style={{ height: '32px', margin: '16px', background: 'rgba(255, 255, 255, 0.2)' }} />
+      <div style={{ 
+        height: '32px', 
+        margin: '16px', 
+        background: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontWeight: 'bold'
+      }}>
+        REMOSA
+      </div>
       <Menu
         theme="dark"
         mode="inline"
@@ -60,4 +73,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar; 
+export default Sidebar;

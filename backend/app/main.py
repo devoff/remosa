@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.v1 import alerts, devices, clients, logs
+from app.api.v1 import alerts, devices, clients, logs, stats
 
 app = FastAPI(title="Remosa Monitoring System")
 
@@ -20,4 +20,5 @@ async def health_check():
 app.include_router(alerts.router, prefix="/api/v1/alerts", tags=["alerts"])
 app.include_router(devices.router, prefix="/api/v1/devices", tags=["devices"])
 app.include_router(clients.router, prefix="/api/v1/clients", tags=["clients"])
-app.include_router(logs.router, prefix="/api/v1/logs", tags=["logs"]) 
+app.include_router(logs.router, prefix="/api/v1/logs", tags=["logs"])
+app.include_router(stats.router, prefix="/api/v1/stats", tags=["stats"]) 
