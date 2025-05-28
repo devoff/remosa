@@ -1,22 +1,16 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+// project import
+import Routes from './routes';
+import ThemeCustomization from './themes';
+import ScrollTop from './components/ScrollTop';
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <header className="App-header">
-          <h1>Remosa - Система мониторинга</h1>
-        </header>
-        <main>
-          <Routes>
-            <Route path="/" element={<div>Главная страница</div>} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
-  );
-}
+// ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
-export default App; 
+const App = () => (
+  <ThemeCustomization>
+    <ScrollTop>
+      <Routes />
+    </ScrollTop>
+  </ThemeCustomization>
+);
+
+export default App;

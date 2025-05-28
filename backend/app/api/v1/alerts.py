@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
-from app.models.models import Alert, Device
+from app.models.alert import Alert
+from app.models.device import Device
 from app.schemas.alert import AlertCreate, AlertResponse
 from app.services.sms_gateway import SMSGateway
 

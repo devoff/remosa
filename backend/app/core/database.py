@@ -3,11 +3,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
+# Явно преобразуем в строку, если нужно
+database_url = str(settings.SQLALCHEMY_DATABASE_URI)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    database_url,
+    pool_pre_ping=True,
+    pool_size=10,
+    max_overflow=20
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
 def get_db():
@@ -15,4 +20,4 @@ def get_db():
     try:
         yield db
     finally:
-        db.close() 
+        db.close()
