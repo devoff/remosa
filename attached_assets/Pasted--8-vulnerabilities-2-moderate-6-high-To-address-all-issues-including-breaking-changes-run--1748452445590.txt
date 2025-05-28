@@ -1,0 +1,85 @@
+
+8 vulnerabilities (2 moderate, 6 high)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+ ---> Removed intermediate container ac3a320518d5
+ ---> 3f86bf748081
+Step 6/12 : COPY . .
+ ---> 5943973abf4f
+Step 7/12 : EXPOSE 3000
+ ---> Running in 6b7561e85945
+ ---> Removed intermediate container 6b7561e85945
+ ---> 4a574c1c36ab
+Step 8/12 : ENV NODE_ENV=development
+ ---> Running in 8014474d8c5e
+ ---> Removed intermediate container 8014474d8c5e
+ ---> fcb948e483a9
+Step 9/12 : ENV WDS_SOCKET_PORT=0
+ ---> Running in d65f6f22bbe4
+ ---> Removed intermediate container d65f6f22bbe4
+ ---> 4c1c917eb8c1
+Step 10/12 : ENV WATCHPACK_POLLING=true
+ ---> Running in ee0a926cd747
+ ---> Removed intermediate container ee0a926cd747
+ ---> d7c455ad8b1a
+Step 11/12 : ENV CHOKIDAR_USEPOLLING=true
+ ---> Running in 01130d61569c
+ ---> Removed intermediate container 01130d61569c
+ ---> 9e3598977050
+Step 12/12 : CMD ["npm", "start"]
+ ---> Running in 69f6058622d5
+ ---> Removed intermediate container 69f6058622d5
+ ---> 2475a291d7bb
+Successfully built 2475a291d7bb
+Successfully tagged remosa_frontend:latest
+Recreating remosa_redis_1 ...
+
+ERROR: for remosa_redis_1  'ContainerConfig'
+
+ERROR: for redis  'ContainerConfig'
+Traceback (most recent call last):
+  File "/usr/bin/docker-compose", line 33, in <module>
+    sys.exit(load_entry_point('docker-compose==1.29.2', 'console_scripts', 'docker-compose')())
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 81, in main
+    command_func()
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 203, in perform_command
+    handler(command, command_options)
+  File "/usr/lib/python3/dist-packages/compose/metrics/decorator.py", line 18, in wrapper
+    result = fn(*args, **kwargs)
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1186, in up
+    to_attach = up(False)
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1166, in up
+    return self.project.up(
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 697, in up
+    results, errors = parallel.parallel_execute(
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 679, in do
+    return service.execute_convergence_plan(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 579, in execute_convergence_plan
+    return self._execute_convergence_recreate(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 499, in _execute_convergence_recreate
+    containers, errors = parallel_execute(
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 494, in recreate
+    return self.recreate_container(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 612, in recreate_container
+    new_container = self.create_container(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 330, in create_container
+    container_options = self._get_container_create_options(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 921, in _get_container_create_options
+    container_options, override_options = self._build_container_volume_options(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 960, in _build_container_volume_options
+    binds, affinity = merge_volume_bindings(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1548, in merge_volume_bindings
+    old_volumes, old_mounts = get_container_data_volumes(
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1579, in get_container_data_volumes
+    container.image_config['Contai
