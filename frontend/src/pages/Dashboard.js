@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Statistic } from 'antd';
-import { AlertOutlined, MobileOutlined, TeamOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { Card, Row, Col, Statistic } from 'antd';
+import { AlertOutlined, MobileOutlined, TeamOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -60,7 +60,7 @@ function Dashboard() {
         <Col span={6}>
           <Card>
             <Statistic
-              title="Успешность команд"
+              title="Успешность"
               value={stats.successRate}
               suffix="%"
               prefix={<CheckCircleOutlined />}
@@ -72,4 +72,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard; 
+export default Dashboard;
