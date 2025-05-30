@@ -21,19 +21,19 @@ services:
   frontend:
     build: 
       context: ./front_new
-      dockerfile: Dockerfile  # явное указание Dockerfile
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "3000:3000"
-    env_file:
-      - ./front_new/.env
     volumes:
-      - ./frontend:/app
+      - ./front_new:/app
       - /app/node_modules
     environment:
       NODE_ENV: development
       REACT_APP_API_URL: http://192.168.1.122:8000
-      GENERATE_SOURCEMAP: "false"  # добавлено для оптимизации
+      GENERATE_SOURCEMAP: "false"
+    env_file:
+      - ./front_new/.env
     depends_on:
       - backend
     healthcheck:

@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => { // Добавляем параметр mode
   // Загружаем env-переменные из корневой директории проекта
-  const env = loadEnv(mode, '../', 'VITE_');
+  const env = loadEnv(mode, './', 'VITE_');
   console.log('Loaded env vars:', env); 
   return {
     envPrefix: 'VITE_',
@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => { // Добавляем парамет
     // Опционально: настройка сервера
     server: {
       port: 3000,
-      strictPort: true,
-      host: true,
+      host: true,  // Доступен не только localhost
+      strictPort: true,  // Не менять порт автоматически
     }
   };
 });

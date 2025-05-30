@@ -25,4 +25,4 @@ ENV NODE_ENV=production
 ENV GENERATE_SOURCEMAP=false
 
 # Запускаем через serve, используя dist
-CMD ["serve", "-s", "dist", "-l", "3000"] 
+CMD ["npm", "run", "dev"] 

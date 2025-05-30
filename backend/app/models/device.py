@@ -20,7 +20,7 @@ class Device(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     grafana_uid = Column(String(100), nullable=True, unique=True)  # Для связи с Grafana
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
-    
+    phone = Column(String(20), nullable=True)  # Добавляем поле
     # Отношения
     client = relationship("Client", back_populates="devices")
     alerts = relationship("Alert", back_populates="device")

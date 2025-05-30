@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './DevicesList.css';
+import { useDevicesAPI } from './useDevicesAPI';
+import { DeviceFormModal } from './DeviceFormModal';
 
 interface Device {
   id: number;
   name: string;
+  phone: string;
   status: 'ONLINE' | 'OFFLINE' | 'WARNING';
   description?: string;
   last_update: string;
@@ -12,19 +15,19 @@ interface Device {
 }
 
 const DevicesList = () => {
+  const { fetchDevices, deleteDevice, saveDevice } = useDevicesAPI();
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.122/api/v1/devices');
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const data = await response.json();
+        const data = await fetchDevices();
         setDevices(data);
       } catch (err) {
         console.error('Fetch error:', err);
@@ -33,8 +36,7 @@ const DevicesList = () => {
         setLoading(false);
       }
     };
-
-    fetchDevices();
+    fetchData();
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -54,6 +56,21 @@ const DevicesList = () => {
       default: '❓'
     };
     return icons[type as keyof typeof icons] || icons.default;
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteDevice(id);
+    setDevices(devices.filter(d => d.id !== id));
+  };
+
+  const handleSave = async (deviceData: Device) => {
+    try {
+      await saveDevice(deviceData);
+      const updatedDevices = await fetchDevices();
+      setDevices(updatedDevices);
+    } catch (err) {
+      console.error('Ошибка сохранения:', err);
+    }
   };
 
   if (loading) return <div className="p-4 text-center">Загрузка устройств...</div>;
@@ -76,6 +93,7 @@ const DevicesList = () => {
           >
             Таблица
           </button>
+          <button onClick={() => setIsAddModalOpen(true)}>Добавить устройство</button>
         </div>
       </div>
 
@@ -105,6 +123,17 @@ const DevicesList = () => {
                   </div>
                 </div>
               </div>
+              <div className="mt-2 space-x-2">
+                <button 
+                  className="device-action-btn"
+                  onClick={() => {
+                    setCurrentDevice(device);
+                    setIsEditModalOpen(true);
+                  }}
+                >
+                  Редактировать
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -118,6 +147,7 @@ const DevicesList = () => {
                 <th className="px-4 py-2 text-left text-gray-100">ID</th>
                 <th className="px-4 py-2 text-left text-gray-100">Описание</th>
                 <th className="px-4 py-2 text-left text-gray-100">Обновлено</th>
+                <th className="px-4 py-2 text-left text-gray-100">Действия</th>
               </tr>
             </thead>
             <tbody>
@@ -139,11 +169,41 @@ const DevicesList = () => {
                   <td className="px-4 py-3 text-sm text-gray-400">
                     {new Date(device.last_update).toLocaleString()}
                   </td>
+                  <td className="px-4 py-3 text-gray-100">
+                    <div className="flex gap-2">
+                      <button 
+                        className="device-action-btn"
+                        onClick={() => {
+                          setCurrentDevice(device);
+                          setIsEditModalOpen(true);
+                        }}
+                      >
+                        ✏️
+                      </button>
+                      <button onClick={() => handleDelete(device.id.toString())}>🗑️</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {isEditModalOpen && (
+        <DeviceFormModal 
+          device={currentDevice}
+          onSave={handleSave}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
+
+      {isAddModalOpen && (
+        <DeviceFormModal
+          device={null}
+          onSave={handleSave}
+          onClose={() => setIsAddModalOpen(false)}
+        />
       )}
     </div>
   );

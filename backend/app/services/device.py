@@ -63,4 +63,8 @@ class DeviceService:
         
         db.commit()
         db.refresh(db_device)
-        return db_device 
+        return db_device
+
+    @staticmethod
+    def get_device_by_phone(db: Session, phone: str) -> Optional[Device]:
+        return db.query(Device).filter(Device.phone == phone).first() 

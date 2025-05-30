@@ -10,6 +10,7 @@ class DeviceBase(BaseModel):
 
 class DeviceCreate(DeviceBase):
     status: DeviceStatus = DeviceStatus.OFFLINE
+    phone: str = Field(..., pattern=r"^\+?[0-9\s\-\(\)]+$")
 
 class DeviceUpdate(DeviceBase):
     name: Optional[str] = Field(None, min_length=1, max_length=100)

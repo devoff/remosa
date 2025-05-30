@@ -4,6 +4,7 @@ from typing import List
 from app.core.database import get_db
 from app.models.device import Device
 from app.schemas.device import DeviceCreate, DeviceUpdate, Device as DeviceSchema
+from app.services.device import DeviceService
 
 router = APIRouter()
 
@@ -53,4 +54,8 @@ async def delete_device(device_id: int, db: Session = Depends(get_db)):
     
     db.delete(db_device)
     db.commit()
-    return db_device 
+    return db_device
+
+@router.get("/search/")
+async def search_devices(phone: str, db: Session = Depends(get_db)):
+    return DeviceService.get_device_by_phone(db, phone) 

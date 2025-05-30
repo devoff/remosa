@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     # Настройки SMS шлюза
     SMS_GATEWAY_URL: Optional[str] = None
     SMS_GATEWAY_API_KEY: Optional[str] = None
+    SMS_GATEWAY_PHONE_FORMAT: str = "+7XXXXXXXXXX"
     
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
