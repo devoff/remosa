@@ -1,0 +1,101 @@
+.devices-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .devices-header {
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  
+  .devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  
+  .device-card {
+    background: var(--background-secondary);
+    border-radius: 8px;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .device-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .device-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .device-info h3 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+  }
+  
+  .device-info p {
+    margin: 4px 0;
+    color: var(--text-secondary);
+  }
+  
+  .device-updated {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
+  
+  .loading, .error {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+  }
+
+  /* Стили для таблицы */
+  table {
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+  }
+  
+  thead {
+    background-color: var(--background-secondary) !important;
+  }
+  
+  th, td {
+    color: var(--text-primary) !important;
+  }
+  
+  tr:hover {
+    background-color: var(--background-hover) !important;
+  }
+
+  /* Темная тема */
+  @media (prefers-color-scheme: dark) {
+    .device-card {
+      background-color: #1e293b;
+      color: white;
+    }
+    
+    .device-card:hover {
+      background-color: #334155;
+    }
+
+    table {
+      background-color: #1e293b;
+    }
+
+    thead {
+      background-color: #334155 !important;
+    }
+
+    th, td {
+      color: white !important;
+    }
+
+    tr:hover {
+      background-color: #475569 !important;
+    }
+  }
