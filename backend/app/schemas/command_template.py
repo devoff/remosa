@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 
 class CommandParamSchema(BaseModel):
@@ -15,7 +15,7 @@ class CommandTemplateBase(BaseModel):
     name: str
     template: str
     description: Optional[str] = None
-    params_schema: List[CommandParamSchema]  # Теперь явно указываем список
+    params_schema: Dict[str, Any]
 
 class CommandTemplateCreate(CommandTemplateBase):
     pass

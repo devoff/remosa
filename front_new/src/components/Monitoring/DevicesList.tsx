@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './DevicesList.css';
 import { useDevicesAPI } from './useDevicesAPI';
 import { DeviceFormModal } from './DeviceFormModal';
-import DeviceCommandsPanel from "./DeviceCommandsPanel";
+import { DeviceCommandsPanel } from '../DeviceCommandsPanel';
 import { CommandTemplate, Device } from '../../types';
 
 const DevicesList = () => {
@@ -15,7 +15,6 @@ const DevicesList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
-  const [availableCommands, setAvailableCommands] = useState<CommandTemplate[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +68,14 @@ const DevicesList = () => {
     }
   };
 
+  const handleOpenCommandsPanel = (device: Device) => {
+    setSelectedDevice(device);
+  };
+
+  const handleCloseCommandsPanel = () => {
+    setSelectedDevice(null);
+  };
+
   if (loading) return <div className="p-4 text-center">Загрузка устройств...</div>;
   if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
 
@@ -89,7 +96,7 @@ const DevicesList = () => {
           >
             Таблица
           </button>
-          <button onClick={() => setIsAddModalOpen(true)}>Добавить устройство</button>
+          <button onClick={() => setIsAddModalOpen(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">Добавить устройство</button>
         </div>
       </div>
 
@@ -99,7 +106,7 @@ const DevicesList = () => {
             <div key={device.id} className="device-card bg-white dark:bg-gray-800 rounded-lg shadow p-4">
               <div className="flex items-start">
                 <div className="text-2xl mr-3">
-                  {getDeviceIcon(device.type)}
+                  {getDeviceIcon(device.model)}
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
@@ -119,6 +126,12 @@ const DevicesList = () => {
                         className="text-gray-500 hover:text-gray-700"
                       >
                         🗑️
+                      </button>
+                      <button
+                        onClick={() => handleOpenCommandsPanel(device)}
+                        className="text-blue-500 hover:text-blue-700 ml-2"
+                      >
+                        ⚙️ Команды
                       </button>
                     </div>
                   </div>
@@ -163,7 +176,7 @@ const DevicesList = () => {
                 <tr key={device.id} className="border-t border-gray-700 hover:bg-gray-700">
                   <td className="px-4 py-3 text-gray-100">
                     <div className="flex items-center">
-                      <span className="mr-2">{getDeviceIcon(device.type)}</span>
+                      <span className="mr-2">{getDeviceIcon(device.model)}</span>
                       {device.name}
                     </div>
                   </td>
@@ -197,6 +210,12 @@ const DevicesList = () => {
                       >
                         🗑️
                       </button>
+                      <button
+                        onClick={() => handleOpenCommandsPanel(device)}
+                        className="text-blue-500 hover:text-blue-700 ml-2"
+                      >
+                        ⚙️ Команды
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -206,28 +225,34 @@ const DevicesList = () => {
         </div>
       )}
 
-      {isEditModalOpen && (
-        <DeviceFormModal 
-          device={currentDevice}
-          onSave={handleSave}
-          onClose={() => setIsEditModalOpen(false)}
-        />
-      )}
-
       {isAddModalOpen && (
         <DeviceFormModal
           device={null}
-          onSave={handleSave}
           onClose={() => setIsAddModalOpen(false)}
+          onSave={handleSave}
+        />
+      )}
+
+      {isEditModalOpen && (
+        <DeviceFormModal
+          device={currentDevice}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSave}
         />
       )}
 
       {selectedDevice && (
-        <DeviceCommandsPanel 
-          deviceId={selectedDevice.id}
-          deviceModel={selectedDevice.name}
-          commands={availableCommands}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={handleCloseCommandsPanel}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+            >
+              &times;
+            </button>
+            <DeviceCommandsPanel device={selectedDevice} onClose={handleCloseCommandsPanel} />
+          </div>
+        </div>
       )}
     </div>
   );

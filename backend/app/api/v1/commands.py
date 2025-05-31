@@ -85,9 +85,19 @@ async def execute_command(
         command=command_data["command"],
         status="sent",
         response=sms_response or "OK",
-        metadata={"sms_response": sms_response} if sms_response else None
+        # metadata={"sms_response": sms_response} if sms_response else None
     )
     return log
+
+@router.get("/logs", response_model=List[CommandLogResponse])
+async def get_all_command_logs(
+    db: Session = Depends(get_db)
+):
+    """Получить всю историю команд"""
+    logs = CommandService.get_all_command_logs(db)
+    if not logs:
+        raise HTTPException(status_code=404, detail="No logs found")
+    return logs
 
 @router.get("/logs/{device_id}", response_model=List[CommandLogResponse])
 async def get_command_logs(

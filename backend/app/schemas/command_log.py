@@ -6,6 +6,7 @@ class CommandLogBase(BaseModel):
     device_id: int
     command: str
     level: str
+    status: Optional[str] = None
     response: Optional[str] = None
 
 class CommandLogCreate(CommandLogBase):

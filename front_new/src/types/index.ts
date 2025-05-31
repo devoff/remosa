@@ -114,15 +114,20 @@ export interface Device {
   description?: string;
   last_update: string;
   created_at: string;
-  type?: 'sensor' | 'actuator' | 'controller';
+  model?: string;
 }
 
 export interface CommandTemplate {
   id: string;
   name: string;
   category: string;
+  subcategory?: string;
   description?: string;
-  params_schema: Array<{ name: string; type: string; required: boolean; }>;
+  params_schema: {
+    type: string;
+    properties: { [key: string]: { type: string; title?: string; pattern?: string; enum?: any[]; }; };
+    required?: string[];
+  };
 }
 
 export interface DeviceCommand {
@@ -130,4 +135,17 @@ export interface DeviceCommand {
   template_id: string;
   params: Record<string, any>;
   status?: 'pending' | 'success' | 'failed';
+}
+
+export interface CommandLog {
+  id: number;
+  device_id: number;
+  message: string;
+  level: string;
+  command?: string;
+  response?: string;
+  created_at: string;
+  updated_at?: string;
+  execution_time?: string; // Или number, если это float
+  extra_data?: any; // Может быть JSON-объектом
 }

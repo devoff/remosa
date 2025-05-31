@@ -67,17 +67,26 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }: Props) => 
           <h4>Параметры команды</h4>
           {commands
             .find((c: CommandTemplate) => c.id === selectedCommand)
-            ?.params_schema.map((param: { name: string; type: string; required: boolean }) => (
-              <div key={param.name} className="param-field">
-                <label>{param.name}:</label>
-                <input
-                  type={param.type === 'number' ? 'number' : 'text'}
-                  value={params[param.name] || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(param.name, e.target.value)}
-                />
-              </div>
-            ))
-          }
+            ?.params_schema.properties && Object.keys(commands
+            .find((c: CommandTemplate) => c.id === selectedCommand)
+            ?.params_schema.properties || {}).map((paramName: string) => {
+              const cmd = commands.find((c: CommandTemplate) => c.id === selectedCommand);
+              const param = cmd?.params_schema.properties?.[paramName];
+              const isRequired = cmd?.params_schema.required?.includes(paramName);
+
+              if (!param) return null; // Защита от undefined
+
+              return (
+                <div key={paramName} className="param-field">
+                  <label>{param.title || paramName}{isRequired ? ' *' : ''}:</label>
+                  <input
+                    type={param.type === 'number' || param.type === 'integer' ? 'number' : 'text'}
+                    value={params[paramName] || ''}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(paramName, e.target.value)}
+                  />
+                </div>
+              );
+            })}
         </div>
       )}
 

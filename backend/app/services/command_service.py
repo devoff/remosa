@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Any
 import re
 from sqlalchemy.orm import Session
 from app.models.command_template import CommandTemplate
@@ -7,32 +7,41 @@ from app.models.log import Log
 
 class CommandService:
     @staticmethod
-    def validate_params(params: Dict, schema: List[CommandParamSchema]) -> Dict[str, List[str]]:
+    def validate_params(params: Dict, schema: Dict[str, Any]) -> Dict[str, List[str]]:
         """Валидация параметров команды с детализацией ошибок"""
         errors = {}
-        for param in schema:
-            param_name = param.name
+        required_params = set(schema.get("required", []))
+
+        for param_name, param_definition in schema.get("properties", {}).items():
             value = params.get(param_name)
-            
-            if param.required and value is None:
+
+            if param_name in required_params and value is None:
                 errors.setdefault(param_name, []).append("Parameter is required")
                 continue
-                
+
             if value is None:
                 continue
-                
-            if param.type == "number" and not str(value).isdigit():
-                errors.setdefault(param_name, []).append("Must be a number")
-                
-            if param.pattern and not re.match(param.pattern, str(value)):
-                errors.setdefault(param_name, []).append(f"Does not match pattern: {param.pattern}")
-                
-            if param.min is not None and float(value) < param.min:
-                errors.setdefault(param_name, []).append(f"Value must be >= {param.min}")
-                
-            if param.max is not None and float(value) > param.max:
-                errors.setdefault(param_name, []).append(f"Value must be <= {param.max}")
-        
+
+            if param_definition.get("type") == "number" or param_definition.get("type") == "integer":
+                try:
+                    float(value)
+                except (ValueError, TypeError):
+                    errors.setdefault(param_name, []).append("Must be a number")
+            
+            if param_definition.get("pattern") and not re.match(param_definition["pattern"], str(value)):
+                errors.setdefault(param_name, []).append(f"Does not match pattern: {param_definition['pattern']}")
+            
+            if (param_definition.get("type") == "number" or param_definition.get("type") == "integer") and value is not None:
+                try:
+                    numeric_value = float(value)
+                    if param_definition.get("min") is not None and numeric_value < param_definition["min"]:
+                        errors.setdefault(param_name, []).append(f"Value must be >= {param_definition['min']}")
+                    
+                    if param_definition.get("max") is not None and numeric_value > param_definition["max"]:
+                        errors.setdefault(param_name, []).append(f"Value must be <= {param_definition['max']}")
+                except (ValueError, TypeError):
+                    pass # Error for non-numeric value should already be added by the 'number' type check or pattern check
+
         return errors
 
     @staticmethod
@@ -73,3 +82,7 @@ class CommandService:
         return db.query(Log).filter(
             Log.device_id == device_id
         ).order_by(Log.created_at.desc()).all()
+
+    @staticmethod
+    def get_all_command_logs(db: Session) -> List[Log]:
+        return db.query(Log).order_by(Log.created_at.desc()).all()

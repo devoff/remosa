@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   MessageSquare, 
   Database, 
@@ -123,15 +124,18 @@ const Sidebar: React.FC = () => {
           icon={<Database size={18} className="text-green-500" />}
         >
           <div className="space-y-1">
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer">
+            <Link to="/" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Устройства
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer">
+            </Link>
+            <Link to="/telegram-users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Пользователи Telegram
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer">
+            </Link>
+            <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Журнал алертов
-            </div>
+            </Link>
+            <Link to="/command-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Журнал команд
+            </Link>
           </div>
         </SidebarSection>
         
@@ -181,15 +185,15 @@ const Sidebar: React.FC = () => {
       
       <div className="mt-auto border-t border-gray-700">
         <div className="p-4 space-y-2">
-          <button className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
+          <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Users size={18} className="mr-2" />
             <span>Пользователи</span>
-          </button>
+          </Link>
           
-          <button className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
+          <Link to="/settings" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Settings size={18} className="mr-2" />
             <span>Настройки</span>
-          </button>
+          </Link>
         </div>
       </div>
     </aside>
