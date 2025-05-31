@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
+import { nodeTypes } from '../components/NodeTypes';
 
 interface SidebarSectionProps {
   title: string;
@@ -25,7 +26,7 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
   icon, 
   children, 
   defaultOpen = false 
-}) => {
+}: SidebarSectionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
   return (

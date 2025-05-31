@@ -1,6 +1,20 @@
 import { FlowData, NodeData } from '../types';
 import { getNodeColor } from '../components/NodeTypes';
 
+interface Edge {
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle?: string;
+  targetHandle?: string;
+  animated?: boolean;
+  style?: {
+    stroke?: string;
+    strokeWidth?: number;
+    transition?: string;
+  };
+}
+
 // Функция для преобразования данных потока Node-RED в формат ReactFlow
 export function parseNodeRedFlow(flow: FlowData, activeNodeIds: string[] = []) {
   const nodes = flow.nodes.map(node => {
@@ -29,7 +43,7 @@ export function parseNodeRedFlow(flow: FlowData, activeNodeIds: string[] = []) {
   });
   
   // Создаем ребра (связи между узлами)
-  const edges = [];
+  const edges: Edge[] = [];
   
   flow.nodes.forEach(node => {
     if (node.wires && Array.isArray(node.wires)) {

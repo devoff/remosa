@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Device } from '../../types';
 
 interface DeviceFormModalProps {
   device: Device | null;

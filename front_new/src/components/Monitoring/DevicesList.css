@@ -156,3 +156,24 @@
   input[type="tel"] {
     font-family: monospace; /* Для лучшего отображения цифр */
   }
+
+  /* Можно добавить в существующий DevicesList.css */
+  .device-commands-panel {
+    @apply p-4 border border-gray-200 rounded-lg mb-4;
+  }
+
+  .command-selector {
+    @apply mb-4;
+  }
+
+  .command-params {
+    @apply space-y-2 mb-4;
+  }
+
+  .param-field {
+    @apply flex flex-col space-y-1;
+  }
+
+  .param-field label {
+    @apply text-sm font-medium text-gray-700;
+  }

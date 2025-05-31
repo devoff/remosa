@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useApi } from '../lib/api';
-import { Device, CommandTemplate } from '../types';
+import { useApi } from '../../lib/useApi';
+import { Device, CommandTemplate } from '../../types';
 
 interface Props {
   device: Device;
   commands: CommandTemplate[];
 }
 
-export const DeviceCommands: React.FC<Props> = ({ device, commands }) => {
+export const DeviceCommands: React.FC<Props> = ({ device, commands }: Props) => {
   const [selectedCommand, setSelectedCommand] = useState<string>('');
   const [params, setParams] = useState<Record<string, string>>({});
   const [isSending, setIsSending] = useState(false);
@@ -36,6 +36,13 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }) => {
     }
   };
 
+  const handleParamChange = (param: string, value: string) => {
+    setParams({
+      ...params,
+      [param]: value
+    });
+  };
+
   return (
     <div className="device-commands">
       <h3>Управление устройством: {device.name}</h3>
@@ -44,10 +51,10 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }) => {
         <label>Выберите команду:</label>
         <select 
           value={selectedCommand}
-          onChange={(e) => setSelectedCommand(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCommand(e.target.value)}
         >
           <option value="">-- Выберите команду --</option>
-          {commands.map(cmd => (
+          {commands.map((cmd: CommandTemplate) => (
             <option key={cmd.id} value={cmd.id}>
               {cmd.name} ({cmd.category})
             </option>
@@ -59,17 +66,14 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }) => {
         <div className="command-params">
           <h4>Параметры команды</h4>
           {commands
-            .find(c => c.id === selectedCommand)
-            ?.params_schema.map(param => (
+            .find((c: CommandTemplate) => c.id === selectedCommand)
+            ?.params_schema.map((param: { name: string; type: string; required: boolean }) => (
               <div key={param.name} className="param-field">
                 <label>{param.name}:</label>
                 <input
                   type={param.type === 'number' ? 'number' : 'text'}
                   value={params[param.name] || ''}
-                  onChange={(e) => setParams({
-                    ...params,
-                    [param.name]: e.target.value
-                  })}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(param.name, e.target.value)}
                 />
               </div>
             ))

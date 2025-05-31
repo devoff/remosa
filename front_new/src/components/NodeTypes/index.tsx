@@ -173,7 +173,7 @@ export const getCategoryColors = (): Record<string, string> => {
   
   Object.values(nodeTypes).forEach(nodeType => {
     if (!categories[nodeType.category]) {
-      categories[nodeType.category] = nodeType.color;
+      categories[nodeType.category] = nodeType.color || '#888';
     }
   });
   

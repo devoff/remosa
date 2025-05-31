@@ -1,3 +1,5 @@
+import { Device } from '../../types';
+
 export const useDevicesAPI = () => {
   const fetchDevices = async () => {
     const res = await fetch('/api/v1/devices/');

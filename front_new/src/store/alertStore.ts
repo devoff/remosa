@@ -51,7 +51,7 @@ export const useAlertStore = create<AlertStore>((set, get) => ({
       const updatedAlert = await api.updateAlert(id, data);
       set(state => ({
         alerts: state.alerts.map(alert => 
-          alert.id === id ? updatedAlert : alert
+          String(alert.id) === String(id) ? updatedAlert : alert
         )
       }));
     } catch (error) {

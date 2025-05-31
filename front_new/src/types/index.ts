@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface NodeData {
   id: string;
   label: string;
@@ -22,7 +24,7 @@ export interface FlowData {
   env?: string[];
 }
 
-export interface NodeType {
+export type NodeType = {
   type: string;
   name: string;
   category: string;
@@ -35,7 +37,7 @@ export interface NodeType {
   inputs: number;
   outputs: number;
   color?: string;
-}
+};
 
 export interface Connection {
   id: string;
@@ -102,4 +104,30 @@ export interface FlowStore {
   stopSimulation: () => void;
   addSimulationEvent: (event: SimulationEvent) => void;
   setEditingConfig: (editing: boolean) => void;
+}
+
+export interface Device {
+  id: string;
+  name: string;
+  phone?: string;
+  status: 'ONLINE' | 'OFFLINE' | 'WARNING';
+  description?: string;
+  last_update: string;
+  created_at: string;
+  type?: 'sensor' | 'actuator' | 'controller';
+}
+
+export interface CommandTemplate {
+  id: string;
+  name: string;
+  category: string;
+  description?: string;
+  params_schema: Array<{ name: string; type: string; required: boolean; }>;
+}
+
+export interface DeviceCommand {
+  device_id: string;
+  template_id: string;
+  params: Record<string, any>;
+  status?: 'pending' | 'success' | 'failed';
 }

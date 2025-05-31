@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { AlertCircle, ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
 import { format } from 'date-fns';
+import { Alert } from '@/types/alert';
 
 // Временные мок-данные
-const mockAlerts = [
+const mockAlerts: Alert[] = [
   {
     id: 1,
     title: "Высокая загрузка CPU",
@@ -36,7 +37,7 @@ const mockAlerts = [
   }
 ];
 
-const AlertItem = ({ alert }) => {
+const AlertItem = ({ alert }: { alert: Alert }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (

@@ -9,7 +9,7 @@ depends_on = None
 def upgrade():
     # Переименовываем колонку (для PostgreSQL)
     op.alter_column('command_templates', 'device_type', new_column_name='model')
-        op.add_column('logs', sa.Column('status', sa.String(50), nullable=True))
+    op.add_column('logs', sa.Column('status', sa.String(50), nullable=True))
 
     # Для других СУБД может потребоваться:
     # op.add_column('command_templates', sa.Column('model', sa.String(50)))
@@ -18,4 +18,4 @@ def upgrade():
 
 def downgrade():
     op.alter_column('command_templates', 'model', new_column_name='device_type')
-     op.drop_column('logs', 'status')
+    op.drop_column('logs', 'status')

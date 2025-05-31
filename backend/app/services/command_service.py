@@ -7,24 +7,33 @@ from app.models.log import Log
 
 class CommandService:
     @staticmethod
-    def validate_params(params: Dict, schema: List[CommandParamSchema]) -> bool:
+    def validate_params(params: Dict, schema: List[CommandParamSchema]) -> Dict[str, List[str]]:
+        """Валидация параметров команды с детализацией ошибок"""
+        errors = {}
         for param in schema:
-            value = params.get(param.name)
-            if value is None:
-                return False
+            param_name = param.name
+            value = params.get(param_name)
             
+            if param.required and value is None:
+                errors.setdefault(param_name, []).append("Parameter is required")
+                continue
+                
+            if value is None:
+                continue
+                
             if param.type == "number" and not str(value).isdigit():
-                return False
+                errors.setdefault(param_name, []).append("Must be a number")
                 
             if param.pattern and not re.match(param.pattern, str(value)):
-                return False
+                errors.setdefault(param_name, []).append(f"Does not match pattern: {param.pattern}")
                 
             if param.min is not None and float(value) < param.min:
-                return False
+                errors.setdefault(param_name, []).append(f"Value must be >= {param.min}")
                 
             if param.max is not None and float(value) > param.max:
-                return False
-        return True
+                errors.setdefault(param_name, []).append(f"Value must be <= {param.max}")
+        
+        return errors
 
     @staticmethod
     def build_command(db: Session, template_id: int, params: dict):

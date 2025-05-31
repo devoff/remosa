@@ -39,4 +39,4 @@ class TelegramClient:
         for chat_id in chat_ids:
             success = await self.send_message(chat_id, text, parse_mode)
             results[chat_id] = success
-        return results
+        return results 

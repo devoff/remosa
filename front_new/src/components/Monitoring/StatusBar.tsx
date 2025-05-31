@@ -8,6 +8,7 @@ import {
   Check, 
   RefreshCcw 
 } from 'lucide-react';
+import { NodeType } from '../../types';
 
 const StatusBar: React.FC = () => {
   // В реальном приложении эти данные будут приходить из API

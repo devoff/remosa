@@ -2,17 +2,8 @@ import { useState, useEffect } from 'react';
 import './DevicesList.css';
 import { useDevicesAPI } from './useDevicesAPI';
 import { DeviceFormModal } from './DeviceFormModal';
-
-interface Device {
-  id: number;
-  name: string;
-  phone: string;
-  status: 'ONLINE' | 'OFFLINE' | 'WARNING';
-  description?: string;
-  last_update: string;
-  created_at: string;
-  type?: 'sensor' | 'actuator' | 'controller'; // Добавим тип устройства
-}
+import DeviceCommandsPanel from "./DeviceCommandsPanel";
+import { CommandTemplate, Device } from '../../types';
 
 const DevicesList = () => {
   const { fetchDevices, deleteDevice, saveDevice } = useDevicesAPI();
@@ -23,6 +14,8 @@ const DevicesList = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [availableCommands, setAvailableCommands] = useState<CommandTemplate[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,12 +53,15 @@ const DevicesList = () => {
 
   const handleDelete = async (id: string) => {
     await deleteDevice(id);
-    setDevices(devices.filter(d => d.id !== id));
+    setDevices(devices.filter((d: Device) => String(d.id) !== String(id)));
   };
 
   const handleSave = async (deviceData: Device) => {
     try {
-      await saveDevice(deviceData);
+      await saveDevice({
+        ...deviceData,
+        id: String(deviceData.id)
+      });
       const updatedDevices = await fetchDevices();
       setDevices(updatedDevices);
     } catch (err) {
@@ -99,7 +95,7 @@ const DevicesList = () => {
 
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {devices.map(device => (
+          {devices.map((device: Device) => (
             <div key={device.id} className="device-card bg-white dark:bg-gray-800 rounded-lg shadow p-4">
               <div className="flex items-start">
                 <div className="text-2xl mr-3">
@@ -119,7 +115,7 @@ const DevicesList = () => {
                         ✏️
                       </button>
                       <button 
-                        onClick={() => handleDelete(device.id.toString())}
+                        onClick={() => handleDelete(device.id)}
                         className="text-gray-500 hover:text-gray-700"
                       >
                         🗑️
@@ -163,7 +159,7 @@ const DevicesList = () => {
               </tr>
             </thead>
             <tbody>
-              {devices.map(device => (
+              {devices.map((device: Device) => (
                 <tr key={device.id} className="border-t border-gray-700 hover:bg-gray-700">
                   <td className="px-4 py-3 text-gray-100">
                     <div className="flex items-center">
@@ -196,7 +192,7 @@ const DevicesList = () => {
                         ✏️
                       </button>
                       <button 
-                        onClick={() => handleDelete(device.id.toString())}
+                        onClick={() => handleDelete(device.id)}
                         className="text-gray-500 hover:text-gray-700"
                       >
                         🗑️
@@ -223,6 +219,14 @@ const DevicesList = () => {
           device={null}
           onSave={handleSave}
           onClose={() => setIsAddModalOpen(false)}
+        />
+      )}
+
+      {selectedDevice && (
+        <DeviceCommandsPanel 
+          deviceId={selectedDevice.id}
+          deviceModel={selectedDevice.name}
+          commands={availableCommands}
         />
       )}
     </div>

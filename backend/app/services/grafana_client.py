@@ -30,4 +30,4 @@ class GrafanaClient:
             ) as response:
                 if response.status == 200:
                     return await response.json()
-                return None
+                return None 

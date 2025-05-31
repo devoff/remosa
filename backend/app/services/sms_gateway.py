@@ -29,4 +29,7 @@ class SMSGateway:
                     error_text = await response.text()
                     raise Exception(f"SMS Gateway error: {error_text}")
                 
-                return await response.json() 
+                return await response.json()
+
+def get_sms_gateway() -> SMSGateway:
+    return SMSGateway() 

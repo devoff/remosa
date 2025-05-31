@@ -10,6 +10,9 @@ RUN npm cache clean --force && \
     npm install && \
     npm install -g serve
 
+# Диагностика: Проверяем наличие @types/react
+RUN ls -la node_modules/@types/react
+
 COPY . .
 
 # Собираем проект
