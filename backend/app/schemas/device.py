@@ -5,6 +5,7 @@ from ..models.device import DeviceStatus
 
 class DeviceBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
+    model: Optional[str] = Field(None, max_length=50)
     description: Optional[str] = None
     grafana_uid: Optional[str] = Field(None, max_length=100)
 
@@ -19,6 +20,7 @@ class DeviceUpdate(DeviceBase):
 class DeviceInDB(DeviceBase):
     id: int
     status: DeviceStatus
+    phone: Optional[str] = Field(None, pattern=r"^\+?[0-9\s\-\(\)]+$")
     last_update: Optional[datetime] = None
     created_at: datetime
 

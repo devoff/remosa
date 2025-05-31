@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from ..models.device import Device, DeviceStatus
 from ..schemas.device import DeviceCreate, DeviceUpdate
+from ..services.command_service import CommandService
 
 class DeviceService:
     @staticmethod
@@ -67,4 +68,12 @@ class DeviceService:
 
     @staticmethod
     def get_device_by_phone(db: Session, phone: str) -> Optional[Device]:
-        return db.query(Device).filter(Device.phone == phone).first() 
+        return db.query(Device).filter(Device.phone == phone).first()
+
+    @staticmethod
+    def get_device_command_templates(db: Session, device_id: int) -> List[CommandService]:
+        device = DeviceService.get_device(db, device_id)
+        if not device:
+            raise HTTPException(status_code=404, detail="Устройство не найдено")
+        
+        return CommandService.get_templates(db, device.type) 

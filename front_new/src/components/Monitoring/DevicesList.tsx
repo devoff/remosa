@@ -106,7 +106,26 @@ const DevicesList = () => {
                   {getDeviceIcon(device.type)}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium dark:text-gray-100">{device.name}</h3>
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-medium dark:text-gray-100">{device.name}</h3>
+                    <div className="flex space-x-2">
+                      <button 
+                        onClick={() => {
+                          setCurrentDevice(device);
+                          setIsEditModalOpen(true);
+                        }}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        ✏️
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(device.id.toString())}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
                   <div className="mt-2 space-y-1">
                     <p className="dark:text-gray-300">
                       Статус: <span className={`${getStatusColor(device.status)} font-medium`}>
@@ -114,6 +133,9 @@ const DevicesList = () => {
                       </span>
                     </p>
                     <p className="dark:text-gray-300">ID: {device.id}</p>
+                    {device.phone && (
+                      <p className="dark:text-gray-300">Телефон: {device.phone}</p>
+                    )}
                     {device.description && (
                       <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
                     )}
@@ -122,17 +144,6 @@ const DevicesList = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-              <div className="mt-2 space-x-2">
-                <button 
-                  className="device-action-btn"
-                  onClick={() => {
-                    setCurrentDevice(device);
-                    setIsEditModalOpen(true);
-                  }}
-                >
-                  Редактировать
-                </button>
               </div>
             </div>
           ))}
@@ -145,6 +156,7 @@ const DevicesList = () => {
                 <th className="px-4 py-2 text-left text-gray-100">Устройство</th>
                 <th className="px-4 py-2 text-left text-gray-100">Статус</th>
                 <th className="px-4 py-2 text-left text-gray-100">ID</th>
+                <th className="px-4 py-2 text-left text-gray-100">Телефон</th>
                 <th className="px-4 py-2 text-left text-gray-100">Описание</th>
                 <th className="px-4 py-2 text-left text-gray-100">Обновлено</th>
                 <th className="px-4 py-2 text-left text-gray-100">Действия</th>
@@ -164,6 +176,9 @@ const DevicesList = () => {
                   </td>
                   <td className="px-4 py-3 text-gray-100">{device.id}</td>
                   <td className="px-4 py-3 text-gray-300">
+                    {device.phone || '-'}
+                  </td>
+                  <td className="px-4 py-3 text-gray-300">
                     {device.description || '-'}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-400">
@@ -172,15 +187,20 @@ const DevicesList = () => {
                   <td className="px-4 py-3 text-gray-100">
                     <div className="flex gap-2">
                       <button 
-                        className="device-action-btn"
                         onClick={() => {
                           setCurrentDevice(device);
                           setIsEditModalOpen(true);
                         }}
+                        className="text-gray-500 hover:text-gray-700"
                       >
                         ✏️
                       </button>
-                      <button onClick={() => handleDelete(device.id.toString())}>🗑️</button>
+                      <button 
+                        onClick={() => handleDelete(device.id.toString())}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        🗑️
+                      </button>
                     </div>
                   </td>
                 </tr>

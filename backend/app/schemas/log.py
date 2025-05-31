@@ -6,6 +6,7 @@ class LogBase(BaseModel):
     device_id: int
     message: str
     level: str = "info"
+    status: str  # Добавлено поле status
 
 class LogCreate(LogBase):
     pass
