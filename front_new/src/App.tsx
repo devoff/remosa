@@ -6,6 +6,7 @@ import AlertsPanel from './components/Monitoring/AlertsPanel';
 import StatusBar from './components/Monitoring/StatusBar';
 import DevicesList from './components/Monitoring/DevicesList';
 import { CommandLogsPage } from './components/CommandLogsPage';
+import CommandTemplatesPage from './components/CommandTemplatesPage';
 
 console.log('API URL:', import.meta.env.VITE_API_URL);
 
@@ -20,6 +21,7 @@ function App() {
             <Routes>
               <Route path="/" element={<DevicesList />} />
               <Route path="/command-logs" element={<CommandLogsPage />} />
+              <Route path="/command-templates" element={<CommandTemplatesPage />} />
             </Routes>
             <div className="mt-auto">
               <AlertsPanel />

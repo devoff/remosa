@@ -18,7 +18,7 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }: Props) => 
     
     setIsSending(true);
     try {
-      const command = commands.find(c => c.id === selectedCommand);
+      const command = commands.find(c => String(c.id) === String(selectedCommand));
       if (!command) return;
 
       await api.post('/commands/execute', {
@@ -66,11 +66,11 @@ export const DeviceCommands: React.FC<Props> = ({ device, commands }: Props) => 
         <div className="command-params">
           <h4>Параметры команды</h4>
           {commands
-            .find((c: CommandTemplate) => c.id === selectedCommand)
+            .find((c: CommandTemplate) => String(c.id) === String(selectedCommand))
             ?.params_schema.properties && Object.keys(commands
-            .find((c: CommandTemplate) => c.id === selectedCommand)
+            .find((c: CommandTemplate) => String(c.id) === String(selectedCommand))
             ?.params_schema.properties || {}).map((paramName: string) => {
-              const cmd = commands.find((c: CommandTemplate) => c.id === selectedCommand);
+              const cmd = commands.find((c: CommandTemplate) => String(c.id) === String(selectedCommand));
               const param = cmd?.params_schema.properties?.[paramName];
               const isRequired = cmd?.params_schema.required?.includes(paramName);
 

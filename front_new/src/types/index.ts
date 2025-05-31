@@ -118,17 +118,30 @@ export interface Device {
 }
 
 export interface CommandTemplate {
-  id: string;
+  id: number;
   name: string;
   category: string;
   subcategory?: string;
   description?: string;
+  model?: string;
   params_schema: {
     type: string;
     properties: { [key: string]: { type: string; title?: string; pattern?: string; enum?: any[]; }; };
     required?: string[];
   };
 }
+
+export interface CommandParamDefinition {
+  name: string;
+  type: string;
+  pattern?: string;
+  min?: number;
+  max?: number;
+  title?: string;
+  enum?: any[];
+}
+
+export interface CommandTemplateCreate extends Omit<CommandTemplate, 'id'> {}
 
 export interface DeviceCommand {
   device_id: string;
@@ -152,7 +165,7 @@ export interface CommandLog {
 }
 
 export interface DeviceCommandsPanelProps {
-  deviceId: string;
+  deviceId: number;
   deviceModel?: string;
   onClose: () => void;
 }

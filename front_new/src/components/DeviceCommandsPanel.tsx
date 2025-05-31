@@ -42,7 +42,7 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
 
   const onCommandSelect = (templateId: string) => {
     console.log('Выбрана команда с ID:', templateId);
-    const cmd = commandTemplates.find((t: CommandTemplate) => t.id === templateId);
+    const cmd = commandTemplates.find((t: CommandTemplate) => String(t.id) === String(templateId));
     setSelectedCommand(cmd || null);
     form.setFieldsValue({ command_template_id: templateId });
     setResponse(null);

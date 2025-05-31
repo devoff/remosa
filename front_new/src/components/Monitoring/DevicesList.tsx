@@ -55,14 +55,14 @@ const DevicesList = () => {
 
   const handleDelete = async (id: string) => {
     await deleteDevice(id);
-    setDevices(devices.filter((d: Device) => String(d.id) !== String(id)));
+    setDevices(devices.filter((d: Device) => d.id.toString() === id));
   };
 
   const handleSave = async (deviceData: Device) => {
     try {
       await saveDevice({
         ...deviceData,
-        id: String(deviceData.id)
+        id: deviceData.id?.toString() || ''
       });
       const updatedDevices = await fetchDevices();
       setDevices(updatedDevices);
@@ -105,60 +105,63 @@ const DevicesList = () => {
 
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {devices.map((device: Device) => (
-            <div key={device.id} className="device-card bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-              <div className="flex items-start">
-                <div className="text-2xl mr-3">
-                  {getDeviceIcon(device.model)}
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-medium dark:text-gray-100">{device.name}</h3>
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => {
-                          setCurrentDevice(device);
-                          setIsEditModalOpen(true);
-                        }}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(device.id)}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        🗑️
-                      </button>
-                      <button
-                        onClick={() => handleOpenCommandsPanel(device)}
-                        className="text-blue-500 hover:text-blue-700 ml-2"
-                      >
-                        ⚙️ Команды
-                      </button>
-                    </div>
+          {devices.map((device: Device) => {
+            const deviceId: number = Number(device.id);
+            return (
+              <div key={deviceId} className="device-card bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                <div className="flex items-start">
+                  <div className="text-2xl mr-3">
+                    {getDeviceIcon(device.model)}
                   </div>
-                  <div className="mt-2 space-y-1">
-                    <p className="dark:text-gray-300">
-                      Статус: <span className={`${getStatusColor(device.status)} font-medium`}>
-                        {device.status}
-                      </span>
-                    </p>
-                    <p className="dark:text-gray-300">ID: {device.id}</p>
-                    {device.phone && (
-                      <p className="dark:text-gray-300">Телефон: {device.phone}</p>
-                    )}
-                    {device.description && (
-                      <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
-                    )}
-                    <p className="text-sm text-gray-500 dark:text-gray-500">
-                      Обновлено: {new Date(device.last_update).toLocaleString()}
-                    </p>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-medium dark:text-gray-100">{device.name}</h3>
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => {
+                            setCurrentDevice(device);
+                            setIsEditModalOpen(true);
+                          }}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(String(deviceId))}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          🗑️
+                        </button>
+                        <button
+                          onClick={() => handleOpenCommandsPanel(device)}
+                          className="text-blue-500 hover:text-blue-700 ml-2"
+                        >
+                          ⚙️ Команды
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-2 space-y-1">
+                      <p className="dark:text-gray-300">
+                        Статус: <span className={`${getStatusColor(device.status)} font-medium`}>
+                          {device.status}
+                        </span>
+                      </p>
+                      <p className="dark:text-gray-300">ID: {deviceId}</p>
+                      {device.phone && (
+                        <p className="dark:text-gray-300">Телефон: {device.phone}</p>
+                      )}
+                      {device.description && (
+                        <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
+                      )}
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
+                        Обновлено: {new Date(device.last_update).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -175,54 +178,57 @@ const DevicesList = () => {
               </tr>
             </thead>
             <tbody>
-              {devices.map((device: Device) => (
-                <tr key={device.id} className="border-t border-gray-700 hover:bg-gray-700">
-                  <td className="px-4 py-3 text-gray-100">
-                    <div className="flex items-center">
-                      <span className="mr-2">{getDeviceIcon(device.model)}</span>
-                      {device.name}
-                    </div>
-                  </td>
-                  <td className={`px-4 py-3 ${getStatusColor(device.status)}`}>
-                    {device.status}
-                  </td>
-                  <td className="px-4 py-3 text-gray-100">{device.id}</td>
-                  <td className="px-4 py-3 text-gray-300">
-                    {device.phone || '-'}
-                  </td>
-                  <td className="px-4 py-3 text-gray-300">
-                    {device.description || '-'}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-400">
-                    {new Date(device.last_update).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-gray-100">
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => {
-                          setCurrentDevice(device);
-                          setIsEditModalOpen(true);
-                        }}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(device.id)}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        🗑️
-                      </button>
-                      <button
-                        onClick={() => handleOpenCommandsPanel(device)}
-                        className="text-blue-500 hover:text-blue-700 ml-2"
-                      >
-                        ⚙️ Команды
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {devices.map((device: Device) => {
+                const deviceId: number = Number(device.id);
+                return (
+                  <tr key={deviceId} className="border-t border-gray-700 hover:bg-gray-700">
+                    <td className="px-4 py-3 text-gray-100">
+                      <div className="flex items-center">
+                        <span className="mr-2">{getDeviceIcon(device.model)}</span>
+                        {device.name}
+                      </div>
+                    </td>
+                    <td className={`px-4 py-3 ${getStatusColor(device.status)}`}>
+                      {device.status}
+                    </td>
+                    <td className="px-4 py-3 text-gray-100">{deviceId}</td>
+                    <td className="px-4 py-3 text-gray-300">
+                      {device.phone || '-'}
+                    </td>
+                    <td className="px-4 py-3 text-gray-300">
+                      {device.description || '-'}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-400">
+                      {new Date(device.last_update).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-gray-100">
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => {
+                            setCurrentDevice(device);
+                            setIsEditModalOpen(true);
+                          }}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(String(deviceId))}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          🗑️
+                        </button>
+                        <button
+                          onClick={() => handleOpenCommandsPanel(device)}
+                          className="text-blue-500 hover:text-blue-700 ml-2"
+                        >
+                          ⚙️ Команды
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -255,12 +261,10 @@ const DevicesList = () => {
             >
               &times;
             </button>
-            {selectedDevice && (
-              <DeviceCommandsPanel
-                device={selectedDevice}
-                onClose={handleCloseCommandsPanel}
-              />
-            )}
+            <DeviceCommandsPanel
+              device={selectedDevice}
+              onClose={handleCloseCommandsPanel}
+            />
           </div>
         </div>
       )}

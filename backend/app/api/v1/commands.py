@@ -2,7 +2,7 @@ from typing import List, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from app.services.command_service import CommandService
-from app.schemas.command_template import CommandTemplateResponse, CommandParamSchema
+from app.schemas.command_template import CommandTemplateResponse, CommandParamSchema, CommandTemplateCreate
 from app.core.database import get_db
 from app.schemas.command_log import CommandLogResponse
 from app.models import Log, CommandTemplate, Device
@@ -10,6 +10,16 @@ from app.services.sms_gateway import SMSGateway, get_sms_gateway
 import re
 
 router = APIRouter()
+
+@router.get("/templates/", response_model=List[CommandTemplateResponse])
+async def get_all_command_templates(
+    db: Session = Depends(get_db)
+):
+    """Получить все шаблоны команд"""
+    templates = db.query(CommandTemplate).all()
+    if not templates:
+        raise HTTPException(status_code=404, detail="No command templates found")
+    return templates
 
 @router.get("/templates/{model}", response_model=List[CommandTemplateResponse])
 async def get_command_templates(
@@ -120,3 +130,48 @@ async def get_command_status(
     if not log:
         raise HTTPException(status_code=404, detail="Command log not found")
     return log
+
+@router.post("/templates/", response_model=CommandTemplateResponse)
+async def create_command_template(
+    template: CommandTemplateCreate,
+    db: Session = Depends(get_db)
+):
+    """Создать новый шаблон команды"""
+    db_template = CommandTemplate(**template.model_dump())
+    db.add(db_template)
+    db.commit()
+    db.refresh(db_template)
+    return db_template
+
+@router.put("/templates/{template_id}", response_model=CommandTemplateResponse)
+async def update_command_template(
+    template_id: int,
+    template_update: CommandTemplateCreate, # Re-using create schema for simplicity, could be a specific update schema
+    db: Session = Depends(get_db)
+):
+    """Обновить существующий шаблон команды"""
+    db_template = db.query(CommandTemplate).filter(CommandTemplate.id == template_id).first()
+    if not db_template:
+        raise HTTPException(status_code=404, detail="Command Template not found")
+    
+    update_data = template_update.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_template, field, value)
+    
+    db.commit()
+    db.refresh(db_template)
+    return db_template
+
+@router.delete("/templates/{template_id}", response_model=Dict[str, str])
+async def delete_command_template(
+    template_id: int,
+    db: Session = Depends(get_db)
+):
+    """Удалить шаблон команды"""
+    db_template = db.query(CommandTemplate).filter(CommandTemplate.id == template_id).first()
+    if not db_template:
+        raise HTTPException(status_code=404, detail="Command Template not found")
+    
+    db.delete(db_template)
+    db.commit()
+    return {"message": "Command Template deleted successfully"}

@@ -130,6 +130,9 @@ const Sidebar: React.FC = () => {
             <Link to="/telegram-users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Пользователи Telegram
             </Link>
+            <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Шаблоны команд
+            </Link>
             <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Журнал алертов
             </Link>

@@ -19,6 +19,9 @@ COPY . .
 RUN npm install
 RUN npm install -g serve
 
+# Диагностика: Проверяем наличие @types/react перед сборкой
+RUN ls -la node_modules/@types/react || echo "@types/react not found or error accessing"
+
 # Собираем проект
 RUN npm run build
 
