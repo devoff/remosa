@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   MessageSquare, 
@@ -14,6 +14,8 @@ import {
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
 import { nodeTypes } from '../components/NodeTypes';
+import { useApi } from '../lib/useApi'; 
+import { SystemStatus } from '../types/SystemStatus'; 
 
 interface SidebarSectionProps {
   title: string;
@@ -57,6 +59,33 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
 const Sidebar: React.FC = () => {
   const { flows, currentFlow } = useFlowStore();
   const categoryColors = getCategoryColors();
+  const { get } = useApi(); 
+  const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null); 
+
+  const formatTime = (isoString: string | null) => {
+    if (!isoString || isoString === "N/A") return "N/A";
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      console.error("Ошибка форматирования времени в сайдбаре:", e);
+      return "N/A";
+    }
+  };
+
+  useEffect(() => {
+    const fetchSystemStatus = async () => {
+      try {
+        const data: SystemStatus = await get('/api/v1/stats/dashboard');
+        setSystemStatus(data);
+      } catch (error) {
+        console.error('Ошибка при получении статуса системы в сайдбаре:', error);
+      }
+    };
+    fetchSystemStatus();
+    const interval = setInterval(fetchSystemStatus, 60000); 
+    return () => clearInterval(interval);
+  }, [get]);
   
   // Получаем текущий поток
   const flow = flows.find(f => f.id === currentFlow) || flows[0];
@@ -90,11 +119,11 @@ const Sidebar: React.FC = () => {
             </div>
             <div className="flex items-center justify-between">
               <span>Uptime:</span>
-              <span>12ч 34м</span>
+              <span>{systemStatus?.uptime || 'Загрузка...'}</span>
             </div>
             <div className="flex items-center justify-between">
               <span>Последний алерт:</span>
-              <span>14:52</span>
+              <span>{formatTime(systemStatus?.latestAlert || null)}</span>
             </div>
           </div>
         </SidebarSection>
@@ -187,6 +216,7 @@ const Sidebar: React.FC = () => {
       </div>
       
       <div className="mt-auto border-t border-gray-700">
+        {/* <StatusBar /> */}
         <div className="p-4 space-y-2">
           <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Users size={18} className="mr-2" />

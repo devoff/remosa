@@ -150,6 +150,9 @@ const DevicesList = () => {
                       {device.phone && (
                         <p className="dark:text-gray-300">Телефон: {device.phone}</p>
                       )}
+                      {device.model && (
+                        <p className="dark:text-gray-300">Модель: {device.model}</p>
+                      )}
                       {device.description && (
                         <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
                       )}
@@ -169,6 +172,7 @@ const DevicesList = () => {
             <thead className="bg-gray-700">
               <tr>
                 <th className="px-4 py-2 text-left text-gray-100">Устройство</th>
+                <th className="px-4 py-2 text-left text-gray-100">Модель</th>
                 <th className="px-4 py-2 text-left text-gray-100">Статус</th>
                 <th className="px-4 py-2 text-left text-gray-100">ID</th>
                 <th className="px-4 py-2 text-left text-gray-100">Телефон</th>
@@ -187,6 +191,9 @@ const DevicesList = () => {
                         <span className="mr-2">{getDeviceIcon(device.model)}</span>
                         {device.name}
                       </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-100">
+                      {device.model || '-'}
                     </td>
                     <td className={`px-4 py-3 ${getStatusColor(device.status)}`}>
                       {device.status}
