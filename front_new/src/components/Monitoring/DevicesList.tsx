@@ -15,12 +15,15 @@ const DevicesList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchDevices();
         setDevices(data);
+        const models = Array.from(new Set(data.map((d: Device) => d.model).filter(Boolean) as string[]));
+        setAvailableModels(models);
       } catch (err) {
         console.error('Fetch error:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -230,6 +233,7 @@ const DevicesList = () => {
           device={null}
           onClose={() => setIsAddModalOpen(false)}
           onSave={handleSave}
+          availableModels={availableModels}
         />
       )}
 
@@ -238,6 +242,7 @@ const DevicesList = () => {
           device={currentDevice}
           onClose={() => setIsEditModalOpen(false)}
           onSave={handleSave}
+          availableModels={availableModels}
         />
       )}
 
@@ -250,7 +255,12 @@ const DevicesList = () => {
             >
               &times;
             </button>
-            <DeviceCommandsPanel device={selectedDevice} onClose={handleCloseCommandsPanel} />
+            {selectedDevice && (
+              <DeviceCommandsPanel
+                device={selectedDevice}
+                onClose={handleCloseCommandsPanel}
+              />
+            )}
           </div>
         </div>
       )}

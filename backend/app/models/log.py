@@ -10,7 +10,7 @@ class Log(Base):
     __tablename__ = "logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    device_id = Column(Integer, ForeignKey("devices.id"))
+    device_id = Column(Integer, ForeignKey("devices.id"), nullable=True)
     message = Column(String)
     level = Column(String, default="info")
     command = Column(String, nullable=True)

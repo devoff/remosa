@@ -1,41 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle, ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert } from '@/types/alert';
-
-// Временные мок-данные
-const mockAlerts: Alert[] = [
-  {
-    id: 1,
-    title: "Высокая загрузка CPU",
-    status: "firing",
-    severity: "critical",
-    player_name: "Сервер-1",
-    player_id: "srv-001",
-    created_at: new Date().toISOString(),
-    description: "Загрузка CPU превысила 90%"
-  },
-  {
-    id: 2,
-    title: "Недостаточно памяти",
-    status: "firing",
-    severity: "warning",
-    player_name: "Сервер-2",
-    player_id: "srv-002",
-    created_at: new Date(Date.now() - 3600000).toISOString(),
-    description: "Свободно менее 10% RAM"
-  },
-  {
-    id: 3,
-    title: "Обновление системы",
-    status: "resolved",
-    severity: "info",
-    player_name: "Роутер",
-    player_id: "rt-01",
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    resolved_at: new Date().toISOString()
-  }
-];
+import { api } from '@/lib/api';
+import { CommandLog } from '@/types/index';
 
 const AlertItem = ({ alert }: { alert: Alert }) => {
   const [expanded, setExpanded] = useState(false);
@@ -48,8 +16,7 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
       >
         <div className="flex items-center">
           <div className={`w-2 h-2 rounded-full mr-3 ${
-            alert.severity === 'critical' ? 'bg-red-500' : 
-            alert.severity === 'warning' ? 'bg-amber-500' : 'bg-blue-500'
+            alert.status === 'firing' ? 'bg-red-500' : 'bg-green-500'
           }`} />
           <div>
             <h3 className="font-medium">{alert.title}</h3>
@@ -70,6 +37,9 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
           <p className="text-sm text-gray-300">{alert.description}</p>
           <div className="mt-3 text-xs text-gray-500">
             ID: {alert.id} • {alert.player_id}
+            {alert.resolved_at && (
+                <p className="text-xs text-gray-400 mt-1">Разрешено: {format(new Date(alert.resolved_at), 'HH:mm:ss')}</p>
+            )}
           </div>
         </div>
       )}
@@ -79,19 +49,75 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
 
 const AlertsPanel = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        setLoading(true);
+        const fetchedLogs: CommandLog[] = await api.getLogsByLevel('alert');
+        const mappedAlerts: Alert[] = fetchedLogs.map(log => {
+          let extraDataParsed: any = {};
+          try {
+            extraDataParsed = log.extra_data ? JSON.parse(log.extra_data) : {};
+          } catch (e) {
+            console.error("Ошибка парсинга extra_data:", e);
+          }
+
+          // Определяем severity на основе статуса
+          let severity: Alert['severity'] = 'info';
+          if (log.status === 'firing') {
+            severity = 'critical';
+          } else if (log.status === 'resolved') {
+            severity = 'info';
+          }
+
+          return {
+            id: log.id,
+            title: extraDataParsed.alert_name || 'Неизвестный алерт',
+            status: log.status || 'unknown',
+            severity: severity,
+            player_name: extraDataParsed.player_name || 'Неизвестный плеер',
+            player_id: extraDataParsed.player_id || 'N/A',
+            created_at: log.created_at,
+            updated_at: log.updated_at,
+            resolved_at: log.status === 'resolved' && log.updated_at ? log.updated_at : undefined, // Используем updated_at как resolved_at
+            description: extraDataParsed.summary || log.message,
+          };
+        });
+        setAlerts(mappedAlerts);
+      } catch (err) {
+        console.error("Ошибка при получении алертов:", err);
+        setError("Не удалось загрузить алерты.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 60000); // Обновляем каждые 60 секунд
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className={`border-t border-gray-700 bg-gray-850 ${collapsed ? 'h-10' : 'h-64'}`}>
       <div className="flex items-center justify-between p-2 border-b border-gray-700">
         <button onClick={() => setCollapsed(!collapsed)} className="flex items-center">
           {collapsed ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          <h3 className="ml-2 font-medium">Алерты (тестовые)</h3>
+          <h3 className="ml-2 font-medium">Алерты {loading ? '(загрузка...)' : error ? '(ошибка)' : ''}</h3>
         </button>
       </div>
       
       {!collapsed && (
         <div className="p-3 overflow-y-auto h-[calc(100%-36px)]">
-          {mockAlerts.map(alert => (
+          {error && <p className="text-red-500 text-center">{error}</p>}
+          {loading && <p className="text-gray-400 text-center">Загрузка алертов...</p>}
+          {!loading && !error && alerts.length === 0 && (
+            <p className="text-gray-400 text-center">Нет активных алертов.</p>
+          )}
+          {!loading && !error && alerts.length > 0 && alerts.map(alert => (
             <AlertItem key={alert.id} alert={alert} />
           ))}
         </div>

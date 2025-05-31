@@ -147,5 +147,12 @@ export interface CommandLog {
   created_at: string;
   updated_at?: string;
   execution_time?: string; // Или number, если это float
-  extra_data?: any; // Может быть JSON-объектом
+  extra_data?: string; // Теперь это JSON строка
+  status?: string; // Добавляем поле status
+}
+
+export interface DeviceCommandsPanelProps {
+  deviceId: string;
+  deviceModel?: string;
+  onClose: () => void;
 }

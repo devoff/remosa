@@ -3,11 +3,14 @@ from typing import Optional
 from pydantic import BaseModel
 
 class CommandLogBase(BaseModel):
-    device_id: int
-    command: str
+    device_id: Optional[int] = None
+    message: str
+    command: Optional[str] = None
     level: str
     status: Optional[str] = None
     response: Optional[str] = None
+    execution_time: Optional[datetime] = None
+    extra_data: Optional[str] = None
 
 class CommandLogCreate(CommandLogBase):
     pass

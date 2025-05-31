@@ -3,10 +3,14 @@ from datetime import datetime
 from typing import Optional
 
 class LogBase(BaseModel):
-    device_id: int
+    device_id: Optional[int] = None
     message: str
     level: str = "info"
-    status: str  # Добавлено поле status
+    status: Optional[str] = None
+    command: Optional[str] = None
+    response: Optional[str] = None
+    execution_time: Optional[datetime] = None
+    extra_data: Optional[str] = None
 
 class LogCreate(LogBase):
     pass
