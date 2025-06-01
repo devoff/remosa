@@ -9,12 +9,15 @@ class GrafanaAlertLabel(BaseModel):
     platform: Optional[str] = None
     player_id: Optional[str] = None
     player_name: Optional[str] = None
+    severity: Optional[str] = None
+    alert_type: Optional[str] = None
 
 class GrafanaAlert(BaseModel):
     endsAt: str
     labels: GrafanaAlertLabel
     startsAt: str
     status: str
+    fingerprint: Optional[str] = None
 
 class GrafanaCommonAnnotations(BaseModel):
     summary: str

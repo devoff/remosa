@@ -73,6 +73,15 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
             />
           </div>
           <div className="form-group flex flex-col">
+            <label htmlFor="grafana_player_id" className="text-gray-700 dark:text-gray-300 mb-1">ID плеера Grafana</label>
+            <input
+              id="grafana_player_id"
+              className={inputClasses}
+              value={formData.grafana_uid || ''}
+              onChange={(e) => setFormData({...formData, grafana_uid: e.target.value})}
+            />
+          </div>
+          <div className="form-group flex flex-col">
             <label htmlFor="model" className="text-gray-700 dark:text-gray-300 mb-1">Модель</label>
             <Select
               id="model"

@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Optional, Dict
 from sqlalchemy.orm import Session
+from sqlalchemy.dialects.postgresql import JSONB
 
 class Log(Base):
     __tablename__ = "logs"
@@ -19,7 +20,7 @@ class Log(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     execution_time = Column(DateTime(timezone=True), nullable=True)
-    extra_data = Column(String, nullable=True)
+    extra_data = Column(JSONB, nullable=True)
     
     device = relationship("Device", back_populates="command_logs")
 

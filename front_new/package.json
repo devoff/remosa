@@ -19,12 +19,12 @@
     "reactflow": "^11.10.4",
     "classnames": "^2.5.1",
     "date-fns": "^3.3.1",
-    "nanoid": "^5.0.6"
+    "nanoid": "^5.0.6",
+    "react-router-dom": "^6.23.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.0",
     "@types/node": "^20.11.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",

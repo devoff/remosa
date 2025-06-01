@@ -45,13 +45,30 @@ def upgrade():
         sa.Column('device_id', sa.Integer(), nullable=False),
         sa.Column('message', sa.String(), nullable=False),
         sa.Column('level', sa.String(), nullable=False),
+        sa.Column('command', sa.String(), nullable=True),
+        sa.Column('status', sa.String(), nullable=True),
+        sa.Column('response', sa.String(), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=func.now(), nullable=False),
         sa.Column('updated_at', sa.DateTime(timezone=True), onupdate=func.now()),
         sa.ForeignKeyConstraint(['device_id'], ['devices.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
+    
+    # Create alerts table
+    op.create_table(
+        'alerts',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('device_id', sa.Integer(), nullable=False),
+        sa.Column('alert_type', sa.String(), nullable=False),
+        sa.Column('message', sa.String(), nullable=False),
+        sa.Column('data', sa.JSON(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.ForeignKeyConstraint(['device_id'], ['devices.id'], ),
+        sa.PrimaryKeyConstraint('id')
+    )
 
 def downgrade():
+    op.drop_table('alerts')
     op.drop_table('logs')
     op.drop_table('clients')
     op.drop_table('devices') 

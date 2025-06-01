@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { AlertCircle, ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert } from '@/types/alert';
 import { api } from '@/lib/api';
-import { Spin, Alert as AntdAlert, Typography } from 'antd';
+import { Card, Spin, Alert as AntdAlert, Typography } from 'antd';
 
 const { Title } = Typography;
 
-console.log('AlertsPanel: Компонент загружен');
+console.log('AlertsPage: Компонент загружен');
 
 const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResolve: () => void; setParentError: (error: string | null) => void; }) => {
   const [expanded, setExpanded] = useState(false);
@@ -48,13 +49,25 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
       
       {expanded && (
         <div className="p-3 border-t border-gray-700 bg-gray-750">
-          <p className="text-sm dark:text-gray-300">{alert.description}</p>
-          <div className="mt-3 text-xs dark:text-gray-500">
-            ID: {alert.id} • {alert.player_id}
+          {alert.description && <p className="text-sm dark:text-gray-300 mb-2">Описание: {alert.description}</p>}
+          <div className="mt-2 text-xs dark:text-gray-500">
+            <p>ID: {alert.id}</p>
+            {alert.player_id && <p>Player ID: {alert.player_id}</p>}
             {alert.resolved_at && (
                 <p className="text-xs dark:text-gray-400 mt-1">Разрешено: {format(new Date(alert.resolved_at), 'dd.MM.yyyy HH:mm:ss')}</p>
             )}
           </div>
+
+          {/* Дополнительная информация из поля details */}
+          {alert.details && typeof alert.details === 'object' && (
+            <div className="mt-3 text-xs dark:text-gray-400">
+              <h4 className="font-semibold mb-1">Детали алерта:</h4>
+              {Object.entries(alert.details).map(([key, value]) => (
+                <p key={key}>{key}: {JSON.stringify(value)}</p>
+              ))}
+            </div>
+          )}
+
           {alert.status === 'firing' && (
             <button
               onClick={handleResolve}
@@ -69,7 +82,7 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
   );
 };
 
-const AlertsPanel = () => {
+const AlertsPage = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +90,7 @@ const AlertsPanel = () => {
   const fetchAlerts = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('AlertsPanel: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
+      console.log('AlertsPage: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
       const data = await api.getAlerts();
       setAlerts(data);
       setError(null);
@@ -90,7 +103,7 @@ const AlertsPanel = () => {
   }, [setAlerts, setError, setLoading]);
 
   useEffect(() => {
-    console.log('AlertsPanel: useEffect запущен');
+    console.log('AlertsPage: useEffect запущен');
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 60000);
     return () => clearInterval(interval);
@@ -105,16 +118,20 @@ const AlertsPanel = () => {
   }
 
   return (
-    <div>
-      <Title level={4} className="dark:text-gray-100">Журнал Алертов</Title>
+    <Card 
+      title={<h2 className="text-xl font-semibold dark:text-gray-100">Журнал Алертов</h2>} 
+      style={{ margin: '20px' }} 
+      className="dark:bg-gray-800 rounded-lg" 
+      bodyStyle={{ padding: '16px' }} 
+    >
       {alerts.length === 0 && (
         <p className="text-gray-400 text-center">Нет активных алертов.</p>
       )}
-      {alerts.length > 0 && alerts.map((alert: Alert) => (
+      {alerts.length > 0 && alerts.map(alert => (
         <AlertItem key={alert.id} alert={alert} onResolve={fetchAlerts} setParentError={setError} />
       ))}
-    </div>
+    </Card>
   );
 };
 
-export default AlertsPanel; 
+export default AlertsPage; 

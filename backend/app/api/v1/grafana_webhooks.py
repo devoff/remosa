@@ -8,106 +8,190 @@ from datetime import datetime, timezone
 
 from app.core.database import get_db
 from app.schemas.grafana import GrafanaWebhookPayload
-from app.models.log import Log
+from app.models.alert import Alert
 from app.models.device import Device
-from app.schemas.log import LogCreate
+from app.schemas.alert import AlertCreate, AlertResponse
+from app.services.sms_gateway import SMSGateway
 
 router = APIRouter()
+sms_gateway = SMSGateway() # Создаем экземпляр SMSGateway
 
 # Настраиваем логгер
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO) # Устанавливаем уровень логирования INFO
+# logging.basicConfig(level=logging.INFO) # Удаляем тестовую настройку логирования
 
 @router.post("/grafana-webhook/")
 async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(get_db)):
     logger.info(f"Получен вебхук Grafana. Полезная нагрузка: {payload.model_dump_json(indent=2)}")
-    for alert in payload.alerts:
-        alert_name = alert.labels.alertname
-        alert_status = alert.status
-        player_name = alert.labels.player_name or "Неизвестный плеер"
-        player_id_str = alert.labels.player_id # Используем отдельную переменную для строкового ID
-        platform = alert.labels.platform or "Неизвестная платформа"
-        summary = payload.commonAnnotations.summary
-        starts_at = alert.startsAt
-        ends_at = alert.endsAt
 
-        # Обрезаем миллисекунды до микросекунд для starts_at и ends_at
+    for alert_data in payload.alerts:
+        alert_name = alert_data.labels.alertname
+        alert_status = alert_data.status
+        player_name = alert_data.labels.player_name or "Неизвестный плеер"
+        player_id_str = alert_data.labels.player_id
+        platform = alert_data.labels.platform or "Неизвестная платформа"
+        summary = payload.commonAnnotations.summary if payload.commonAnnotations and payload.commonAnnotations.summary else "Нет описания"
+        starts_at_str = alert_data.startsAt
+        ends_at_str = alert_data.endsAt
+        severity = alert_data.labels.severity or "info"
+
         def truncate_microseconds(dt_str: str) -> str:
             if not dt_str:
                 return dt_str
-            # Regex для поиска дробной части секунд и обрезки до 6 знаков
             match = re.match(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{1,6})?(\d*)([+-]\d{2}:\d{2}|Z)$", dt_str)
             if match:
                 base = match.group(1)
                 microseconds = match.group(2) or ".000000"
                 tz_info = match.group(4)
-                return f"{base}{microseconds[:7]}{tz_info}" # Обрезаем до .xxxxxx
-            return dt_str # Возвращаем оригинал, если не соответствует паттерну
+                return f"{base}{microseconds[:7]}{tz_info}"
+            return dt_str
 
-        processed_starts_at = truncate_microseconds(starts_at)
-        processed_ends_at = truncate_microseconds(ends_at)
+        processed_starts_at = truncate_microseconds(starts_at_str)
+        processed_ends_at = truncate_microseconds(ends_at_str)
+        logger.info(f"DEBUG_STARTSAT: Processed startsAt: {processed_starts_at}") # Добавляем логирование для отладки
 
-        logger.info(f"Обработка алерта: alert_name={alert_name}, status={alert_status}, player_id_str={player_id_str}")
-
-        # Поиск device_id по player_id
-        device_id_for_log = None
+        device_id_for_alert = None
+        device_phone_number = None
         if player_id_str:
-            try:
-                player_id_int = int(player_id_str)
-                device = db.query(Device).filter(Device.id == player_id_int).first()
-                if device:
-                    device_id_for_log = device.id
-                    logger.info(f"Найден device_id: {device_id_for_log} для player_id: {player_id_str}")
-                else:
-                    logger.warning(f"Устройство с player_id {player_id_str} не найдено.")
-            except ValueError as e:
-                logger.error(f"Некорректный player_id: {player_id_str}. Невозможно преобразовать в число. Ошибка: {e}")
-            except Exception as e:
-                logger.error(f"Ошибка при поиске устройства по player_id {player_id_str}: {e}")
+            device = db.query(Device).filter(Device.grafana_uid == player_id_str).first()
+            if device:
+                device_id_for_alert = device.id
+                device_phone_number = device.phone
+                logger.info(f"Найден device_id: {device_id_for_alert} для grafana_uid: {player_id_str}")
+            else:
+                logger.warning(f"Устройство с grafana_uid {player_id_str} не найдено.")
         else:
             logger.info("player_id отсутствует в алерте Grafana.")
 
-        message = f"🚨 АЛЕРТ: {alert_name} ({alert_status.upper()})\n\nПлеер: {player_name} ({player_id_str or 'N/A'})\nПлатформа: {platform}\nОписание: {summary}"
-        
-        # Подготовка extra_data
-        extra_data = {
+        # Подготовка данных для создания/обновления алерта
+        alert_message = f"🚨 АЛЕРТ: {alert_name} ({alert_status.upper()})\n\nПлеер: {player_name} ({player_id_str or 'N/A'})\nПлатформа: {platform}\nОписание: {summary}"
+        alert_data_dict = {
             "alert_name": alert_name,
             "player_name": player_name,
             "player_id": player_id_str,
             "platform": platform,
             "summary": summary,
             "startsAt": processed_starts_at,
-            "endsAt": processed_ends_at
+            "endsAt": processed_ends_at,
+            "severity": severity,
+            "grafana_folder": alert_data.labels.grafana_folder,
+            "instance": alert_data.labels.instance,
+            "job": alert_data.labels.job,
+            "alert_type": alert_data.labels.alert_type or "generic",
+            "device_id": device_id_for_alert,
+            "device_phone_number": device_phone_number,
+            "fingerprint": alert_data.fingerprint,
+            "status": alert_status, # Добавляем статус алерта в details
+            "message": alert_message # Добавляем сгенерированное сообщение в details
         }
 
-        # Установка updated_at только дляresolved алертов
-        updated_at_for_log = None
+        # Логика для resolved алертов: найти и обновить существующий firing алерт
         if alert_status.lower() == "resolved":
-            try:
-                updated_at_for_log = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
-            except ValueError:
-                logger.error(f"Некорректный формат даты endsAt: {processed_ends_at}")
-                pass # Просто используем None, если не удалось распарсить дату
+            existing_firing_alert = db.query(Alert).filter(
+                Alert.alert_name == alert_name,
+                Alert.status == "firing",
+                Alert.device_id == device_id_for_alert, # Используем device_id
+                Alert.grafana_player_id == player_id_str
+            ).order_by(Alert.created_at.desc()).first()
 
-        try:
-            db_log = Log(
-                message=message,
-                level="alert",
-                device_id=device_id_for_log,
-                status=alert_status,
-                extra_data=json.dumps(extra_data),
-                created_at=datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00")),
-                updated_at=updated_at_for_log
-            )
-            db.add(db_log)
+            if existing_firing_alert:
+                logger.info(f"Найден активный алерт (ID: {existing_firing_alert.id}) для разрешения. Обновляю статус и endsAt.")
+                existing_firing_alert.status = alert_status
+                existing_firing_alert.updated_at = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
+                db.add(existing_firing_alert)
+                db.commit()
+                db.refresh(existing_firing_alert)
+                logger.info(f"Успешно обновлен алерт с id: {existing_firing_alert.id}")
+                continue
+
+        # Проверяем, существует ли уже алерт с таким external_id (fingerprint)
+        existing_alert = db.query(Alert).filter(Alert.external_id == alert_data.fingerprint).first()
+
+        if existing_alert:
+            # Если алерт существует, обновляем его статус и updated_at
+            logger.info(f"Алерт с external_id {alert_data.fingerprint} уже существует. Обновляю статус с {existing_alert.status} на {alert_status}.")
+            existing_alert.status = alert_status
+            existing_alert.updated_at = datetime.now(timezone.utc)
+            existing_alert.severity = severity # Обновляем severity, так как он мог измениться
+            db.add(existing_alert)
             db.commit()
-            db.refresh(db_log)
-            logger.info(f"Успешно добавлен лог алерта с id: {db_log.id}")
+            db.refresh(existing_alert)
+            logger.info(f"Успешно обновлен существующий алерт с id: {existing_alert.id}")
+            continue # Переходим к следующему алерту в полезной нагрузке
+
+        # Если это firing алерт, или resolved алерт без соответствующего firing, создаем новый алерт
+        try:
+            alert_title = payload.title if payload.title else alert_data.labels.alertname
+            if not alert_title:
+                alert_title = "Generated Alert Title" # Запасной вариант, если title все еще None
+            logger.info(f"DEBUG_ALERT_TITLE: Title before DB add: {alert_title}") # Добавляем логирование для отладки
+
+            db_alert = Alert(
+                device_id=device_id_for_alert,
+                alert_name=alert_name,
+                alert_type=alert_data.labels.alert_type or "generic",
+                message=alert_message,
+                data=alert_data_dict,
+                severity=severity,
+                status=alert_status,
+                grafana_player_id=player_id_str,
+                created_at=datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00")),
+                source="Grafana",
+                title=alert_title,  # Используем определенный alert_title
+                timestamp=datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00")),
+                external_id=alert_data.fingerprint,
+                details=alert_data_dict,
+            )
+            db.add(db_alert)
+            db.commit()
+            db.refresh(db_alert)
+            logger.info(f"Успешно добавлен новый алерт с id: {db_alert.id}")
+
+            # Отправка SMS-уведомления, если есть номер телефона и алерт firing
+            if device_phone_number and alert_status.lower() == "firing":
+                sms_command_text = f"АЛЕРТ! {alert_name}: {summary}"
+                try:
+                    await sms_gateway.send_command(device_phone_number, sms_command_text)
+                    db_alert.response = f"SMS отправлено: {sms_command_text}"
+                    db_alert.status = "firing_sms_sent" # Обновляем статус алерта после отправки SMS
+                    db.add(db_alert)
+                    db.commit()
+                    db.refresh(db_alert)
+                    logger.info(f"SMS-уведомление отправлено для алерта ID {db_alert.id}")
+                except Exception as sms_e:
+                    db_alert.response = f"Ошибка отправки SMS: {str(sms_e)}"
+                    db_alert.status = "firing_sms_failed" # Обновляем статус алерта при ошибке отправки SMS
+                    db.add(db_alert)
+                    db.commit()
+                    db.refresh(db_alert)
+                    logger.error(f"Ошибка отправки SMS для алерта ID {db_alert.id}: {sms_e}", exc_info=True)
+
         except ValidationError as e:
-            logger.error(f"Ошибка валидации Pydantic при создании лога: {e.errors()}")
+            logger.error(f"Ошибка валидации Pydantic при создании/обновлении алерта: {e.errors()}")
             raise HTTPException(status_code=422, detail=e.errors())
         except Exception as e:
-            logger.error(f"Ошибка при сохранении лога в БД: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера при сохранении лога.")
+            logger.error(f"Ошибка при сохранении/обновлении алерта в БД: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера при сохранении алерта.")
 
-    return {"status": "success", "message": "Webhook received and processed"} 
+    return {"status": "success", "message": "Webhook received and processed"}
+
+@router.put("/alerts/{alert_id}/resolve")
+async def resolve_alert_manually(alert_id: int, db: Session = Depends(get_db)):
+    logger.info(f"Получен запрос на разрешение алерта с ID: {alert_id}")
+    db_alert = db.query(Alert).filter(Alert.id == alert_id, Alert.status == "firing").first()
+
+    if not db_alert:
+        raise HTTPException(status_code=404, detail="Активный алерт не найден или уже разрешен")
+
+    db_alert.status = "resolved"
+    db_alert.updated_at = datetime.now(timezone.utc)
+    
+    try:
+        db.add(db_alert)
+        db.commit()
+        db.refresh(db_alert)
+        logger.info(f"Алерт с ID {alert_id} успешно переведен в статус 'resolved'.")
+        return {"status": "success", "message": f"Алерт {alert_id} успешно разрешен"}
+    except Exception as e:
+        logger.error(f"Ошибка при разрешении алерта с ID {alert_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера при разрешении алерта.") 

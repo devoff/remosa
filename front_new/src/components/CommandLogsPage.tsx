@@ -38,38 +38,52 @@ export const CommandLogsPage: React.FC = () => {
       render: (text: string) => new Date(text).toLocaleString(),
       sorter: (a: CommandLog, b: CommandLog) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       defaultSortOrder: 'descend' as 'descend',
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
     {
       title: 'Устройство',
       dataIndex: 'device_id',
       key: 'device_id',
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
     {
       title: 'Команда',
       dataIndex: 'command',
       key: 'command',
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
     {
       title: 'Сообщение',
       dataIndex: 'message',
       key: 'message',
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-300' }),
     },
     {
       title: 'Ответ',
       dataIndex: 'response',
       key: 'response',
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-300' }),
     },
     {
       title: 'Статус',
       dataIndex: 'status',
       key: 'status',
       render: (text: string) => <Tag color={text === 'sent' ? 'blue' : 'red'}>{text ? text.toUpperCase() : ''}</Tag>,
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
     {
       title: 'Уровень',
       dataIndex: 'level',
       key: 'level',
       render: (text: string) => <Tag color={text === 'info' ? 'green' : 'red'}>{text ? text.toUpperCase() : ''}</Tag>,
+      onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
+      onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
   ];
 
@@ -82,13 +96,20 @@ export const CommandLogsPage: React.FC = () => {
   }
 
   return (
-    <Card title="Журнал команд" style={{ margin: '20px' }}>
+    <Card 
+      title={<h2 className="text-xl font-semibold dark:text-gray-100">Журнал команд</h2>} 
+      style={{ margin: '20px' }} 
+      className="dark:bg-gray-800 rounded-lg" 
+      bodyStyle={{ padding: '16px' }} 
+    >
       <Table 
         dataSource={commandLogs} 
         columns={logColumns} 
         loading={loading} 
         rowKey="id" 
         pagination={{ pageSize: 10 }} 
+        className="min-w-full dark:bg-gray-800 rounded-lg" 
+        rowClassName="border-t border-gray-700 hover:bg-gray-700" 
       />
     </Card>
   );

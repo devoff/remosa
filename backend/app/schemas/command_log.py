@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 from pydantic import BaseModel
 
 class CommandLogBase(BaseModel):
@@ -10,7 +10,7 @@ class CommandLogBase(BaseModel):
     status: Optional[str] = None
     response: Optional[str] = None
     execution_time: Optional[datetime] = None
-    extra_data: Optional[str] = None
+    extra_data: Optional[Dict[str, Any]] = None
 
 class CommandLogCreate(CommandLogBase):
     pass

@@ -30,7 +30,7 @@ target_metadata = Base.metadata
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
+    url = settings.SQLALCHEMY_DATABASE_URI # Напрямую используем URL из настроек
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -43,10 +43,8 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
-    configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = settings.SQLALCHEMY_DATABASE_URI
     connectable = engine_from_config(
-        configuration,
+        {"sqlalchemy.url": settings.SQLALCHEMY_DATABASE_URI}, # Напрямую передаем URL
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

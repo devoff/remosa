@@ -8,6 +8,7 @@ from app.schemas.command_log import CommandLogResponse
 from app.models import Log, CommandTemplate, Device
 from app.services.sms_gateway import SMSGateway, get_sms_gateway
 import re
+import logging
 
 router = APIRouter()
 
@@ -83,19 +84,34 @@ async def execute_command(
     # Отправляем команду через SMS, если у устройства указан телефон
     sms_response = None
     if device.phone:
-        sms_response = await sms_gateway.send_command(
-            phone_number=device.phone,
-            command=command_data["command"]
-        )
+        try:
+            sms_response = await sms_gateway.send_command(
+                phone_number=device.phone,
+                command=command_data["command"]
+            )
+            log_status = "sent"
+            log_level = "SMS_OUT"
+            log_response = sms_response or "OK"
+        except Exception as e:
+            log_status = "failed"
+            log_level = "ERROR"
+            log_response = f"Ошибка отправки SMS: {e}"
+            # Логируем ошибку для детального анализа
+            logger = logging.getLogger(__name__)
+            logger.error(f"Ошибка при отправке SMS для устройства {device_id}: {e}", exc_info=True)
+    else:
+        log_status = "skipped"
+        log_level = "info"
+        log_response = "Устройство не имеет номера телефона"
     
     # Логируем
     log = CommandService.log_command(
         db,
         device_id=device_id,
         command=command_data["command"],
-        status="sent",
-        response=sms_response or "OK",
-        # metadata={"sms_response": sms_response} if sms_response else None
+        status=log_status,
+        response=log_response,
+        level=log_level # Передаем явно уровень логирования
     )
     return log
 

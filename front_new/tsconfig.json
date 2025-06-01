@@ -14,8 +14,7 @@
     },
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "types": ["react", "react-dom"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": ["react", "react-dom", "vite", "node"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

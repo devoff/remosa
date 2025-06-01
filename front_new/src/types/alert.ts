@@ -3,12 +3,13 @@ export interface Alert {
   title: string;
   status: string;
   severity: 'critical' | 'warning' | 'info';
-  player_name: string;
-  player_id: string;
+  player_name?: string;
+  player_id?: string;
   created_at: string;
   updated_at?: string;
   resolved_at?: string;
   description?: string;
+  details?: any;
 }
 
 export interface AlertHistory {

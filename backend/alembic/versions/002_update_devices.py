@@ -24,6 +24,7 @@ def upgrade():
     op.add_column('devices', sa.Column('description', sa.Text(), nullable=True))
     op.add_column('devices', sa.Column('grafana_uid', sa.String(100), nullable=True))
     op.add_column('devices', sa.Column('client_id', sa.Integer(), nullable=True))
+    op.add_column('devices', sa.Column('phone', sa.String(20), nullable=True))
     
     # Обновляем существующие значения статуса перед изменением типа
     op.execute("UPDATE devices SET status = 'online' WHERE status = 'active'")
@@ -34,6 +35,17 @@ def upgrade():
     # Добавляем foreign key и unique constraint
     op.create_foreign_key('fk_devices_client', 'devices', 'clients', ['client_id'], ['id'])
     op.create_unique_constraint('uq_devices_grafana_uid', 'devices', ['grafana_uid'])
+
+    # Добавляем дефолтное устройство с id=1, если его нет
+    # Это гарантирует, что устройство с id=1 всегда будет существовать перед вставками логов,
+    # которые могут ссылаться на него.
+    op.execute(
+        """
+        INSERT INTO devices (id, name, status, description, grafana_uid, phone, created_at)
+        VALUES (1, 'Default Device', 'online', 'Автоматически созданное устройство для внутренних операций', 'default_device_1', '1234567890', NOW())
+        ON CONFLICT (id) DO NOTHING;
+        """
+    )
 
 def downgrade():
     # Удаляем foreign key и unique constraint
@@ -47,6 +59,7 @@ def downgrade():
     op.drop_column('devices', 'client_id')
     op.drop_column('devices', 'grafana_uid')
     op.drop_column('devices', 'description')
+    op.drop_column('devices', 'phone')
     
     # Удаляем enum тип
     op.execute("DROP TYPE devicestatus") 
