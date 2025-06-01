@@ -115,6 +115,7 @@ export interface Device {
   last_update: string;
   created_at: string;
   model?: string;
+  grafana_uid?: string;
 }
 
 export interface CommandTemplate {

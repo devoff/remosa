@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
 class LogBase(BaseModel):
     device_id: Optional[int] = None
@@ -10,7 +10,7 @@ class LogBase(BaseModel):
     command: Optional[str] = None
     response: Optional[str] = None
     execution_time: Optional[datetime] = None
-    extra_data: Optional[str] = None
+    extra_data: Optional[Dict[str, Any]] = None
 
 class LogCreate(LogBase):
     pass

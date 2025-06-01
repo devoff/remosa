@@ -52,18 +52,13 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
         # Поиск device_id по player_id
         device_id_for_log = None
         if player_id_str:
-            try:
-                player_id_int = int(player_id_str)
-                device = db.query(Device).filter(Device.id == player_id_int).first()
-                if device:
-                    device_id_for_log = device.id
-                    logger.info(f"Найден device_id: {device_id_for_log} для player_id: {player_id_str}")
-                else:
-                    logger.warning(f"Устройство с player_id {player_id_str} не найдено.")
-            except ValueError as e:
-                logger.error(f"Некорректный player_id: {player_id_str}. Невозможно преобразовать в число. Ошибка: {e}")
-            except Exception as e:
-                logger.error(f"Ошибка при поиске устройства по player_id {player_id_str}: {e}")
+            # Ищем устройство по grafana_uid
+            device = db.query(Device).filter(Device.grafana_uid == player_id_str).first()
+            if device:
+                device_id_for_log = device.id
+                logger.info(f"Найден device_id: {device_id_for_log} для grafana_uid: {player_id_str}")
+            else:
+                logger.warning(f"Устройство с grafana_uid {player_id_str} не найдено.")
         else:
             logger.info("player_id отсутствует в алерте Grafana.")
 
@@ -80,29 +75,47 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             "endsAt": processed_ends_at
         }
 
-        # Установка updated_at только дляresolved алертов
-        updated_at_for_log = None
+        # Логика для resolved алертов: найти и обновить существующий firing алерт
         if alert_status.lower() == "resolved":
-            try:
-                updated_at_for_log = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
-            except ValueError:
-                logger.error(f"Некорректный формат даты endsAt: {processed_ends_at}")
-                pass # Просто используем None, если не удалось распарсить дату
+            # Ищем активный алерт с таким же именем и device_id
+            # Используем extra_data -> 'alert_name' и 'player_id' для поиска
+            existing_firing_alert = db.query(Log).filter(
+                Log.level == "alert",
+                Log.status == "firing",
+                Log.device_id == device_id_for_log,
+                Log.extra_data.cast(json.JSONB)["alert_name"].astext == alert_name,
+                Log.extra_data.cast(json.JSONB)["player_id"].astext == player_id_str
+            ).first()
 
+            if existing_firing_alert:
+                logger.info(f"Найден активный алерт (ID: {existing_firing_alert.id}) для разрешения. Обновляю статус и endsAt.")
+                existing_firing_alert.status = alert_status
+                try:
+                    existing_firing_alert.updated_at = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
+                except ValueError:
+                    logger.error(f"Некорректный формат даты endsAt для resolved алерта: {processed_ends_at}")
+                    existing_firing_alert.updated_at = None
+                db.add(existing_firing_alert)
+                db.commit()
+                db.refresh(existing_firing_alert)
+                logger.info(f"Успешно обновлен лог алерта с id: {existing_firing_alert.id}")
+                continue # Переходим к следующему алерту в payload
+
+        # Если это firing алерт, или resolved алерт без соответствующего firing, создаем новый лог
         try:
             db_log = Log(
                 message=message,
                 level="alert",
                 device_id=device_id_for_log,
                 status=alert_status,
-                extra_data=json.dumps(extra_data),
+                extra_data=extra_data, # extra_data теперь dict, так как поле JSONB
                 created_at=datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00")),
-                updated_at=updated_at_for_log
+                updated_at=None # updated_at устанавливается только при разрешении, если это новый firing алерт, он будет None
             )
             db.add(db_log)
             db.commit()
             db.refresh(db_log)
-            logger.info(f"Успешно добавлен лог алерта с id: {db_log.id}")
+            logger.info(f"Успешно добавлен новый лог алерта с id: {db_log.id}")
         except ValidationError as e:
             logger.error(f"Ошибка валидации Pydantic при создании лога: {e.errors()}")
             raise HTTPException(status_code=422, detail=e.errors())
@@ -110,4 +123,25 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             logger.error(f"Ошибка при сохранении лога в БД: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера при сохранении лога.")
 
-    return {"status": "success", "message": "Webhook received and processed"} 
+    return {"status": "success", "message": "Webhook received and processed"}
+
+@router.put("/alerts/{alert_id}/resolve")
+async def resolve_alert(alert_id: int, db: Session = Depends(get_db)):
+    logger.info(f"Получен запрос на разрешение алерта с ID: {alert_id}")
+    db_log = db.query(Log).filter(Log.id == alert_id, Log.level == "alert", Log.status == "firing").first()
+
+    if not db_log:
+        raise HTTPException(status_code=404, detail="Активный алерт не найден или уже разрешен")
+
+    db_log.status = "resolved"
+    db_log.updated_at = datetime.now(timezone.utc) # Устанавливаем текущее время разрешения
+    
+    try:
+        db.add(db_log)
+        db.commit()
+        db.refresh(db_log)
+        logger.info(f"Алерт с ID {alert_id} успешно переведен в статус 'resolved'.")
+        return {"status": "success", "message": f"Алерт {alert_id} успешно разрешен"}
+    except Exception as e:
+        logger.error(f"Ошибка при разрешении алерта с ID {alert_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера при разрешении алерта.") 

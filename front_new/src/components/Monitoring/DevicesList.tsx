@@ -153,6 +153,9 @@ const DevicesList = () => {
                       {device.model && (
                         <p className="dark:text-gray-300">Модель: {device.model}</p>
                       )}
+                      {device.grafana_uid && (
+                        <p className="dark:text-gray-300">ID плеера Grafana: {device.grafana_uid}</p>
+                      )}
                       {device.description && (
                         <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
                       )}
@@ -176,6 +179,7 @@ const DevicesList = () => {
                 <th className="px-4 py-2 text-left text-gray-100">Статус</th>
                 <th className="px-4 py-2 text-left text-gray-100">ID</th>
                 <th className="px-4 py-2 text-left text-gray-100">Телефон</th>
+                <th className="px-4 py-2 text-left text-gray-100">ID плеера Grafana</th>
                 <th className="px-4 py-2 text-left text-gray-100">Описание</th>
                 <th className="px-4 py-2 text-left text-gray-100">Обновлено</th>
                 <th className="px-4 py-2 text-left text-gray-100">Действия</th>
@@ -201,6 +205,9 @@ const DevicesList = () => {
                     <td className="px-4 py-3 text-gray-100">{deviceId}</td>
                     <td className="px-4 py-3 text-gray-300">
                       {device.phone || '-'}
+                    </td>
+                    <td className="px-4 py-3 text-gray-300">
+                      {device.grafana_uid || '-'}
                     </td>
                     <td className="px-4 py-3 text-gray-300">
                       {device.description || '-'}

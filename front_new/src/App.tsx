@@ -22,10 +22,8 @@ function App() {
               <Route path="/" element={<DevicesList />} />
               <Route path="/command-logs" element={<CommandLogsPage />} />
               <Route path="/command-templates" element={<CommandTemplatesPage />} />
+              <Route path="/alert-logs" element={<AlertsPanel />} />
             </Routes>
-            <div className="mt-auto">
-              <AlertsPanel />
-            </div>
           </div>
         </div>
         <StatusBar />

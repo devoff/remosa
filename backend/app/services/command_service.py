@@ -63,12 +63,13 @@ class CommandService:
         device_id: int,
         command: str,
         status: str,
-        response: Optional[str] = None
+        response: Optional[str] = None,
+        level: str = "info"
     ):
         log = Log(
             device_id=device_id,
             message=f"Command {command}: {status}",
-            level="info" if status == "success" else "error",
+            level=level,
             command=command,
             response=response
         )

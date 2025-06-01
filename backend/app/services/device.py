@@ -68,7 +68,9 @@ class DeviceService:
 
     @staticmethod
     def get_device_by_phone(db: Session, phone: str) -> Optional[Device]:
-        return db.query(Device).filter(Device.phone == phone).first()
+        # Нормализуем номер телефона для поиска: удаляем символ '+'
+        normalized_phone = phone.lstrip('+')
+        return db.query(Device).filter(Device.phone == normalized_phone).first()
 
     @staticmethod
     def get_device_command_templates(db: Session, device_id: int) -> List[CommandService]:

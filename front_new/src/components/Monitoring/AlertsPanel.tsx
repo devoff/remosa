@@ -8,6 +8,18 @@ import { CommandLog } from '@/types/index';
 const AlertItem = ({ alert }: { alert: Alert }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const handleResolve = async () => {
+    try {
+      // Здесь будет вызов API для разрешения алерта
+      await api.resolveAlert(Number(alert.id));
+      // После успешного разрешения, обновим список алертов
+      window.location.reload(); // Простой способ для обновления, можно улучшить
+    } catch (error) {
+      console.error("Ошибка при разрешении алерта:", error);
+      window.alert("Не удалось разрешить алерт."); // Простой alert для пользователя
+    }
+  };
+
   return (
     <div className="border border-gray-700 rounded-md mb-2 overflow-hidden bg-gray-800">
       <div 
@@ -21,7 +33,7 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
           <div>
             <h3 className="font-medium">{alert.title}</h3>
             <p className="text-xs text-gray-400">
-              {format(new Date(alert.created_at), 'HH:mm:ss')} • {alert.player_name}
+              {format(new Date(alert.created_at), 'dd.MM.yyyy HH:mm:ss')} • {alert.player_name}
             </p>
           </div>
         </div>
@@ -38,9 +50,17 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
           <div className="mt-3 text-xs text-gray-500">
             ID: {alert.id} • {alert.player_id}
             {alert.resolved_at && (
-                <p className="text-xs text-gray-400 mt-1">Разрешено: {format(new Date(alert.resolved_at), 'HH:mm:ss')}</p>
+                <p className="text-xs text-gray-400 mt-1">Разрешено: {format(new Date(alert.resolved_at), 'dd.MM.yyyy HH:mm:ss')}</p>
             )}
           </div>
+          {alert.status === 'firing' && (
+            <button
+              onClick={handleResolve}
+              className="mt-3 px-3 py-1 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300 text-sm"
+            >
+              Отметить как решенный
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -61,9 +81,9 @@ const AlertsPanel = () => {
         const mappedAlerts: Alert[] = fetchedLogs.map(log => {
           let extraDataParsed: any = {};
           try {
-            extraDataParsed = log.extra_data ? JSON.parse(log.extra_data) : {};
+            extraDataParsed = log.extra_data || {};
           } catch (e) {
-            console.error("Ошибка парсинга extra_data:", e);
+            console.error("Ошибка обработки extra_data:", e);
           }
 
           // Определяем severity на основе статуса
@@ -111,7 +131,7 @@ const AlertsPanel = () => {
       </div>
       
       {!collapsed && (
-        <div className="p-3 overflow-y-auto h-[calc(100%-36px)]">
+        <div className="p-3 overflow-y-auto">
           {error && <p className="text-red-500 text-center">{error}</p>}
           {loading && <p className="text-gray-400 text-center">Загрузка алертов...</p>}
           {!loading && !error && alerts.length === 0 && (

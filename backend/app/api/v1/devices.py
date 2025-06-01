@@ -16,6 +16,8 @@ async def get_devices(db: Session = Depends(get_db)):
 @router.post("/", response_model=DeviceSchema)
 async def create_device(device: DeviceCreate, db: Session = Depends(get_db)):
     """Create a new device."""
+    if device.phone:
+        device.phone = device.phone.lstrip('+')
     db_device = Device(**device.model_dump())
     db.add(db_device)
     db.commit()
@@ -38,6 +40,9 @@ async def update_device(device_id: int, device: DeviceUpdate, db: Session = Depe
         raise HTTPException(status_code=404, detail="Device not found")
     
     update_data = device.model_dump(exclude_unset=True)
+    if "phone" in update_data and update_data["phone"] is not None:
+        update_data["phone"] = update_data["phone"].lstrip('+')
+
     for field, value in update_data.items():
         setattr(db_device, field, value)
     
