@@ -10,6 +10,7 @@ export interface Alert {
   resolved_at?: string;
   description?: string;
   details?: any;
+  data?: any;
 }
 
 export interface AlertHistory {

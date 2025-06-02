@@ -58,12 +58,18 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
             )}
           </div>
 
-          {/* Дополнительная информация из поля details */}
-          {alert.details && typeof alert.details === 'object' && (
+          {/* Дополнительная информация из поля data */}
+          {alert.data && typeof alert.data === 'object' && (
             <div className="mt-3 text-xs dark:text-gray-400">
-              <h4 className="font-semibold mb-1">Детали алерта:</h4>
-              {Object.entries(alert.details).map(([key, value]) => (
-                <p key={key}>{key}: {JSON.stringify(value)}</p>
+              <h4 className="font-semibold mb-1">Детали алерта из Grafana:</h4>
+              <p>Серьёзность: {alert.data.severity || 'Не указано'}</p>
+              <p>Начало: {alert.data.startsAt || 'Не указано'}</p>
+              <p>Конец: {alert.data.endsAt || 'Не указано'}</p>
+              <p>Плеер: {alert.data.player_name || 'Неизвестный'}</p>
+              <p>Платформа: {alert.data.platform || 'Неизвестная'}</p>
+              {/* Добавляем остальные поля по необходимости */}
+              {Object.entries(alert.data).map(([key, value]) => (
+                key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && <p key={key}>{key}: {JSON.stringify(value)}</p>
               ))}
             </div>
           )}
