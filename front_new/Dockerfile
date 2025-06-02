@@ -35,15 +35,10 @@ COPY . .
 RUN npm install
 RUN npm install -g serve
 
-# Диагностика: Проверяем наличие @types/react перед сборкой
-RUN ls -la node_modules/@types/react || echo "@types/react not found or error accessing"
+COPY . .
 
 # Собираем проект
 RUN VITE_API_URL=$VITE_API_URL VITE_WS_URL=$VITE_WS_URL npm run build
-
-# Проверяем результаты сборки
-RUN ls -la dist/
-RUN cat dist/index.html || echo "index.html not found in dist"
 
 EXPOSE 3000
 
