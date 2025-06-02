@@ -36,7 +36,7 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
           <div className="flex-1 min-w-0">
             <h3 className="font-medium dark:text-gray-100">{alert.title}</h3>
             <p className="text-xs dark:text-gray-300">
-              {format(new Date(alert.created_at), 'dd.MM.yyyy HH:mm:ss')} • {alert.player_name}
+              {format(new Date(alert.created_at), 'dd.MM.yyyy HH:mm:ss')} • {alert.data?.summary || 'Нет описания'}
             </p>
           </div>
         </div>
@@ -98,7 +98,11 @@ const AlertsPage = () => {
       setLoading(true);
       console.log('AlertsPage: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
       const data = await api.getAlerts();
-      setAlerts(data);
+      // Сортируем алерты от новых к старым (по убыванию created_at)
+      const sortedData = data.sort((a: Alert, b: Alert) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+      setAlerts(sortedData);
       setError(null);
     } catch (err) {
       console.error("Ошибка при получении алертов:", err);

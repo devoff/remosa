@@ -54,7 +54,7 @@ async def poll_sms_gateway():
                     level="sms_in",
                     message=log_entry_message,
                     status="received" if device else "unmatched",
-                    extra_data=json.dumps(sms_data) # Сохраняем весь словарь SMS как JSON-строку
+                    extra_data=sms_data # Сохраняем весь словарь SMS как Python-объект
                 )
                 db.add(log_entry)
                 db.commit()

@@ -97,15 +97,18 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             if existing_firing_alert:
                 logger.info(f"Найден активный алерт (ID: {existing_firing_alert.id}) для разрешения. Обновляю статус и endsAt.")
                 existing_firing_alert.status = alert_status
-                existing_firing_alert.updated_at = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
+                existing_firing_alert.resolved_at = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
                 db.add(existing_firing_alert)
                 db.commit()
                 db.refresh(existing_firing_alert)
                 logger.info(f"Успешно обновлен алерт с id: {existing_firing_alert.id}")
                 continue
 
-        # Проверяем, существует ли уже алерт с таким external_id (fingerprint)
-        existing_alert = db.query(Alert).filter(Alert.external_id == alert_data.fingerprint).first()
+        # Проверяем, существует ли уже алерт с таким external_id (fingerprint) И alert_name
+        existing_alert = db.query(Alert).filter(
+            Alert.external_id == alert_data.fingerprint,
+            Alert.alert_name == alert_name # Добавляем проверку по alert_name
+        ).first()
 
         if existing_alert:
             # Если алерт существует, обновляем его статус и updated_at

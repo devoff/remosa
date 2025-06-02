@@ -16,7 +16,7 @@ export const CommandLogsPage: React.FC = () => {
       try {
         setLoading(true);
         const data = await get(`/api/v1/commands/logs`);
-        const sortedData = data.sort((a: CommandLog, b: CommandLog) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const sortedData = data.sort((a: CommandLog, b: CommandLog) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
         setCommandLogs(sortedData);
         console.log('Логи команд успешно загружены:', data);
       } catch (err) {
@@ -37,7 +37,7 @@ export const CommandLogsPage: React.FC = () => {
       key: 'created_at',
       render: (text: string) => new Date(text).toLocaleString(),
       sorter: (a: CommandLog, b: CommandLog) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      defaultSortOrder: 'descend' as 'descend',
+      defaultSortOrder: 'ascend' as 'ascend',
       onHeaderCell: () => ({ className: 'px-4 py-2 text-left dark:text-gray-100 bg-gray-700' }),
       onCell: () => ({ className: 'px-4 py-3 dark:text-gray-100' }),
     },
