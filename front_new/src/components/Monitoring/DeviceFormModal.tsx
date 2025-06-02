@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Device, CommandTemplate } from '../../types';
 import { Select, Switch, Input } from 'antd';
 import { useApi } from '../../lib/useApi';
-
+ 
 interface DeviceFormModalProps {
   device: Device | null;
   onSave: (data: Device) => void;
