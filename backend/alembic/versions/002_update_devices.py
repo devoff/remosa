@@ -17,7 +17,7 @@ depends_on = None
 
 def upgrade():
     # Создаем enum тип для статуса устройства
-    device_status = postgresql.ENUM('online', 'warning', 'offline', name='devicestatus')
+    device_status = postgresql.ENUM('ONLINE', 'WARNING', 'OFFLINE', name='devicestatus')
     device_status.create(op.get_bind())
     
     # Добавляем недостающие колонки
@@ -27,7 +27,7 @@ def upgrade():
     op.add_column('devices', sa.Column('phone', sa.String(20), nullable=True))
     
     # Обновляем существующие значения статуса перед изменением типа
-    op.execute("UPDATE devices SET status = 'online' WHERE status = 'active'")
+    op.execute("UPDATE devices SET status = 'ONLINE' WHERE status = 'active'")
     
     # Изменяем тип колонки status на enum
     op.execute("ALTER TABLE devices ALTER COLUMN status TYPE devicestatus USING status::devicestatus")
@@ -42,7 +42,7 @@ def upgrade():
     op.execute(
         """
         INSERT INTO devices (id, name, status, description, grafana_uid, phone, created_at)
-        VALUES (1, 'Default Device', 'online', 'Автоматически созданное устройство для внутренних операций', 'default_device_1', '1234567890', NOW())
+        VALUES (1, 'Default Device', 'ONLINE', 'Автоматически созданное устройство для внутренних операций', 'default_device_1', '1234567890', NOW())
         ON CONFLICT (id) DO NOTHING;
         """
     )

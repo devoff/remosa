@@ -59,7 +59,6 @@ def upgrade():
         'alerts',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('device_id', sa.Integer(), nullable=False),
-        sa.Column('alert_type', sa.String(), nullable=False),
         sa.Column('message', sa.String(), nullable=False),
         sa.Column('data', sa.JSON(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),

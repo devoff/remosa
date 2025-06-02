@@ -19,72 +19,68 @@ depends_on = None
 
 
 def upgrade():
-    # Сначала создаем таблицу alerts, если она не существует
-    op.create_table(
-        'alerts',
-        sa.Column('id', sa.Integer(), primary_key=True),
-        sa.Column('device_id', sa.Integer(), sa.ForeignKey('devices.id'), nullable=True),
-        sa.Column('alert_name', sa.String(), nullable=False),
-        sa.Column('message', sa.Text(), nullable=True),
-        sa.Column('status', sa.String(), nullable=False),
-        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'))
-    )
+    # Удаляем создание таблицы alerts, так как она уже должна существовать в миграции 001
+    # op.create_table(...)
 
-    # Дополнительные изменения (если нужны)
+    # Добавляем новые колонки, которые отсутствуют в миграции 001, но есть в модели Alert
     op.add_column('alerts', sa.Column('severity', sa.String(), nullable=True))
+    op.add_column('alerts', sa.Column('status', sa.String(), nullable=False, server_default='firing'))
     op.add_column('alerts', sa.Column('grafana_player_id', sa.String(), nullable=True))
     op.add_column('alerts', sa.Column('response', sa.String(), nullable=True))
-    op.add_column('alerts', sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True))
-    op.add_column('alerts', sa.Column('alert_type', sa.String(), nullable=True))
+    op.add_column('alerts', sa.Column('updated_at', sa.DateTime(timezone=True), onupdate=sa.text('now()'), nullable=True))
+    op.add_column('alerts', sa.Column('source', sa.String(), nullable=False))
+    op.add_column('alerts', sa.Column('title', sa.String(), nullable=False))
+    op.add_column('alerts', sa.Column('timestamp', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('now()')))
+    op.add_column('alerts', sa.Column('external_id', sa.String(), unique=True, index=True, nullable=True))
+    op.add_column('alerts', sa.Column('details', sa.dialects.postgresql.JSONB, nullable=True))
+    op.add_column('alerts', sa.Column('alert_name', sa.String(), nullable=False)) # alert_name, который отсутствует в 001
 
-    # Изменение существующих колонок
+    # Изменяем существующие колонки, чтобы они соответствовали модели
+    # device_id: nullable=False в 001, nullable=True в модели
     op.alter_column(
         'alerts', 'device_id',
         existing_type=sa.Integer(),
-        nullable=True
+        nullable=True,
+        existing_nullable=False
     )
 
-    # Изменяем created_at на DateTime с часовым поясом и server_default
+    # created_at: без часового пояса и server_default в 001. Модель имеет timezone=True и server_default
     op.alter_column(
         'alerts', 'created_at',
         existing_type=sa.DateTime(),
         type_=sa.DateTime(timezone=True),
         nullable=False,
         existing_nullable=False,
-        server_default=func.now()
+        server_default=sa.text('now()')
     )
 
 
 def downgrade():
-    # Удаляем таблицу alerts (осторожно: это приведет к потере данных!)
-    op.drop_table('alerts')
-
-    # Откатываем изменения (в обратном порядке)
-    # Удаляем добавленные столбцы
+    # Откатываем добавленные колонки (в обратном порядке)
+    op.drop_column('alerts', 'alert_name')
+    op.drop_column('alerts', 'details')
+    op.drop_column('alerts', 'external_id')
+    op.drop_column('alerts', 'timestamp')
+    op.drop_column('alerts', 'title')
+    op.drop_column('alerts', 'source')
     op.drop_column('alerts', 'updated_at')
     op.drop_column('alerts', 'response')
     op.drop_column('alerts', 'grafana_player_id')
     op.drop_column('alerts', 'status')
     op.drop_column('alerts', 'severity')
-    op.drop_column('alerts', 'alert_name')
-    op.drop_column('alerts', 'alert_type')
 
-    # Откатываем изменения существующих столбцов
-    # Откатываем device_id на nullable=False
-    op.alter_column(
-        'alerts', 'device_id',
-        existing_type=sa.Integer(),
-        nullable=False,
-        existing_nullable=True,
-        # postgresql_using='device_id::integer'
-    )
-
-    # Откатываем created_at
+    # Откатываем измененные колонки
     op.alter_column(
         'alerts', 'created_at',
         existing_type=sa.DateTime(timezone=True),
         type_=sa.DateTime(),
         nullable=False,
         existing_nullable=False,
-        server_default=None # Удаляем server_default
+        server_default=None # Откатываем к отсутствию server_default
+    )
+    op.alter_column(
+        'alerts', 'device_id',
+        existing_type=sa.Integer(),
+        nullable=False, # Откатываем к nullable=False
+        existing_nullable=True
     ) 
