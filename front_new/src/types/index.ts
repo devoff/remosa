@@ -116,6 +116,9 @@ export interface Device {
   created_at: string;
   model?: string;
   grafana_uid?: string;
+  alert_sms_template_id?: number;
+  send_alert_sms?: boolean;
+  alert_sms_template_params?: Record<string, any>;
 }
 
 export interface CommandTemplate {

@@ -23,6 +23,8 @@ class Device(Base):
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
     phone = Column(String(20), nullable=True)  # Убедитесь, что тип String
     model = Column(String(50), nullable=True)  # Новое поле
+    alert_sms_template_id = Column(Integer, ForeignKey("command_templates.id"), nullable=True) # ID шаблона команды для SMS-оповещений
+    send_alert_sms = Column(sa.Boolean, default=False, nullable=False) # Флаг для отправки SMS-оповещений
     # Отношения
     client = relationship("Client", back_populates="devices")
     alerts = relationship("Alert", back_populates="device")

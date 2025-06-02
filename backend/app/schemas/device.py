@@ -6,6 +6,8 @@ from ..models.device import DeviceStatus
 class DeviceBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     model: Optional[str] = Field(None, max_length=50)
+    alert_sms_template_id: Optional[int] = Field(None, description="ID шаблона команды для SMS-оповещений из command_templates")
+    send_alert_sms: bool = Field(False, description="Флаг для отправки SMS-оповещений при срабатывании алерта")
     description: Optional[str] = None
     grafana_uid: Optional[str] = Field(None, max_length=100)
 

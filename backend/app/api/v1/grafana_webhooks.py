@@ -10,6 +10,7 @@ from app.core.database import get_db
 from app.schemas.grafana import GrafanaWebhookPayload
 from app.models.alert import Alert
 from app.models.device import Device
+from app.models.command_template import CommandTemplate
 from app.schemas.alert import AlertCreate, AlertResponse
 from app.services.sms_gateway import SMSGateway
 
@@ -150,11 +151,38 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             db.refresh(db_alert)
             logger.info(f"Успешно добавлен новый алерт с id: {db_alert.id}")
 
-            # Отправка SMS-уведомления, если есть номер телефона и алерт firing
-            if device_phone_number and alert_status.lower() == "firing":
-                sms_command_text = f"АЛЕРТ! {alert_name}: {summary}"
+            # Отправка SMS-уведомления, если есть номер телефона, алерт firing, и включена отправка SMS по шаблону
+            if device and device.phone and alert_status.lower() == "firing" and device.send_alert_sms:
+                sms_command_text = ""
+                if device.alert_sms_template_id:
+                    command_template = db.query(CommandTemplate).filter(CommandTemplate.id == device.alert_sms_template_id).first()
+                    if command_template:
+                        try:
+                            # Форматируем шаблон, используя доступные данные алерта
+                            sms_command_text = command_template.template.format(
+                                alert_name=alert_name,
+                                alert_status=alert_status.upper(),
+                                player_name=player_name,
+                                player_id_str=player_id_str or 'N/A',
+                                platform=platform,
+                                summary=summary
+                            )
+                        except KeyError as e:
+                            logger.error(f"Ошибка форматирования шаблона SMS (неизвестный ключ {e}): {command_template.template}")
+                            sms_command_text = f"АЛЕРТ! {alert_name}: {summary}" # Запасной вариант
+                    else:
+                        logger.warning(f"Шаблон команды с ID {device.alert_sms_template_id} не найден для устройства {device.name}. Использую стандартное сообщение.")
+                        sms_command_text = f"АЛЕРТ! {alert_name}: {summary}"
+                else:
+                    logger.info(f"Для устройства {device.name} включена отправка SMS, но шаблон не выбран. Использую стандартное сообщение.")
+                    sms_command_text = f"АЛЕРТ! {alert_name}: {summary}"
+
+                # Если sms_command_text все еще пуст (например, если device не найден, но phone_number есть), используем стандартное сообщение
+                if not sms_command_text:
+                    sms_command_text = f"АЛЕРТ! {alert_name}: {summary}"
+
                 try:
-                    await sms_gateway.send_command(device_phone_number, sms_command_text)
+                    await sms_gateway.send_command(device.phone, sms_command_text)
                     db_alert.response = f"SMS отправлено: {sms_command_text}"
                     db_alert.status = "firing_sms_sent" # Обновляем статус алерта после отправки SMS
                     db.add(db_alert)
