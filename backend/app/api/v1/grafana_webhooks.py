@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(get_db)):
     logger.info(f"Получен вебхук Grafana. Полезная нагрузка: {payload.model_dump_json(indent=2)}")
 
+    device = None # Инициализируем device здесь, чтобы избежать UnboundLocalError
+
     for alert_data in payload.alerts:
         alert_name = alert_data.labels.alertname
         alert_status = alert_data.status
@@ -49,7 +51,7 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
 
         processed_starts_at = truncate_microseconds(starts_at_str)
         processed_ends_at = truncate_microseconds(ends_at_str)
-        logger.info(f"DEBUG_STARTSAT: Processed startsAt: {processed_starts_at}") # Добавляем логирование для отладки
+        logger.info(f"DEBUG_STARTSAT: Processed startsAt: {processed_starts_at}")
 
         device_id_for_alert = None
         device_phone_number = None
@@ -64,7 +66,6 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
         else:
             logger.info("player_id отсутствует в алерте Grafana.")
 
-        # Подготовка данных для создания/обновления алерта
         alert_message = f"🚨 АЛЕРТ: {alert_name} ({alert_status.upper()})\n\nПлеер: {player_name} ({player_id_str or 'N/A'})\nПлатформа: {platform}\nОписание: {summary}"
         alert_data_dict = {
             "alert_name": alert_name,
@@ -82,48 +83,64 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             "device_id": device_id_for_alert,
             "device_phone_number": device_phone_number,
             "fingerprint": alert_data.fingerprint,
-            "status": alert_status, # Добавляем статус алерта в details
-            "message": alert_message # Добавляем сгенерированное сообщение в details
+            "status": alert_status,
+            "message": alert_message
         }
 
-        # Логика для resolved алертов: найти и обновить существующий firing алерт
+        # 1. Обработка resolved алертов: найти и обновить существующий firing алерт
         if alert_status.lower() == "resolved":
             existing_firing_alert = db.query(Alert).filter(
                 Alert.alert_name == alert_name,
                 Alert.status == "firing",
-                Alert.device_id == device_id_for_alert, # Используем device_id
+                Alert.device_id == device_id_for_alert,
                 Alert.grafana_player_id == player_id_str
             ).order_by(Alert.created_at.desc()).first()
 
             if existing_firing_alert:
-                logger.info(f"Найден активный алерт (ID: {existing_firing_alert.id}) для разрешения. Обновляю статус и endsAt.")
+                logger.info(f"Найден активный алерт (ID: {existing_firing_alert.id}, FINGERPRINT: {existing_firing_alert.external_id}) для разрешения. Обновляю статус на 'resolved' и endsAt.")
                 existing_firing_alert.status = alert_status
-                existing_firing_alert.resolved_at = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
+                existing_firing_alert.endsAt = datetime.fromisoformat(processed_ends_at.replace("Z", "+00:00"))
+                existing_firing_alert.updated_at = datetime.now(timezone.utc)
                 db.add(existing_firing_alert)
                 db.commit()
                 db.refresh(existing_firing_alert)
-                logger.info(f"Успешно обновлен алерт с id: {existing_firing_alert.id}")
-                continue
+                logger.info(f"Успешно обновлен алерт с id: {existing_firing_alert.id} в статус 'resolved'.")
+                continue # Переходим к следующему алерту в полезной нагрузке
+            else:
+                logger.warning(f"Получен RESOLVED алерт для {alert_name} (player_id: {player_id_str}) но не найдено соответствующего FIRING алерта для разрешения. Игнорирую этот resolved алерт согласно логике.")
+                continue # Не создаем новый 'resolved' алерт, если нет соответствующего firing
 
-        # Проверяем, существует ли уже алерт с таким external_id (fingerprint) И alert_name
-        existing_alert = db.query(Alert).filter(
-            Alert.external_id == alert_data.fingerprint,
-            Alert.alert_name == alert_name # Добавляем проверку по alert_name
-        ).first()
+        # 2. Обработка firing алертов (и других статусов, которые должны создавать или обновлять активный алерт)
+        existing_active_firing_alert = None
+        if alert_data.fingerprint: # Если fingerprint предоставлен и надежен, используем его
+            existing_active_firing_alert = db.query(Alert).filter(
+                Alert.external_id == alert_data.fingerprint,
+                Alert.status == "firing" # Учитываем только активные алерты
+            ).first()
 
-        if existing_alert:
-            # Если алерт существует, обновляем его статус и updated_at
-            logger.info(f"Алерт с external_id {alert_data.fingerprint} уже существует. Обновляю статус с {existing_alert.status} на {alert_status}.")
-            existing_alert.status = alert_status
-            existing_alert.updated_at = datetime.now(timezone.utc)
-            existing_alert.severity = severity # Обновляем severity, так как он мог измениться
-            db.add(existing_alert)
+        # Если fingerprint отсутствует или по нему не найден активный алерт,
+        # ищем по комбинации других меток для уникальности
+        if not existing_active_firing_alert:
+            existing_active_firing_alert = db.query(Alert).filter(
+                Alert.alert_name == alert_name,
+                Alert.status == "firing",
+                Alert.device_id == device_id_for_alert,
+                Alert.grafana_player_id == player_id_str,
+            ).order_by(Alert.created_at.desc()).first()
+
+        if existing_active_firing_alert:
+            logger.info(f"Найден существующий FIRING алерт (ID: {existing_active_firing_alert.id}, FINGERPRINT: {existing_active_firing_alert.external_id}) для {alert_name}. Обновляю timestamp и severity.")
+            existing_active_firing_alert.updated_at = datetime.now(timezone.utc)
+            existing_active_firing_alert.timestamp = datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00"))
+            existing_active_firing_alert.severity = severity
+            # Статус остается "firing"
+            db.add(existing_active_firing_alert)
             db.commit()
-            db.refresh(existing_alert)
-            logger.info(f"Успешно обновлен существующий алерт с id: {existing_alert.id}")
+            db.refresh(existing_active_firing_alert)
+            logger.info(f"Успешно обновлен существующий FIRING алерт с id: {existing_active_firing_alert.id}.")
             continue # Переходим к следующему алерту в полезной нагрузке
 
-        # Если это firing алерт, или resolved алерт без соответствующего firing, создаем новый алерт
+        # Если мы дошли досюда, это новый FIRING алерт (или другой статус, который должен быть записан как новый)
         try:
             alert_title = payload.title if payload.title else alert_data.labels.alertname
             if not alert_title:
