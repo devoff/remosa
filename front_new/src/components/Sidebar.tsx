@@ -16,6 +16,7 @@ import { getCategoryColors } from '../components/NodeTypes';
 import { nodeTypes } from '../components/NodeTypes';
 import { useApi } from '../lib/useApi'; 
 import { SystemStatus } from '../types/SystemStatus'; 
+import { hasRole } from '../utils/auth';
 
 interface SidebarSectionProps {
   title: string;
@@ -100,6 +101,8 @@ const Sidebar: React.FC = () => {
     return acc;
   }, {} as Record<string, number>);
   
+  const isAdminOrSuperuser = hasRole(["admin", "superuser"]);
+
   return (
     <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col overflow-y-auto">
       <div className="p-4 pb-2">
@@ -159,9 +162,11 @@ const Sidebar: React.FC = () => {
             <Link to="/telegram-users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Пользователи Telegram
             </Link>
-            <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Шаблоны команд
-            </Link>
+            {isAdminOrSuperuser && (
+              <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+                Шаблоны команд
+              </Link>
+            )}
             <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Журнал алертов
             </Link>
@@ -218,10 +223,12 @@ const Sidebar: React.FC = () => {
       <div className="mt-auto border-t border-gray-700">
         {/* <StatusBar /> */}
         <div className="p-4 space-y-2">
-          <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
-            <Users size={18} className="mr-2" />
-            <span>Пользователи</span>
-          </Link>
+          {isAdminOrSuperuser && (
+            <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
+              <Users size={18} className="mr-2" />
+              <span>Пользователи</span>
+            </Link>
+          )}
           
           <Link to="/settings" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Settings size={18} className="mr-2" />

@@ -176,17 +176,43 @@ export interface User {
   username: string;
   email?: string;
   is_active: boolean;
+  role: string;
 }
 
 export interface UserCreate {
   username: string;
   email?: string;
   password: string;
+  role?: string;
+}
+
+export interface UserUpdate {
+  username?: string;
+  email?: string;
+  password?: string;
+  is_active?: boolean;
+  role?: string;
 }
 
 export interface UserLogin {
   username: string;
   password: string;
+}
+
+export interface UserLimits {
+  id?: number;
+  user_id: number;
+  max_devices: number;
+  max_sms_messages: number;
+  sms_messages_sent_current_period: number;
+  sms_period_start_date: string;
+}
+
+export interface UserLimitsUpdate {
+  max_devices?: number;
+  max_sms_messages?: number;
+  sms_messages_sent_current_period?: number;
+  sms_period_start_date?: string;
 }
 
 export interface Token {

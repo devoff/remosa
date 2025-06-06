@@ -6,8 +6,9 @@ from passlib.context import CryptContext
 
 from app.db.session import get_db
 from app.models.user import User as DBUser
+from app.core.config import settings
 
-SECRET_KEY = "your-secret-key"  # TODO: Change this in production
+# SECRET_KEY = "your-secret-key"  # TODO: Change this in production
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,9 +24,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
 def authenticate_user(db, username: str, password: str):

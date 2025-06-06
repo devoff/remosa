@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    # Настройки лимитов по умолчанию для новых пользователей
+    DEFAULT_MAX_DEVICES_PER_USER: int = 5 # Например, 5 устройств по умолчанию
+    DEFAULT_MAX_SMS_PER_USER: int = 100 # Например, 100 SMS в период по умолчанию
+
     # Настройки фронтенда (Vite/React)
     VITE_API_URL: str = "http://remosa.ru:8000/api/v1"
     VITE_WS_URL: str = "ws://remosa.ru:8000/ws" # Исправлено на ws://...

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Token, UserLogin } from '../../types';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios'; // Import axios
+import { Token } from '../../types';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -13,27 +14,24 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/v1/auth/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
+      const response = await axios.post<Token>(
+        `${import.meta.env.VITE_API_URL}/auth/token`,
+        new URLSearchParams({
           username,
           password,
         }).toString(),
-      });
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Ошибка входа');
-      }
-
-      const data: Token = await response.json();
+      const data = response.data;
       localStorage.setItem('access_token', data.access_token);
-      navigate('/'); // Перенаправляем на главную страницу после успешного входа
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      navigate('/'); // Redirect to home page after successful login. Role-based redirection will be handled later.
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Login failed');
       console.error('Login error:', err);
     }
   };
@@ -73,6 +71,9 @@ const LoginPage = () => {
             Войти
           </button>
         </div>
+        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
+          Don't have an account? <Link to="/register" className="text-blue-500 hover:text-blue-800">Register</Link>
+        </p>
       </form>
     </div>
   );
