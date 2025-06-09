@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Token, UserLogin } from '../../types';
+import apiClient from '../../lib/api'; // Импортируем наш apiClient
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -13,27 +14,26 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/v1/auth/token', {
-        method: 'POST',
+      // Используем apiClient.post вместо fetch
+      const response = await apiClient.post<Token>('/auth/token', new URLSearchParams({
+        username,
+        password,
+      }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          username,
-          password,
-        }).toString(),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Ошибка входа');
-      }
+      // apiClient уже обрабатывает response.ok и 401 ошибки через интерцепторы,
+      // поэтому мы можем напрямую работать с response.data
+      const data: Token = response.data; // response.data уже содержит наш токен
 
-      const data: Token = await response.json();
       localStorage.setItem('access_token', data.access_token);
       navigate('/'); // Перенаправляем на главную страницу после успешного входа
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+    } catch (err: any) { // Добавляем any для err, чтобы TypeScript не ругался на проверку instanceof Error
+      // Интерцептор apiClient уже должен был перехватить 401,
+      // но на случай других ошибок или если интерцептор не сработал
+      setError(err.response?.data?.detail || err.message || 'Неизвестная ошибка');
       console.error('Login error:', err);
     }
   };
