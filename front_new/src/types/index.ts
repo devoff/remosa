@@ -176,15 +176,19 @@ export interface DeviceCommandsPanelProps {
 
 export interface User {
   id: number;
-  username: string;
-  email?: string;
+  email: string;
   is_active: boolean;
+  role: 'admin' | 'user';
+  platform_id?: number | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserCreate {
-  username: string;
-  email?: string;
+  email: string;
   password: string;
+  role?: string;
+  platform_id?: number | null;
 }
 
 export interface UserLogin {

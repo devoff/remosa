@@ -10,11 +10,18 @@ services:
       - ./.env
     environment:
       - PYTHONPATH=/app
+      - DEBUG=true  # Включен для разработки
     ports:
       - "8000:8000"
     volumes:
       - ./backend/app:/app/app  # Только для разработки
       - ./backend/alembic:/app/alembic  # Для миграций
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     build:
@@ -46,7 +53,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      #- ./nginx/logs:/var/log/nginx  # логи nginx
+      - ./nginx/logs:/var/log/nginx  # логи nginx (раскомментировано для отладки)
 
 
 volumes:

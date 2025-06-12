@@ -12,18 +12,22 @@ import { useApi } from '../../lib/useApi';
 import { SystemStatus } from '../../types/SystemStatus';
 import { message } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
+import { useAuth } from '../../lib/useAuth';
 
 const StatusBar: React.FC = () => {
   const [status, setStatus] = useState<SystemStatus | null>(null);
   const { get } = useApi();
+  const { isAuthenticated } = useAuth();
 
   const fetchSystemStatus = async () => {
     try {
-      const data: SystemStatus = await get('/api/v1/stats/dashboard');
+      const data: SystemStatus = await get('/stats/dashboard');
       setStatus(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка при получении статуса системы:', error);
-      message.error('Не удалось загрузить статус системы.');
+      if (error.response && error.response.status !== 401) {
+        message.error('Не удалось загрузить статус системы.');
+      }
     }
   };
 
@@ -39,10 +43,12 @@ const StatusBar: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchSystemStatus();
-    const interval = setInterval(fetchSystemStatus, 60000); // Обновляем каждые 60 секунд
-    return () => clearInterval(interval);
-  }, []);
+    if (isAuthenticated) {
+      fetchSystemStatus();
+      const interval = setInterval(fetchSystemStatus, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
 
   if (!status) {
     return (

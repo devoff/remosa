@@ -8,6 +8,11 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     DEBUG: bool = False
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"DEBUG_CONFIG: Loaded DEBUG = {self.DEBUG}")
+        print(f"DEBUG_CONFIG: Loaded JWT_SECRET_KEY = {self.JWT_SECRET_KEY}")
+
     # Настройки базы данных
     POSTGRES_HOST: str
     POSTGRES_PORT: str = "5432"

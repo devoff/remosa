@@ -3,11 +3,16 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import Device, Log # Убедитесь, что Log импортирован из app.models
 from datetime import datetime, timedelta
+from app.core.auth import get_current_user # Добавил импорт get_current_user
+from app.models.user import User # Добавил импорт User
 
 router = APIRouter()
 
 @router.get("/dashboard")
-async def get_dashboard_stats(db: Session = Depends(get_db)):
+async def get_dashboard_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user) # Добавил зависимость
+):
     """Get dashboard statistics."""
     # Расчет Uptime (заглушка: реальный uptime нужно получать из системных данных)
     # Для примера, пусть система "работает" 2 дня

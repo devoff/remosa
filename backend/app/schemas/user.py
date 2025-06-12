@@ -1,40 +1,33 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+from datetime import datetime
 
 class UserBase(BaseModel):
-    username: str
-    email: Optional[EmailStr] = None
+    email: EmailStr
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=8)
     role: Optional[str] = "user"
-    is_superuser: Optional[bool] = False
-    is_admin: Optional[bool] = False
     platform_id: Optional[int] = None
 
 class UserLogin(BaseModel):
-    username: str
+    username: str  # Поле называется username для совместимости с фронтендом, но на самом деле это email
     password: str
 
-class UserInDBBase(UserBase):
-    id: Optional[int] = None
-    is_active: bool = True
+class UserInDB(UserBase):
+    id: int
+    is_active: bool
     role: str
-    is_superuser: bool
-    is_admin: bool
-    platform_id: Optional[int] = None
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-class User(UserInDBBase):
+class User(UserInDB):
     pass
 
 class UserUpdate(UserBase):
-    password: Optional[str] = None
-    email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
     role: Optional[str] = None
-    is_superuser: Optional[bool] = None
-    is_admin: Optional[bool] = None
     platform_id: Optional[int] = None 

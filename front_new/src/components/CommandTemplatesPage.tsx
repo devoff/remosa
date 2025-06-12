@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Modal, Form, Input, Select, Space, message, Collapse } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CommandTemplate, CommandTemplateCreate, CommandParamDefinition } from '../types';
@@ -20,12 +20,14 @@ const CommandTemplatesPage: React.FC = () => {
   const { get, post, put, delete: del } = useApi();
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [selectedCategoryInForm, setSelectedCategoryInForm] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCommandTemplates = async (): Promise<CommandTemplate[]> => {
     try {
       const url = selectedModel 
-        ? `/api/v1/commands/templates/${selectedModel}` 
-        : '/api/v1/commands/templates';
+        ? `/commands/templates/${selectedModel}` 
+        : '/commands/templates';
       const data = await get(url);
       return data.map((template: any) => ({
         ...template,
@@ -48,10 +50,10 @@ const CommandTemplatesPage: React.FC = () => {
       };
 
       if (editingTemplate) {
-        await put(`/api/v1/commands/templates/${editingTemplate.id}`, payload);
+        await put(`/commands/templates/${editingTemplate.id}`, payload);
         message.success('Шаблон команды успешно обновлен!');
       } else {
-        await post('/api/v1/commands/templates', payload);
+        await post('/commands/templates', payload);
         message.success('Шаблон команды успешно добавлен!');
       }
       setIsModalVisible(false);
@@ -63,25 +65,34 @@ const CommandTemplatesPage: React.FC = () => {
   };
 
   const deleteCommandTemplate = async (id: number) => {
-    try {
-      await del(`/api/v1/commands/templates/${id}`);
-      message.success('Шаблон команды успешно удален!');
-      fetchTemplates();
-    } catch (error) {
-      console.error('Ошибка при удалении шаблона команды:', error);
-      message.error('Не удалось удалить шаблон команды.');
+    if (window.confirm('Вы уверены, что хотите удалить этот шаблон?')) {
+      try {
+        await del(`/commands/templates/${id}`);
+        message.success('Шаблон команды успешно удален!');
+        fetchTemplates();
+      } catch (error) {
+        console.error('Ошибка при удалении шаблона команды:', error);
+        message.error('Не удалось удалить шаблон команды.');
+      }
     }
   };
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async (model?: string) => {
     try {
-      const data = await fetchCommandTemplates();
+      setLoading(true);
+      const url = model 
+        ? `/commands/templates/${model}`
+        : '/commands/templates';
+      const data = await get(url);
       setTemplates(data);
-    } catch (error) {
-      console.error('Ошибка загрузки шаблонов команд:', error);
+      setError(null);
+    } catch (err) {
+      console.error('Ошибка загрузки шаблонов команд:', err);
       message.error('Не удалось загрузить шаблоны команд.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchTemplates();
