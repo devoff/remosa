@@ -10,7 +10,7 @@ const SystemStatusPanel: React.FC = () => {
 
   const fetchSystemStatus = async () => {
     try {
-      const data: SystemStatus = await get('/api/v1/stats/dashboard');
+      const data: SystemStatus = await get('/stats/dashboard');
       setStatus(data);
     } catch (error) {
       console.error('Ошибка при получении статуса системы:', error);

@@ -46,7 +46,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
       }
       setLoadingTemplates(true);
       try {
-        const data: CommandTemplate[] = await get(`/api/v1/commands/templates/${formData.model}`);
+        const data: CommandTemplate[] = await get(`/commands/templates/${formData.model}`);
         setCommandTemplates(data);
 
         if (device && device.alert_sms_template_id) {

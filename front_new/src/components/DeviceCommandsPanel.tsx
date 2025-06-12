@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Select, Card, Spin, Typography, Alert, Switch, Table, Tag } from 'antd';
+import { Form, Input, Button, Select, Card, Spin, Typography, Alert, Switch, Table, Tag, message } from 'antd';
 import { Device, CommandTemplate } from '../types';
 import { useApi } from '../lib/useApi';
 
@@ -22,12 +22,14 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCommandTemplates = async () => {
+    const fetchTemplates = async () => {
+      if (!device) return;
       try {
         setLoading(true);
         console.log('Загрузка шаблонов команд для модели:', device.model);
-        const data = await get(`/api/v1/commands/templates/${device.model}`);
+        const data = await get(`/commands/templates/${device.model}`);
         setCommandTemplates(data);
+        setSelectedCommand(null);
         console.log('Шаблоны команд успешно загружены:', data);
       } catch (err) {
         console.error('Ошибка при загрузке шаблонов команд:', err);
@@ -37,7 +39,7 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
       }
     };
 
-    fetchCommandTemplates();
+    fetchTemplates();
   }, [device.model, get]);
 
   const onCommandSelect = (templateId: string) => {
@@ -72,9 +74,11 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
         params: commandParams,
       };
       console.log('Отправка команды с полезной нагрузкой:', payload);
-      const result = await post('/api/v1/commands/execute', payload);
+      const result = await post('/commands/execute', payload);
       setResponse(JSON.stringify(result, null, 2));
       console.log('Команда успешно отправлена. Ответ:', result);
+      message.success('Команда успешно выполнена!');
+      onClose();
     } catch (err: any) {
       console.error('Критическая ошибка при отправке команды:', err);
       setError(`Ошибка при отправке команды: ${err.message || 'Неизвестная ошибка'}`);

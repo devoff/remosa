@@ -5,16 +5,25 @@ from app.core.database import get_db
 from app.models.device import Device
 from app.schemas.device import DeviceCreate, DeviceUpdate, Device as DeviceSchema
 from app.services.device import DeviceService
+from app.core.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
 @router.get("/", response_model=List[DeviceSchema])
-async def get_devices(db: Session = Depends(get_db)):
+async def get_devices(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Get all devices."""
     return db.query(Device).all()
 
 @router.post("/", response_model=DeviceSchema)
-async def create_device(device: DeviceCreate, db: Session = Depends(get_db)):
+async def create_device(
+    device: DeviceCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Create a new device."""
     if device.phone:
         device.phone = device.phone.lstrip('+')
@@ -25,7 +34,11 @@ async def create_device(device: DeviceCreate, db: Session = Depends(get_db)):
     return db_device
 
 @router.get("/{device_id}", response_model=DeviceSchema)
-async def get_device(device_id: int, db: Session = Depends(get_db)):
+async def get_device(
+    device_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Get a device by ID."""
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
@@ -33,7 +46,12 @@ async def get_device(device_id: int, db: Session = Depends(get_db)):
     return db_device
 
 @router.put("/{device_id}", response_model=DeviceSchema)
-async def update_device(device_id: int, device: DeviceUpdate, db: Session = Depends(get_db)):
+async def update_device(
+    device_id: int,
+    device: DeviceUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Update a device."""
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
@@ -51,7 +69,11 @@ async def update_device(device_id: int, device: DeviceUpdate, db: Session = Depe
     return db_device
 
 @router.delete("/{device_id}", response_model=DeviceSchema)
-async def delete_device(device_id: int, db: Session = Depends(get_db)):
+async def delete_device(
+    device_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Delete a device."""
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
@@ -62,5 +84,9 @@ async def delete_device(device_id: int, db: Session = Depends(get_db)):
     return db_device
 
 @router.get("/search/")
-async def search_devices(phone: str, db: Session = Depends(get_db)):
+async def search_devices(
+    phone: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     return DeviceService.get_device_by_phone(db, phone) 

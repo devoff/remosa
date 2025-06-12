@@ -76,7 +76,7 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const fetchSystemStatus = async () => {
       try {
-        const data: SystemStatus = await get('/api/v1/stats/dashboard');
+        const data: SystemStatus = await get('/stats/dashboard');
         setSystemStatus(data);
       } catch (error) {
         console.error('Ошибка при получении статуса системы в сайдбаре:', error);

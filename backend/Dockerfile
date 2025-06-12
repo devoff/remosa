@@ -2,7 +2,10 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Устанавливаем зависимости
+# Устанавливаем системные зависимости для healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем зависимости Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

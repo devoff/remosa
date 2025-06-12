@@ -5,13 +5,16 @@ from app.core.database import get_db
 from app.models.alert import Alert
 from app.models.device import Device
 from app.schemas.alert import AlertCreate, AlertResponse
+from app.core.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
 @router.post("/", response_model=AlertResponse, status_code=201)
 def create_alert(
     alert_in: AlertCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     # Optionally, associate alert with a device if device_id is provided and valid
     if alert_in.device_id:
@@ -29,7 +32,8 @@ def create_alert(
 def get_alerts(
     skip: int = 0,
     limit: int = 100,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     alerts = db.query(Alert).offset(skip).limit(limit).all()
     return alerts
@@ -37,7 +41,8 @@ def get_alerts(
 @router.get("/{alert_id}", response_model=AlertResponse)
 def get_alert(
     alert_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
     if not alert:
@@ -48,7 +53,8 @@ def get_alert(
 def update_alert(
     alert_id: int,
     alert_update: AlertCreate, # Using AlertCreate for update, could be a dedicated AlertUpdate schema
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     db_alert = db.query(Alert).filter(Alert.id == alert_id).first()
     if not db_alert:
@@ -65,7 +71,8 @@ def update_alert(
 @router.delete("/{alert_id}", status_code=204)
 def delete_alert(
     alert_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ) -> None:
     db_alert = db.query(Alert).filter(Alert.id == alert_id).first()
     if not db_alert:
