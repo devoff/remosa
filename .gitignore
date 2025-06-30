@@ -52,3 +52,4 @@ docker-compose.override.yml
 *.tar*
 remosa_backend.tar
 remosa_frontend.tar
+nginx/logs/access.log
