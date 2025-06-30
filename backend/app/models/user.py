@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func # Добавлено для func.utcnow()
 from app.db.base import Base # Убедитесь, что это правильный импорт
 
@@ -11,5 +12,9 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     role = Column(String, default="user", nullable=False)
     platform_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
-    created_at = Column(DateTime, default=func.utcnow())
-    updated_at = Column(DateTime, default=func.utcnow(), onupdate=func.utcnow()) 
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    
+    # Отношения
+    devices = relationship("Device", back_populates="user")
+    user_limits = relationship("UserLimits", back_populates="user", uselist=False) 

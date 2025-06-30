@@ -21,11 +21,13 @@ class Device(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     grafana_uid = Column(String(100), nullable=True, unique=True)  # Для связи с Grafana
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Связь с пользователем
     phone = Column(String(20), nullable=True)  # Убедитесь, что тип String
     model = Column(String(50), nullable=True)  # Новое поле
     alert_sms_template_id = Column(Integer, ForeignKey("command_templates.id"), nullable=True) # ID шаблона команды для SMS-оповещений
     send_alert_sms = Column(sa.Boolean, default=False, nullable=False) # Флаг для отправки SMS-оповещений
     # Отношения
     client = relationship("Client", back_populates="devices")
+    user = relationship("User", back_populates="devices")  # Связь с пользователем
     alerts = relationship("Alert", back_populates="device")
     command_logs = relationship("Log", back_populates="device") 
