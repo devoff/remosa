@@ -32,6 +32,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 *.log*
+*.log
 
 # IDE
 .idea/
