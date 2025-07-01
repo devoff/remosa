@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Card, Spin, Alert, Table, Tag, Typography, Button, Space, Modal, Form, Input, Select, Checkbox } from 'antd';
+import { Card, Spin, Alert, Table, Tag, Typography, Button, Space, Modal, Form, Input, Select, Checkbox, notification } from 'antd';
 import { useApi } from '../../lib/useApi';
 import { User, UserCreate } from '../../types';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -21,6 +21,8 @@ const UsersPage = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [form] = Form.useForm();
   const [platforms, setPlatforms] = useState<Platform[]>([]);
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -68,29 +70,38 @@ const UsersPage = () => {
   };
 
   const handleDeleteUser = async (id: number) => {
-    if (window.confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+    Modal.confirm({
+      title: 'Удалить пользователя?',
+      content: 'Вы уверены, что хотите удалить этого пользователя?',
+      okText: 'Удалить',
+      okType: 'danger',
+      cancelText: 'Отмена',
+      onOk: async () => {
       try {
         await remove(`/users/${id}`);
-        fetchUsers(); // Обновляем список
+          fetchUsers();
+          notification.success({ message: 'Пользователь удалён' });
       } catch (err) {
-        console.error('Ошибка при удалении пользователя:', err);
-        setError('Не удалось удалить пользователя.');
+          notification.error({ message: 'Ошибка удаления пользователя' });
       }
-    }
+      },
+    });
   };
 
   const handleSaveUser = async (values: any) => {
     try {
       if (editingUser) {
         await put(`/users/${editingUser.id}`, values);
+        notification.success({ message: 'Пользователь обновлён' });
       } else {
-        await post('/auth/register', values); // Исправлен эндпоинт для регистрации
+        await post('/auth/register', values);
+        notification.success({ message: 'Пользователь создан' });
       }
       setIsModalVisible(false);
-      fetchUsers(); // Обновляем список
+      fetchUsers();
       setError(null);
     } catch (err: any) {
-      console.error('Ошибка при сохранении пользователя:', err);
+      notification.error({ message: 'Ошибка сохранения пользователя', description: err.response?.data?.detail || err.message });
       setError(err.response?.data?.detail || err.message || 'Неизвестная ошибка');
     }
   };
@@ -161,6 +172,12 @@ const UsersPage = () => {
     },
   ];
 
+  const filteredUsers = users.filter((user) => {
+    const matchesEmail = user.email.toLowerCase().includes(search.toLowerCase());
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    return matchesEmail && matchesRole;
+  });
+
   if (loading) {
     return <Spin tip="Загрузка пользователей..." />;
   }
@@ -176,19 +193,37 @@ const UsersPage = () => {
       className="dark:bg-gray-800 rounded-lg" 
       bodyStyle={{ padding: '16px' }} 
     >
-      <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser} style={{ marginBottom: 16 }}>
+      <div className="flex flex-col md:flex-row md:items-center gap-2 mb-4">
+        <Input
+          placeholder="Поиск по email"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ maxWidth: 250 }}
+        />
+        <Select
+          value={roleFilter}
+          onChange={v => setRoleFilter(v)}
+          style={{ width: 150 }}
+        >
+          <Option value="all">Все роли</Option>
+          <Option value="admin">Администратор</Option>
+          <Option value="user">Пользователь</Option>
+        </Select>
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser} style={{ marginLeft: 'auto' }}>
         Добавить пользователя
       </Button>
+      </div>
 
       {error && <Alert message="Ошибка" description={error} type="error" showIcon style={{ marginBottom: 16 }} />}
 
       <Table 
-        dataSource={users} 
+        dataSource={filteredUsers} 
         columns={userColumns} 
         rowKey="id" 
         pagination={{ pageSize: 10 }} 
         className="min-w-full dark:bg-gray-800 rounded-lg" 
         rowClassName="border-t border-gray-700 hover:bg-gray-700" 
+        scroll={{ x: true }} 
       />
 
       <Modal

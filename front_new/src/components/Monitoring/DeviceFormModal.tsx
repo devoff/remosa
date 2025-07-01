@@ -23,7 +23,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
     name: '',
     phone: '',
     description: '',
-    status: 'ONLINE',
+    status: 'online',
     model: '',
     alert_sms_template_id: undefined,
     send_alert_sms: false,

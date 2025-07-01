@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSONB
-from app.core.database import Base
+from app.db.base_class import Base
 
 class Alert(Base):
     __tablename__ = "alerts"

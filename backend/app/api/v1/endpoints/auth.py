@@ -17,26 +17,46 @@ router = APIRouter()
 
 @router.post("/register", response_model=User)
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
-    existing_user_by_email = db.query(DBUser).filter(DBUser.email == user_in.email).first()
-    if existing_user_by_email:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email уже зарегистрирован."
-        )
+    try:
+        # Проверяем, что пользователь с таким email не существует
+        existing_user_by_email = db.query(DBUser).filter(DBUser.email == user_in.email).first()
+        if existing_user_by_email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email уже зарегистрирован."
+            )
 
-    hashed_password = get_password_hash(user_in.password)
-    
-    db_user = DBUser(
-        email=user_in.email,
-        hashed_password=hashed_password,
-        is_active=True,
-        role=getattr(user_in, 'role', 'user'),
-        platform_id=getattr(user_in, 'platform_id', None)
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+        hashed_password = get_password_hash(user_in.password)
+        
+        # Создаем пользователя без platform_id, если он не указан
+        user_data = {
+            "email": user_in.email,
+            "hashed_password": hashed_password,
+            "is_active": True,
+            "role": getattr(user_in, 'role', 'user')
+        }
+        
+        # Добавляем platform_id только если он указан и не None
+        if hasattr(user_in, 'platform_id') and user_in.platform_id is not None:
+            user_data["platform_id"] = user_in.platform_id
+        
+        db_user = DBUser(**user_data)
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+        
+    except HTTPException:
+        # Перебрасываем HTTPException как есть
+        raise
+    except Exception as e:
+        # Логируем другие ошибки и возвращаем 500
+        print(f"Error during user registration: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ошибка при создании пользователя"
+        )
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(

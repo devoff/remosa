@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func # Добавлено для func.utcnow()
-from app.db.base import Base # Убедитесь, что это правильный импорт
+from app.db.base_class import Base # Убедитесь, что это правильный импорт
 
 class User(Base):
     __tablename__ = "users"
@@ -17,4 +17,8 @@ class User(Base):
     
     # Отношения
     devices = relationship("Device", back_populates="user")
-    user_limits = relationship("UserLimits", back_populates="user", uselist=False) 
+    user_limits = relationship("UserLimits", back_populates="user", uselist=False)
+    platforms = relationship("PlatformUser", back_populates="user")
+
+    def __repr__(self):
+        return f"User(id={self.id}, email={self.email}, role={self.role})" 

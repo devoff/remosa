@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.command_template import CommandTemplate
 from app.schemas.command_template import CommandParamSchema
 from app.models.log import Log
+from datetime import datetime
 
 class CommandService:
     @staticmethod
@@ -85,5 +86,25 @@ class CommandService:
         ).order_by(Log.created_at.desc()).all()
 
     @staticmethod
-    def get_all_command_logs(db: Session) -> List[Log]:
-        return db.query(Log).order_by(Log.created_at.desc()).all()
+    def get_all_command_logs(
+        db: Session, 
+        device_id: Optional[int] = None, 
+        level: Optional[str] = None, 
+        start_date: Optional[datetime] = None, 
+        end_date: Optional[datetime] = None
+    ) -> List[Log]:
+        query = db.query(Log)
+
+        if device_id:
+            query = query.filter(Log.device_id == device_id)
+        
+        if level:
+            query = query.filter(Log.level == level)
+        
+        if start_date:
+            query = query.filter(Log.created_at >= start_date)
+            
+        if end_date:
+            query = query.filter(Log.created_at <= end_date)
+            
+        return query.order_by(Log.created_at.desc()).all()
