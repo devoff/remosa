@@ -17,6 +17,7 @@ import CommandTemplatesPage from './components/CommandTemplatesPage';
 import RolesPage from './components/RolesPage';
 import StatusPage from './components/StatusPage';
 import DevicesPage from './components/DevicesPage';
+import { AuditLogsPage } from './components/AuditLogsPage';
 
 console.log('API URL:', import.meta.env.VITE_API_URL);
 
@@ -51,6 +52,7 @@ function AppContent() {
             <Route path="/command-templates" element={<PrivateRoute><CommandTemplatesPage /></PrivateRoute>} />
             <Route path="/logs" element={<PrivateRoute><LogsPage /></PrivateRoute>} />
             <Route path="/alert-logs" element={<PrivateRoute><AlertsPage /></PrivateRoute>} />
+            <Route path="/audit-logs" element={<PrivateRoute><AuditLogsPage /></PrivateRoute>} />
             <Route path="/status" element={<PrivateRoute><StatusPage /></PrivateRoute>} />
             <Route path="/admin/platforms" element={<PrivateRoute><AdminPlatformsPage /></PrivateRoute>} />
             <Route path="/admin/platforms/:platformId" element={<PrivateRoute><PlatformDetailsPage /></PrivateRoute>} />

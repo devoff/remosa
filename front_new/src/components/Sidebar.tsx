@@ -20,6 +20,7 @@ import { getCategoryColors } from '../components/NodeTypes';
 import { nodeTypes } from '../components/NodeTypes';
 import { useApi } from '../lib/useApi'; 
 import { SystemStatus } from '../types/SystemStatus'; 
+import { Alert } from '../types/alert';
 
 interface SidebarSectionProps {
   title: string;
@@ -66,6 +67,37 @@ const Sidebar: React.FC = () => {
   const { get } = useApi(); 
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null); 
 
+  // --- История алертов ---
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [alertsLoading, setAlertsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        setAlertsLoading(true);
+        const data = await get('/alerts');
+        setAlerts(Array.isArray(data) ? data : []);
+      } catch (e) {
+        setAlerts([]);
+      } finally {
+        setAlertsLoading(false);
+      }
+    };
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 60000);
+    return () => clearInterval(interval);
+  }, [get]);
+
+  // Подсчёт алертов по датам
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const yesterday = new Date(now.getTime() - 24*60*60*1000).toISOString().slice(0, 10);
+  const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+
+  const countToday = alerts.filter(a => a.created_at && a.created_at.slice(0,10) === today).length;
+  const countYesterday = alerts.filter(a => a.created_at && a.created_at.slice(0,10) === yesterday).length;
+  const countWeek = alerts.filter(a => a.created_at && new Date(a.created_at) >= weekAgo).length;
+
   const formatTime = (isoString: string | null) => {
     if (!isoString || isoString === "N/A") return "N/A";
     try {
@@ -110,26 +142,21 @@ const Sidebar: React.FC = () => {
         <h2 className="text-lg font-semibold text-gray-200 mb-4">
           Панель мониторинга
         </h2>
-        
-        <SidebarSection 
-          title="Dashboard" 
-          icon={<Home size={18} className="text-cyan-400" />}
-        >
-          <Link to="/" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-            Устройства
-          </Link>
-        </SidebarSection>
 
+        {/* Dashboard — не выпадающий, сразу ведет на устройства */}
+        <Link to="/" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+          <Home size={18} className="text-cyan-400 mr-2" />
+          <span className="font-medium">Устройства</span>
+        </Link>
+
+        {/* Администрирование — объединяем пользователи и роли */}
         <SidebarSection 
           title="Администрирование" 
           icon={<Briefcase size={18} className="text-orange-400" />}
           defaultOpen={true}
         >
           <Link to="/users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-            Пользователи
-          </Link>
-          <Link to="/roles" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-            Роли
+            Пользователи и роли
           </Link>
           <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
             Шаблоны команд
@@ -138,19 +165,24 @@ const Sidebar: React.FC = () => {
             Платформы
           </Link>
         </SidebarSection>
-        
+
+        {/* Мониторинг */}
         <SidebarSection 
           title="Мониторинг" 
           icon={<Activity size={18} className="text-green-400" />}
         >
-          <Link to="/devices" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-            Устройства
-          </Link>
           <Link to="/status" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
             Статус системы
           </Link>
         </SidebarSection>
-        
+
+        {/* Логи аудита — отдельный пункт */}
+        <Link to="/audit-logs" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+          <FileText size={18} className="text-orange-400 mr-2" />
+          <span className="font-medium">Логи аудита</span>
+        </Link>
+
+        {/* Логи */}
         <SidebarSection 
           title="Логи" 
           icon={<FileText size={18} className="text-orange-400" />}
@@ -162,78 +194,38 @@ const Sidebar: React.FC = () => {
             Журнал алертов
           </Link>
         </SidebarSection>
-        
-        <SidebarSection 
-          title="Telegram" 
-          icon={<MessageSquare size={18} className="text-blue-500" />}
-        >
-          <div className="space-y-1">
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Пользователи</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">12</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Сообщения</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">47</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Команды</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">8</span>
-            </div>
-          </div>
-        </SidebarSection>
-        
-        <SidebarSection 
-          title="Компоненты" 
-          icon={<Server size={18} className="text-purple-500" />}
-        >
-          <div className="space-y-1">
-            {Object.entries(categoryStats).map(([category, count]) => (
-              <div 
-                key={category}
-                className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <span 
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: categoryColors[category] || '#888' }}
-                  ></span>
-                  <span>{category}</span>
-                </div>
-                <span className="bg-gray-600 text-xs px-1.5 rounded-full">{count}</span>
-              </div>
-            ))}
-          </div>
-        </SidebarSection>
-        
+
+        {/* История алертов */}
         <SidebarSection 
           title="История алертов" 
           icon={<Clock size={18} className="text-amber-500" />}
         >
-          <div className="space-y-1">
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Сегодня</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">7</span>
+          {alertsLoading ? (
+            <div className="text-xs text-gray-400">Загрузка...</div>
+          ) : (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span>Сегодня</span>
+                <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countToday}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Вчера</span>
+                <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countYesterday}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>За неделю</span>
+                <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countWeek}</span>
+              </div>
             </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Вчера</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">12</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>За неделю</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">43</span>
-            </div>
-          </div>
+          )}
         </SidebarSection>
+
+        {/* Telegram, Компоненты, История алертов — можно скрыть или оставить по согласованию */}
       </div>
       
       <div className="mt-auto border-t border-gray-700">
         <div className="p-4 space-y-2">
-          <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
-            <Users size={18} className="mr-2" />
-            <span>Пользователи</span>
-          </Link>
-          
+          {/* Удаляем дублирующий пункт "Пользователи" */}
           <Link to="/settings" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Settings size={18} className="mr-2" />
             <span>Настройки</span>

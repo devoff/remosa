@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.core.auth import get_password_hash, get_current_user
 from datetime import datetime
 import logging
+from app.utils.audit import log_audit
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    log_audit(db, user_id=None, action="create_user", details=f"Создан пользователь {db_user.email}")
     logger.info(f"User created: {db_user.email}")
     return db_user
 
@@ -64,6 +66,7 @@ def update_user(
     db_user.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(db_user)
+    log_audit(db, user_id=current_user.id, action="update_user", details=f"Обновлен пользователь {db_user.email}")
     logger.info(f"User updated: {db_user.email}")
     return db_user
 
@@ -79,6 +82,7 @@ def delete_user(
         raise HTTPException(status_code=404, detail="User not found")
     if db_user.id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
+    log_audit(db, user_id=current_user.id, action="delete_user", details=f"Удален пользователь {db_user.email}")
     db.delete(db_user)
     db.commit()
     logger.info(f"User deleted: {db_user.email}") 
