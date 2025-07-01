@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import Device, Log # Убедитесь, что Log импортирован из app.models
@@ -10,16 +10,28 @@ router = APIRouter()
 
 @router.get("/dashboard")
 async def get_dashboard_stats(
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user) # Добавил зависимость
 ):
     """Get dashboard statistics."""
-    # Расчет Uptime (заглушка: реальный uptime нужно получать из системных данных)
-    # Для примера, пусть система "работает" 2 дня
-    uptime_seconds = (datetime.now() - datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=2)).total_seconds()
-    hours = int(uptime_seconds // 3600)
+    # Расчет Uptime на основе времени старта приложения
+    start_time = request.app.state.start_time
+    uptime_seconds = (datetime.now() - start_time).total_seconds()
+    
+    days = int(uptime_seconds // (24 * 3600))
+    hours = int((uptime_seconds % (24 * 3600)) // 3600)
     minutes = int((uptime_seconds % 3600) // 60)
-    uptime_str = f"{hours}ч {minutes}м"
+
+    uptime_parts = []
+    if days > 0:
+        uptime_parts.append(f"{days}д")
+    if hours > 0:
+        uptime_parts.append(f"{hours}ч")
+    if minutes > 0 or not uptime_parts:
+        uptime_parts.append(f"{minutes}м")
+    
+    uptime_str = " ".join(uptime_parts)
 
     # Количество устройств
     total_devices = db.query(Device).count()

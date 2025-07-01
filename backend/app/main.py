@@ -65,7 +65,9 @@ async def start_sms_polling_background_task():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    app.state.start_time = datetime.now()  # Сохраняем время старта
     logger.info("=== ЗАПУСК ПРИЛОЖЕНИЯ ===")
+    logger.info(f"Время запуска: {app.state.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info("=== МАРШРУТЫ ПРИЛОЖЕНИЯ ===")
     for route in app.routes:
         if hasattr(route, "path") and hasattr(route, "methods"):
