@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useApi } from '../lib/useApi';
 import { useNotification } from './NotificationProvider';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Typography } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Typography, LinearProgress, Chip, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+import PlatformWizard from './PlatformWizard';
+import { useAuth } from '../lib/useAuth';
 
 interface Platform {
   id: number;
@@ -18,25 +20,31 @@ interface Platform {
 const AdminPlatformsPage: React.FC = () => {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [loading, setLoading] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openWizard, setOpenWizard] = useState(false);
   const [editPlatform, setEditPlatform] = useState<Platform | null>(null);
   const [form, setForm] = useState({ name: '', description: '', devices_limit: '', sms_limit: '' });
   
   const { notify } = useNotification();
   const navigate = useNavigate();
   const { get, post, put, remove } = useApi();
+  const { user } = useAuth();
 
   const fetchPlatforms = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await get('/platforms/');
+      let data;
+      if (user?.role === 'admin') {
+        data = await get('/platforms/');
+      } else {
+        data = await get('/platforms/my-platforms/');
+      }
       setPlatforms(data);
     } catch (e: any) {
       notify(e.message || 'Ошибка загрузки платформ', 'error');
     } finally {
       setLoading(false);
     }
-  }, [get, notify]);
+  }, [get, notify, user]);
 
   useEffect(() => { 
     fetchPlatforms(); 
@@ -50,11 +58,9 @@ const AdminPlatformsPage: React.FC = () => {
       devices_limit: platform?.devices_limit?.toString() || '',
       sms_limit: platform?.sms_limit?.toString() || '',
     });
-    setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
     setEditPlatform(null);
     setForm({ name: '', description: '', devices_limit: '', sms_limit: '' });
   };
@@ -112,7 +118,7 @@ const AdminPlatformsPage: React.FC = () => {
       <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
         Платформы
       </Typography>
-      <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
+      <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenWizard(true)}>
         Создать платформу
       </Button>
       <TableContainer sx={{ mt: 2 }}>
@@ -123,16 +129,34 @@ const AdminPlatformsPage: React.FC = () => {
               <TableCell>Описание</TableCell>
               <TableCell>Лимит устройств</TableCell>
               <TableCell>Лимит SMS</TableCell>
+              <TableCell>Статус</TableCell>
               <TableCell>Действия</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {platforms.map((p) => (
+            {platforms.map((p: Platform) => (
               <TableRow key={p.id} hover>
                 <TableCell sx={{ cursor: 'pointer' }} onClick={() => navigate(`/admin/platforms/${p.id}`)}>{p.name}</TableCell>
                 <TableCell>{p.description || '-'}</TableCell>
-                <TableCell>{p.devices_limit ?? '-'}</TableCell>
-                <TableCell>{p.sms_limit ?? '-'}</TableCell>
+                <TableCell>
+                  <Box sx={{ minWidth: 120 }}>
+                    <Typography variant="body2" color="textSecondary">
+                      {p.devices_limit ? `до ${p.devices_limit}` : '—'}
+                    </Typography>
+                    <LinearProgress variant="determinate" value={30} sx={{ height: 6, borderRadius: 2, mt: 0.5 }} />
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ minWidth: 120 }}>
+                    <Typography variant="body2" color="textSecondary">
+                      {p.sms_limit ? `до ${p.sms_limit}` : '—'}
+                    </Typography>
+                    <LinearProgress variant="determinate" value={10} sx={{ height: 6, borderRadius: 2, mt: 0.5, bgcolor: '#e0e7ef' }} color="secondary" />
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Chip label="Активна" color="success" size="small" />
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleOpenDialog(p)}><EditIcon /></IconButton>
                   <IconButton color="error" onClick={() => handleDelete(p.id)}><DeleteIcon /></IconButton>
@@ -142,18 +166,11 @@ const AdminPlatformsPage: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{editPlatform ? 'Редактировать платформу' : 'Создать платформу'}</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 300, pt: '20px !important' }}>
-          <TextField label="Название" name="name" value={form.name} onChange={handleChange} fullWidth required />
-          <TextField label="Описание" name="description" value={form.description} onChange={handleChange} fullWidth multiline rows={2} />
-          <TextField label="Лимит устройств" name="devices_limit" value={form.devices_limit} onChange={handleChange} type="number" fullWidth />
-          <TextField label="Лимит SMS" name="sms_limit" value={form.sms_limit} onChange={handleChange} type="number" fullWidth />
+      <Dialog open={openWizard} onClose={() => setOpenWizard(false)}>
+        <DialogTitle>Создать платформу</DialogTitle>
+        <DialogContent>
+          <PlatformWizard onComplete={() => { setOpenWizard(false); fetchPlatforms(); }} />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Отмена</Button>
-          <Button onClick={handleSave} variant="contained">Сохранить</Button>
-        </DialogActions>
       </Dialog>
     </Paper>
   );

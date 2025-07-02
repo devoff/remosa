@@ -56,6 +56,9 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx  # логи nginx (раскомментировано для отладки)
+    depends_on:
+      - frontend
+      - backend
 
 
 volumes:

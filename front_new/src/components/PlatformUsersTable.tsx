@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
   IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Select, MenuItem, FormControl, InputLabel, Chip
+  TextField, Select, MenuItem, FormControl, InputLabel, Chip, Tooltip
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useApi } from '../lib/useApi';
+import { useAuth } from '../lib/useAuth';
 
 interface PlatformUser {
   id: number;
@@ -25,9 +26,9 @@ interface PlatformUsersTableProps {
 }
 
 const PLATFORM_ROLES = [
-  { value: 'admin', label: 'Администратор', color: 'error' },
+  { value: 'admin', label: 'Администратор платформы', color: 'error' },
   { value: 'manager', label: 'Менеджер', color: 'warning' },
-  { value: 'user', label: 'Пользователь', color: 'primary' },
+  { value: 'user', label: 'Пользователь платформы', color: 'primary' },
   { value: 'viewer', label: 'Наблюдатель', color: 'default' }
 ];
 
@@ -39,6 +40,7 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
   const [newUserForm, setNewUserForm] = useState({ user_id: '', role: 'user' });
   const [editForm, setEditForm] = useState({ role: 'user' });
   const { get } = useApi();
+  const { user } = useAuth();
 
   const fetchAllUsers = async () => {
     try {
@@ -117,31 +119,40 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => {
-              const roleInfo = getRoleInfo(user.platform_role);
+            {users.map((u) => {
+              const roleInfo = getRoleInfo(u.platform_role);
+              const isCurrent = user?.email === u.email;
               return (
-                <TableRow key={user.id}>
-                  <TableCell>{user.email}</TableCell>
+                <TableRow key={u.id} selected={isCurrent} sx={isCurrent ? { backgroundColor: '#e0f7fa' } : {}}>
                   <TableCell>
-                    <Chip 
-                      label={roleInfo.label} 
-                      color={roleInfo.color as any} 
-                      size="small" 
-                    />
+                    {u.email}
+                    {isCurrent && (
+                      <span style={{ color: '#06b6d4', marginLeft: 8, fontWeight: 500 }}>(вы)</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title={`Права: ${getRoleInfo(u.platform_role).label}. ${u.platform_role === 'admin' ? 'Полный доступ к платформе.' : u.platform_role === 'manager' ? 'Управление пользователями и устройствами.' : u.platform_role === 'user' ? 'Выполнение команд и просмотр.' : 'Только просмотр.'}` }>
+                      <Chip 
+                        label={roleInfo.label} 
+                        color={roleInfo.color as any} 
+                        size="small" 
+                        sx={isCurrent ? { fontWeight: 700, border: '2px solid #06b6d4' } : {}}
+                      />
+                    </Tooltip>
                   </TableCell>
                   <TableCell>
                     <Chip 
-                      label={user.is_active ? 'Активен' : 'Неактивен'} 
-                      color={user.is_active ? 'success' : 'default'} 
+                      label={u.is_active ? 'Активен' : 'Неактивен'} 
+                      color={u.is_active ? 'success' : 'default'} 
                       size="small" 
                     />
                   </TableCell>
-                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(u.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleOpenEditDialog(user)}>
+                    <IconButton onClick={() => handleOpenEditDialog(u)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton color="error" onClick={() => handleDeleteUser(user.id)}>
+                    <IconButton color="error" onClick={() => handleDeleteUser(u.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

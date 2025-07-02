@@ -8,8 +8,8 @@ from app.models.platform_user import PlatformUser
 from app.schemas.platform_user import PlatformUserCreate, PlatformUserUpdate, PlatformUserOut
 from app.models.user import User
 from app.models.device import Device
-from app.schemas.device import DeviceCreate, DeviceOut
-from app.core.deps import get_current_user_id
+from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
+from app.core.deps import get_current_user_id, get_current_user
 from app.core.platform_permissions import require_platform_role
 from app.core.audit import log_audit
 from app.models.audit_log import AuditLog
@@ -102,13 +102,18 @@ def list_platform_devices(platform_id: int, db: Session = Depends(get_db), user_
 
 @router.post("/platforms/{platform_id}/devices/", response_model=DeviceOut, status_code=201)
 def add_platform_device(platform_id: int, device_in: DeviceCreate, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
-    require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager'], db=db)
+    require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager', 'user'], db=db)
     platform = db.query(Platform).filter(Platform.id == platform_id).first()
     if not platform:
         raise HTTPException(status_code=404, detail="Platform not found")
     device_count = db.query(Device).filter(Device.platform_id == platform_id).count()
     if platform.devices_limit is not None and device_count >= platform.devices_limit:
         raise HTTPException(status_code=400, detail="Device limit reached for this platform")
+    # Проверка уникальности grafana_uid
+    if device_in.grafana_uid:
+        existing = db.query(Device).filter(Device.grafana_uid == device_in.grafana_uid).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Устройство с таким ID плеера Grafana уже существует")
     device = Device(platform_id=platform_id, **device_in.dict())
     db.add(device)
     db.commit()
@@ -118,7 +123,7 @@ def add_platform_device(platform_id: int, device_in: DeviceCreate, db: Session =
 
 @router.delete("/platforms/{platform_id}/devices/{device_id}", status_code=204)
 def delete_platform_device(platform_id: int, device_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
-    require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager'], db=db)
+    require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager', 'user'], db=db)
     device = db.query(Device).filter(Device.id == device_id, Device.platform_id == platform_id).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -130,4 +135,31 @@ def delete_platform_device(platform_id: int, device_id: int, db: Session = Depen
 @router.get("/platforms/{platform_id}/audit/", response_model=list[AuditLogOut])
 def get_platform_audit(platform_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager'], db=db)
-    return db.query(AuditLog).filter(AuditLog.platform_id == platform_id).order_by(AuditLog.timestamp.desc()).all() 
+    return db.query(AuditLog).filter(AuditLog.platform_id == platform_id).order_by(AuditLog.timestamp.desc()).all()
+
+@router.get("/my-platforms/", response_model=list[PlatformOut])
+def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    # Получаем все PlatformUser для текущего пользователя
+    platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
+    platform_ids = [pu.platform_id for pu in platform_links]
+    if not platform_ids:
+        return []
+    platforms = db.query(Platform).filter(Platform.id.in_(platform_ids)).all()
+    return platforms
+
+@router.put("/platforms/{platform_id}/devices/{device_id}", response_model=DeviceOut)
+def update_platform_device(platform_id: int, device_id: int, device_in: DeviceUpdate, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    require_platform_role(platform_id, user_id, allowed_roles=['admin', 'manager', 'user'], db=db)
+    device = db.query(Device).filter(Device.id == device_id, Device.platform_id == platform_id).first()
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    # Проверка уникальности grafana_uid
+    if device_in.grafana_uid:
+        existing = db.query(Device).filter(Device.grafana_uid == device_in.grafana_uid, Device.id != device_id).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Устройство с таким ID плеера Grafana уже существует")
+    for field, value in device_in.dict(exclude_unset=True).items():
+        setattr(device, field, value)
+    db.commit()
+    db.refresh(device)
+    return device 

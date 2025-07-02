@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.schemas.users import UserCreate, UserInDB, UserUpdate
+from app.schemas.users import UserCreate, UserInDB, UserUpdate, PlatformRole
 from app.models.user import User
 from app.db.session import get_db
 from app.core.auth import get_password_hash, get_current_user
 from datetime import datetime
 import logging
 from app.utils.audit import log_audit
+from app.models.platform_user import PlatformUser
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -44,8 +45,14 @@ def read_users(
     return users
 
 @router.get("/me", response_model=UserInDB)
-def read_current_user(current_user: User = Depends(get_current_user)):
-    return current_user
+def read_current_user(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    # Получаем все platform_roles пользователя
+    platform_users = db.query(PlatformUser).filter(PlatformUser.user_id == current_user.id).all()
+    platform_roles = [PlatformRole(platform_id=pu.platform_id, role=pu.role) for pu in platform_users]
+    # Преобразуем current_user в dict и добавляем platform_roles
+    user_dict = current_user.__dict__.copy()
+    user_dict['platform_roles'] = platform_roles
+    return user_dict
 
 @router.put("/{user_id}", response_model=UserInDB)
 def update_user(

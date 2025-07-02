@@ -14,6 +14,7 @@ class DeviceBase(BaseModel):
 class DeviceCreate(DeviceBase):
     status: DeviceStatus = DeviceStatus.OFFLINE
     phone: str = Field(..., pattern=r"^\+?[0-9\s\-\(\)]+$")
+    platform_id: Optional[int] = Field(None, description="ID платформы для привязки устройства")
 
 class DeviceUpdate(DeviceBase):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -25,6 +26,7 @@ class DeviceInDB(DeviceBase):
     phone: Optional[str] = Field(None, pattern=r"^\+?[0-9\s\-\(\)]+$")
     last_update: Optional[datetime] = None
     created_at: datetime
+    platform_id: Optional[int] = None
 
     class Config:
         from_attributes = True

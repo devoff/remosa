@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from ..models.device import Device, DeviceStatus
 from ..schemas.device import DeviceCreate, DeviceUpdate
 from ..services.command_service import CommandService
+from ..models.platform import Platform
 
 class DeviceService:
     @staticmethod
@@ -41,14 +42,12 @@ class DeviceService:
         return db_device
 
     @staticmethod
-    def delete_device(db: Session, device_id: int) -> Device:
-        db_device = DeviceService.get_device(db, device_id)
-        if not db_device:
-            raise HTTPException(status_code=404, detail="Device not found")
-        
-        db.delete(db_device)
-        db.commit()
-        return db_device
+    def delete_device(db: Session, device_id: int):
+        device = db.query(Device).filter(Device.id == device_id).first()
+        if device:
+            db.delete(device)
+            db.commit()
+        return device
 
     @staticmethod
     def update_device_status(db: Session, grafana_uid: str, alert_status: str) -> Device:
@@ -78,4 +77,19 @@ class DeviceService:
         if not device:
             raise HTTPException(status_code=404, detail="Устройство не найдено")
         
-        return CommandService.get_templates(db, device.type) 
+        return CommandService.get_templates(db, device.type)
+
+    @staticmethod
+    def move_device(db: Session, device_id: int, platform_id: int):
+        device = db.query(Device).filter(Device.id == device_id).first()
+        if not device:
+            raise HTTPException(status_code=404, detail="Device not found")
+
+        platform = db.query(Platform).filter(Platform.id == platform_id).first()
+        if not platform:
+            raise HTTPException(status_code=404, detail="Platform not found")
+
+        device.platform_id = platform_id
+        db.commit()
+        db.refresh(device)
+        return device 

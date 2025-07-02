@@ -122,42 +122,6 @@ async def execute_command(
     )
     return log
 
-@router.get("/logs", response_model=List[CommandLogResponse])
-async def get_all_command_logs(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-    device_id: Optional[int] = None,
-    level: Optional[str] = None,
-    start_date: Optional[datetime] = None,
-    end_date: Optional[datetime] = None,
-):
-    """
-    Получить всю историю команд с возможностью фильтрации.
-    """
-    logs = CommandService.get_all_command_logs(
-        db, 
-        device_id=device_id, 
-        level=level, 
-        start_date=start_date, 
-        end_date=end_date
-    )
-    if not logs:
-        # Возвращаем пустой список вместо 404, если по фильтрам ничего не найдено
-        return []
-    return logs
-
-@router.get("/logs/{device_id}", response_model=List[CommandLogResponse])
-async def get_command_logs(
-    device_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """Получить историю команд для устройства"""
-    logs = CommandService.get_command_logs(db, device_id)
-    if not logs:
-        raise HTTPException(status_code=404, detail="Logs not found")
-    return logs
-
 @router.get("/status/{command_id}", response_model=CommandLogResponse)
 async def get_command_status(
     command_id: int,

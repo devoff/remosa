@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './DevicesList.css';
-import { useDevicesAPI } from './useDevicesAPI';
+import { useApi } from '../../lib/useApi';
+import { useAuth } from '../../lib/useAuth';
 import { DeviceFormModal } from './DeviceFormModal';
 import { DeviceCommandsPanel } from '../DeviceCommandsPanel';
-import { CommandTemplate, Device } from '../../types';
+import { CommandTemplate, Device, Platform } from '../../types';
 import AlertsPanel from './AlertsPanel';
+import { canAddDevice, canEditDevice } from '../../utils/roleUtils';
+import { message as antdMessage } from 'antd';
 
 const DevicesList = () => {
-  const { fetchDevices, deleteDevice, saveDevice } = useDevicesAPI();
+  const { get, post, put, remove, patch } = useApi();
+  const { isSuperAdmin, user, currentPlatform } = useAuth();
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,23 +21,39 @@ const DevicesList = () => {
   const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
+
+  const fetchDevices = useCallback(async () => {
+    setLoading(true);
+    try {
+      let allDevices: Device[] = [];
+      let allPlatforms: Platform[] = [];
+      if (isSuperAdmin) {
+        const data = await get('/devices/');
+        allDevices = Array.isArray(data) ? data : [];
+        allPlatforms = await get('/platforms/');
+      } else {
+        const myPlatforms: Platform[] = await get('/platforms/my-platforms/');
+        allPlatforms = myPlatforms;
+        const devicePromises = myPlatforms.map(p => get(`/platforms/${p.id}/devices/`));
+        const results = await Promise.all(devicePromises);
+        allDevices = results.flat();
+      }
+      setDevices(allDevices);
+      setPlatforms(allPlatforms);
+      const models = Array.from(new Set(allDevices.map((d: Device) => d.model).filter(Boolean) as string[]));
+      setAvailableModels(models);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [get, isSuperAdmin]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchDevices();
-        setDevices(data);
-        const models = Array.from(new Set(data.map((d: Device) => d.model).filter(Boolean) as string[]));
-        setAvailableModels(models);
-      } catch (err) {
-        console.error('Fetch error:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    fetchDevices();
+  }, [fetchDevices]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -54,21 +74,55 @@ const DevicesList = () => {
     return icons[type as keyof typeof icons] || icons.default;
   };
 
-  const handleDelete = async (id: string) => {
-    await deleteDevice(id);
-    setDevices(devices.filter((d: Device) => d.id.toString() === id));
-  };
+  const handleSave = async (deviceData: Device & { platform_id?: number }) => {
+    if (isSuperAdmin) {
+      try {
+        const originalDevice = devices.find(d => d.id === deviceData.id);
+        const newPlatformId = deviceData.platform_id;
 
-  const handleSave = async (deviceData: Device) => {
+        if (originalDevice && newPlatformId && originalDevice.platform_id !== newPlatformId) {
+          await patch(`/devices/${deviceData.id}/move/${newPlatformId}`, {});
+        }
+        
+        const { platform_id, ...restOfData } = deviceData;
+        
+        if (deviceData.id) {
+          await put(`/devices/${deviceData.id}`, restOfData);
+        } else {
+          await post('/devices/', deviceData);
+        }
+        fetchDevices();
+      } catch (err: any) {
+        if (err?.response?.data?.detail) {
+          antdMessage.error(err.response.data.detail);
+        } else if (err?.message) {
+          antdMessage.error(err.message);
+        } else {
+          antdMessage.error('Ошибка при сохранении устройства');
+        }
+      }
+      return;
+    }
+    if (!deviceData.platform_id) {
+      antdMessage.error('Не выбрана платформа для устройства.');
+      return;
+    }
     try {
-      await saveDevice({
-        ...deviceData,
-        id: deviceData.id?.toString() || ''
-      });
-      const updatedDevices = await fetchDevices();
-      setDevices(updatedDevices);
-    } catch (err) {
-      console.error('Ошибка сохранения:', err);
+      const { platform_id, id, ...rest } = deviceData;
+      if (id) {
+        await put(`/platforms/${platform_id}/devices/${id}`, rest);
+      } else {
+        await post(`/platforms/${platform_id}/devices/`, rest);
+      }
+      fetchDevices();
+    } catch (err: any) {
+      if (err?.response?.data?.detail) {
+        antdMessage.error(err.response.data.detail);
+      } else if (err?.message) {
+        antdMessage.error(err.message);
+      } else {
+        antdMessage.error('Ошибка при сохранении устройства');
+      }
     }
   };
 
@@ -79,6 +133,11 @@ const DevicesList = () => {
   const handleCloseCommandsPanel = () => {
     setSelectedDevice(null);
   };
+
+  // DEBUG LOGS
+  console.log('user:', user);
+  console.log('currentPlatform:', currentPlatform);
+  console.log('platform_roles:', user?.platform_roles);
 
   if (loading) return <div className="p-4 text-center">Загрузка устройств...</div>;
   if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
@@ -100,7 +159,9 @@ const DevicesList = () => {
           >
             Таблица
           </button>
-          <button onClick={() => setIsAddModalOpen(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">Добавить устройство</button>
+          {(isSuperAdmin || canAddDevice(user, currentPlatform)) && (
+            <button onClick={() => setIsAddModalOpen(true)} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">Добавить устройство</button>
+          )}
         </div>
       </div>
 
@@ -118,21 +179,17 @@ const DevicesList = () => {
                     <div className="flex justify-between items-start">
                       <h3 className="font-medium dark:text-gray-100">{device.name}</h3>
                       <div className="flex space-x-2">
-                        <button 
-                          onClick={() => {
-                            setCurrentDevice(device);
-                            setIsEditModalOpen(true);
-                          }}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(String(deviceId))}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          🗑️
-                        </button>
+                        {(isSuperAdmin || canEditDevice(user, currentPlatform)) && (
+                          <button 
+                            onClick={() => {
+                              setCurrentDevice(device);
+                              setIsEditModalOpen(true);
+                            }}
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            ✏️
+                          </button>
+                        )}
                         <button
                           onClick={() => handleOpenCommandsPanel(device)}
                           className="text-blue-500 hover:text-blue-700 ml-2"
@@ -160,6 +217,11 @@ const DevicesList = () => {
                       {device.description && (
                         <p className="text-gray-600 dark:text-gray-400">Описание: {device.description}</p>
                       )}
+                      {device.platform_id && (
+                        <p className="dark:text-gray-300 text-sm text-gray-500">
+                          Платформа: {platforms.find(p => p.id === device.platform_id)?.name || device.platform_id}
+                        </p>
+                      )}
                       <p className="text-sm text-gray-500 dark:text-gray-500">
                         Обновлено: {new Date(device.last_update).toLocaleString()}
                       </p>
@@ -183,6 +245,7 @@ const DevicesList = () => {
                 <th className="px-4 py-2 text-left text-gray-100">ID плеера Grafana</th>
                 <th className="px-4 py-2 text-left text-gray-100">Описание</th>
                 <th className="px-4 py-2 text-left text-gray-100">Обновлено</th>
+                <th className="px-4 py-2 text-left text-gray-100">Платформа</th>
                 <th className="px-4 py-2 text-left text-gray-100">Действия</th>
               </tr>
             </thead>
@@ -217,22 +280,21 @@ const DevicesList = () => {
                       {new Date(device.last_update).toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-gray-100">
+                      {device.platform_id && (platforms.find(p => p.id === device.platform_id)?.name || device.platform_id)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-100">
                       <div className="flex gap-2">
-                        <button 
-                          onClick={() => {
-                            setCurrentDevice(device);
-                            setIsEditModalOpen(true);
-                          }}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(String(deviceId))}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          🗑️
-                        </button>
+                        {(isSuperAdmin || canEditDevice(user, currentPlatform)) && (
+                          <button 
+                            onClick={() => {
+                              setCurrentDevice(device);
+                              setIsEditModalOpen(true);
+                            }}
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            ✏️
+                          </button>
+                        )}
                         <button
                           onClick={() => handleOpenCommandsPanel(device)}
                           className="text-blue-500 hover:text-blue-700 ml-2"
