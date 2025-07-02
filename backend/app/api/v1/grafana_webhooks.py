@@ -142,6 +142,22 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
 
         # Если мы дошли досюда, это новый FIRING алерт (или другой статус, который должен быть записан как новый)
         try:
+            # Проверка на уникальность external_id (fingerprint)
+            if alert_data.fingerprint:
+                existing_alert_by_external_id = db.query(Alert).filter(Alert.external_id == alert_data.fingerprint).first()
+                if existing_alert_by_external_id:
+                    logger.info(f"Алерт с external_id={alert_data.fingerprint} уже существует. Обновляю существующий алерт.")
+                    # Обновляем статус, время, детали и т.д.
+                    existing_alert_by_external_id.status = alert_status
+                    existing_alert_by_external_id.updated_at = datetime.now(timezone.utc)
+                    existing_alert_by_external_id.severity = severity
+                    existing_alert_by_external_id.timestamp = datetime.fromisoformat(processed_starts_at.replace("Z", "+00:00"))
+                    existing_alert_by_external_id.details = alert_data_dict
+                    db.add(existing_alert_by_external_id)
+                    db.commit()
+                    db.refresh(existing_alert_by_external_id)
+                    continue  # Не создаём новый алерт!
+
             alert_title = payload.title if payload.title else alert_data.labels.alertname
             if not alert_title:
                 alert_title = "Generated Alert Title" # Запасной вариант, если title все еще None

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Paper, Typography, Tabs, Tab, Box, Button, CircularProgress } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -9,6 +9,9 @@ import PlatformUsersTable from './PlatformUsersTable';
 import PlatformDevicesTable from './PlatformDevicesTable';
 import AuditLogPanel from './AuditLogPanel';
 import PlatformEditDialog from './PlatformEditDialog';
+import { useAuth } from '../lib/useAuth';
+import AddDeviceDialog from './AddDeviceDialog';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Platform {
   id: number;
@@ -47,76 +50,70 @@ const PlatformDetailsPage: React.FC = () => {
   const [tab, setTab] = useState(0);
   const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDeviceDialogOpen, setAddDeviceDialogOpen] = useState(false);
   const { notify } = useNotification();
   const { get, post, put, remove } = useApi();
+  const { user } = useAuth();
 
-  const fetchPlatformData = async () => {
+  const currentUserPlatformRole = users.find(u => u.email === user?.email)?.platform_role;
+  const canManagePlatform = currentUserPlatformRole === 'admin' || user?.role === 'admin';
+  const canManageDevices = ['admin', 'manager'].includes(currentUserPlatformRole || '') || user?.role === 'admin';
+
+  const fetchPlatformData = useCallback(async () => {
     if (!platformId) return;
-    
-    console.log('Fetching platform data for ID:', platformId);
     setLoading(true);
     try {
       const platformData = await get(`/platforms/${platformId}`);
-      console.log('Platform data received:', platformData);
       setPlatform(platformData);
     } catch (e: any) {
-      console.error('Platform fetch error details:', e);
       notify('Ошибка загрузки данных платформы', 'error');
-      console.error('Platform fetch error:', e);
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchUsers = async () => {
+  }, [platformId, get, notify]);
+  
+  const fetchUsers = useCallback(async () => {
     if (!platformId) return;
-    
     try {
       const usersData = await get(`/platforms/${platformId}/users`);
       setUsers(usersData);
     } catch (e: any) {
       notify('Ошибка загрузки пользователей', 'error');
-      console.error('Users fetch error:', e);
     }
-  };
+  }, [platformId, get, notify]);
 
-  const fetchDevices = async () => {
+  const fetchDevices = useCallback(async () => {
     if (!platformId) return;
-    
     try {
       const devicesData = await get(`/platforms/${platformId}/devices`);
       setDevices(devicesData);
     } catch (e: any) {
       notify('Ошибка загрузки устройств', 'error');
-      console.error('Devices fetch error:', e);
     }
-  };
+  }, [platformId, get, notify]);
 
-  const fetchAuditLogs = async () => {
-    // TODO: Реализовать загрузку аудит логов когда endpoint будет готов
+  const fetchAuditLogs = useCallback(async () => {
+    // TODO: Реализовать, когда будет готов эндпоинт
     setAuditLogs([]);
-  };
+  }, [platformId, get, notify]);
 
   useEffect(() => {
     fetchPlatformData();
-  }, [platformId]);
+  }, [fetchPlatformData]);
 
   useEffect(() => {
-    if (tab === 0) {
-      fetchUsers();
-    } else if (tab === 1) {
-      fetchDevices();
-    } else if (tab === 2) {
-      fetchAuditLogs();
-    }
-  }, [tab, platformId]);
+    if (tab === 0) fetchUsers();
+    else if (tab === 1) fetchDevices();
+    else if (tab === 2) fetchAuditLogs();
+  }, [tab, fetchUsers, fetchDevices, fetchAuditLogs]);
 
   const handleTabChange = (_: any, newValue: number) => setTab(newValue);
 
   const handleAddUser = async (userData: { user_id: number; role: string }) => {
+    if (!platformId) return;
     try {
       await post(`/platforms/${platformId}/users`, userData);
-      notify('Пользователь добавлен в платформу', 'success');
+      notify('Пользователь добавлен', 'success');
       fetchUsers();
     } catch (e: any) {
       notify('Ошибка добавления пользователя', 'error');
@@ -124,9 +121,10 @@ const PlatformDetailsPage: React.FC = () => {
   };
 
   const handleEditUser = async (userId: number, roleData: { role: string }) => {
+    if (!platformId) return;
     try {
       await put(`/platforms/${platformId}/users/${userId}`, roleData);
-      notify('Роль пользователя обновлена', 'success');
+      notify('Роль обновлена', 'success');
       fetchUsers();
     } catch (e: any) {
       notify('Ошибка обновления роли', 'error');
@@ -134,22 +132,45 @@ const PlatformDetailsPage: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: number) => {
+    if (!platformId) return;
     try {
       await remove(`/platforms/${platformId}/users/${userId}`);
-      notify('Пользователь удален из платформы', 'success');
+      notify('Пользователь удален', 'success');
       fetchUsers();
     } catch (e: any) {
       notify('Ошибка удаления пользователя', 'error');
     }
   };
 
-  const handleEditPlatform = () => {
-    setEditDialogOpen(true);
+  const handleAddDevice = () => {
+    setAddDeviceDialogOpen(true);
   };
 
-  const handleEditSave = () => {
-    fetchPlatformData(); // Перезагружаем данные платформы после редактирования
+  const handleConfirmAddDevice = async (deviceData: { name: string; description?: string }) => {
+    if (!platformId) return;
+    try {
+      await post(`/platforms/${platformId}/devices`, deviceData);
+      notify('Устройство добавлено', 'success');
+      fetchDevices();
+    } catch (e: any) {
+      notify(e.response?.data?.detail || 'Ошибка добавления устройства', 'error');
+    }
   };
+
+  const handleDeleteDevice = async (deviceId: number) => {
+    if (!platformId) return;
+    if (!window.confirm('Удалить это устройство?')) return;
+    try {
+      await remove(`/platforms/${platformId}/devices/${deviceId}`);
+      notify('Устройство удалено', 'success');
+      fetchDevices();
+    } catch (e: any) {
+      notify('Ошибка удаления устройства', 'error');
+    }
+  };
+
+  const handleEditPlatform = () => setEditDialogOpen(true);
+  const handleEditSave = () => fetchPlatformData();
 
   if (loading) {
     return (
@@ -171,22 +192,25 @@ const PlatformDetailsPage: React.FC = () => {
   return (
     <Paper sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/admin/platforms')}
-          sx={{ mr: 2 }}
-        >
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/admin/platforms')} sx={{ mr: 2 }}>
           Назад
         </Button>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           {platform.name}
         </Typography>
+        {currentUserPlatformRole && (
+          <Box sx={{ ml: 2, px: 2, py: 1, borderRadius: 2, bgcolor: '#f3f4f6' }}>
+            <Typography variant="body2" color="textSecondary">
+              Ваша роль: <b>{currentUserPlatformRole}</b>
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <PlatformLimitsPanel 
         platform={platform} 
-        isAdmin={true} 
-        onEdit={handleEditPlatform} 
+        isAdmin={canManagePlatform} 
+        onEdit={canManagePlatform ? handleEditPlatform : () => {}} 
       />
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 3 }}>
@@ -201,17 +225,24 @@ const PlatformDetailsPage: React.FC = () => {
         {tab === 0 && (
           <PlatformUsersTable 
             users={users} 
-            onAdd={handleAddUser}
-            onEdit={handleEditUser}
-            onDelete={handleDeleteUser}
+            onAdd={canManagePlatform ? handleAddUser : () => {}}
+            onEdit={canManagePlatform ? handleEditUser : () => {}}
+            onDelete={canManagePlatform ? handleDeleteUser : () => {}}
           />
         )}
         {tab === 1 && (
-          <PlatformDevicesTable 
-            devices={devices} 
-            onAdd={() => notify('Добавление устройств в разработке', 'info')}
-            onDelete={() => notify('Удаление устройств в разработке', 'info')}
-          />
+          <>
+            {canManageDevices && (
+              <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddDevice} sx={{ mb: 2 }}>
+                Добавить устройство
+              </Button>
+            )}
+            <PlatformDevicesTable 
+              devices={devices} 
+              onAdd={canManageDevices ? handleAddDevice : () => {}}
+              onDelete={canManageDevices ? handleDeleteDevice : () => {}}
+            />
+          </>
         )}
         {tab === 2 && <AuditLogPanel logs={auditLogs} />}
       </Box>
@@ -221,6 +252,12 @@ const PlatformDetailsPage: React.FC = () => {
         platform={platform}
         onClose={() => setEditDialogOpen(false)}
         onSave={handleEditSave}
+      />
+
+      <AddDeviceDialog 
+        open={addDeviceDialogOpen}
+        onClose={() => setAddDeviceDialogOpen(false)}
+        onAdd={handleConfirmAddDevice}
       />
     </Paper>
   );

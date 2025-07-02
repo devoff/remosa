@@ -1,29 +1,46 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Modal, Form, Input, Select, Spin, Alert, message, Tag, Popconfirm, Space } from 'antd';
+import { 
+  Table, 
+  Button, 
+  Spin, 
+  Alert, 
+  message, 
+  Tag, 
+  Popconfirm, 
+  Space,
+  Card,
+  Typography
+} from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { useApi } from '../lib/useApi';
-import { Device, DeviceStatus, CommandTemplate } from '../types';
-import { DeviceFormModal } from '../components/Monitoring/DeviceFormModal';
+import { Device, DeviceStatus, Platform } from '../types';
 import ExecuteCommandModal from './ExecuteCommandModal';
+import AddDeviceDialog from './AddDeviceDialog';
+import { useAuth } from '../lib/useAuth';
+import { canAddDevice } from '../utils/roleUtils';
 
-const { Option } = Select;
+const { Title } = Typography;
 
 const DevicesPage: React.FC = () => {
     const { get, post, put, remove } = useApi();
+    const { user, currentPlatform, isSuperAdmin } = useAuth();
+    console.log('user:', user);
+    console.log('currentPlatform:', currentPlatform);
     const [devices, setDevices] = useState<Device[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingDevice, setEditingDevice] = useState<Device | null>(null);
-    const [form] = Form.useForm();
+    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isCommandModalVisible, setIsCommandModalVisible] = useState(false);
     const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+    const [platformLimits, setPlatformLimits] = useState<any>(null);
 
     const fetchDevices = useCallback(async () => {
         setLoading(true);
         try {
+            // Загружаем все устройства (для упрощения)
             const data = await get('/devices/');
-            setDevices(Array.isArray(data) ? data : []);
+            const allDevices = Array.isArray(data) ? data : [];
+            setDevices(allDevices);
         } catch (e) {
             setError('Не удалось загрузить список устройств.');
             console.error(e);
@@ -37,15 +54,19 @@ const DevicesPage: React.FC = () => {
     }, [fetchDevices]);
 
     const handleAdd = () => {
-        setEditingDevice(null);
-        form.resetFields();
-        setIsModalVisible(true);
+        setIsAddDialogOpen(true);
     };
 
-    const handleEdit = (device: Device) => {
-        setEditingDevice(device);
-        form.setFieldsValue(device);
-        setIsModalVisible(true);
+    const handleAddDevice = async (deviceData: any) => {
+        try {
+            // Добавляем устройство (для упрощения)
+            const newDevice = await post('/devices/', deviceData);
+            message.success('Устройство успешно добавлено');
+            fetchDevices();
+        } catch (e) {
+            message.error('Ошибка при добавлении устройства');
+            console.error(e);
+        }
     };
 
     const handleDelete = async (deviceId: string) => {
@@ -55,23 +76,6 @@ const DevicesPage: React.FC = () => {
             fetchDevices();
         } catch (e) {
             message.error('Не удалось удалить устройство');
-        }
-    };
-
-    const handleOk = async () => {
-        try {
-            const values = await form.validateFields();
-            if (editingDevice) {
-                await put(`/devices/${editingDevice.id}`, values);
-                message.success('Устройство успешно обновлено');
-            } else {
-                await post('/devices/', values);
-                message.success('Устройство успешно добавлено');
-            }
-            setIsModalVisible(false);
-            fetchDevices();
-        } catch (e) {
-            message.error('Ошибка при сохранении устройства');
         }
     };
 
@@ -91,9 +95,9 @@ const DevicesPage: React.FC = () => {
             key: 'status',
             render: (status: DeviceStatus) => {
                 let color = 'geekblue';
-                if (status === 'online') color = 'green';
-                if (status === 'offline') color = 'volcano';
-                return <Tag color={color}>{status.toUpperCase()}</Tag>;
+                if (status === 'ONLINE') color = 'green';
+                if (status === 'OFFLINE') color = 'volcano';
+                return <Tag color={color}>{status}</Tag>;
             },
         },
         {
@@ -105,11 +109,6 @@ const DevicesPage: React.FC = () => {
                         icon={<PlayCircleOutlined />} 
                         onClick={() => handleOpenCommandModal(record)}
                         title="Выполнить команду"
-                    />
-                    <Button 
-                        icon={<EditOutlined />} 
-                        onClick={() => handleEdit(record)}
-                        title="Редактировать"
                     />
                     <Popconfirm
                         title="Вы уверены, что хотите удалить это устройство?"
@@ -133,43 +132,55 @@ const DevicesPage: React.FC = () => {
 
     return (
         <div className="p-4">
-            <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={handleAdd}
-                style={{ marginBottom: 16 }}
-            >
-                Добавить устройство
-            </Button>
-            <Table
-                dataSource={devices}
-                columns={columns}
-                rowKey="id"
-                loading={loading}
-            />
-            <Modal
-                title={editingDevice ? 'Редактировать устройство' : 'Добавить устройство'}
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={() => setIsModalVisible(false)}
-                okText="Сохранить"
-                cancelText="Отмена"
-            >
-                <Form form={form} layout="vertical" name="device_form">
-                    <Form.Item name="name" label="Имя устройства" rules={[{ required: true, message: 'Пожалуйста, введите имя устройства' }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="model" label="Модель" rules={[{ required: true, message: 'Пожалуйста, введите модель устройства' }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="phone" label="Номер телефона">
-                        <Input placeholder="+79991234567" />
-                    </Form.Item>
-                    <Form.Item name="description" label="Описание">
-                        <Input.TextArea />
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <Card>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <Title level={3}>
+                        Устройства
+                    </Title>
+                    
+                    {platformLimits && (
+                        <div style={{ textAlign: 'right' }}>
+                            <Typography.Text type="secondary">
+                                Устройства: {platformLimits.devices.current} / {platformLimits.devices.limit || '∞'}
+                                {platformLimits.devices.limit && (
+                                    <span style={{ 
+                                        color: platformLimits.devices.available <= 0 ? '#ff4d4f' : 
+                                               platformLimits.devices.available <= 2 ? '#faad14' : '#52c41a'
+                                    }}>
+                                        {' '}(доступно: {platformLimits.devices.available})
+                                    </span>
+                                )}
+                            </Typography.Text>
+                        </div>
+                    )}
+                </div>
+
+                {canAddDevice(user, currentPlatform) && (
+                  <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={handleAdd}
+                      disabled={platformLimits && platformLimits.devices.limit && platformLimits.devices.available <= 0}
+                      style={{ marginBottom: 16 }}
+                  >
+                      Добавить устройство
+                  </Button>
+                )}
+
+                <Table
+                    dataSource={devices}
+                    columns={columns}
+                    rowKey="id"
+                    loading={loading}
+                />
+            </Card>
+
+                            <AddDeviceDialog
+                    open={isAddDialogOpen}
+                    onClose={() => setIsAddDialogOpen(false)}
+                    onAdd={handleAddDevice}
+                />
+
             {selectedDevice && (
                 <ExecuteCommandModal
                     visible={isCommandModalVisible}

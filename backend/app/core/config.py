@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     # Настройки JWT
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 300
 
     # Настройки фронтенда (Vite/React)
     VITE_API_URL: str = "http://remosa.ru:8000/api/v1"

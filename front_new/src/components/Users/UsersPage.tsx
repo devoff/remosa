@@ -135,7 +135,7 @@ const UsersPage = () => {
           role === 'admin' ? 'blue' : 
           'green'
         }>
-          {role.toUpperCase()}
+          {role === 'admin' ? 'Супер-админ' : 'Пользователь'}
         </Tag>
       ),
       sorter: (a: User, b: User) => a.role.localeCompare(b.role),
@@ -206,7 +206,7 @@ const UsersPage = () => {
           style={{ width: 150 }}
         >
           <Option value="all">Все роли</Option>
-          <Option value="admin">Администратор</Option>
+          <Option value="admin">Супер-админ</Option>
           <Option value="user">Пользователь</Option>
         </Select>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser} style={{ marginLeft: 'auto' }}>
@@ -272,7 +272,7 @@ const UsersPage = () => {
           >
             <Select>
               <Option value="user">Пользователь</Option>
-              <Option value="admin">Админ</Option>
+              <Option value="admin">Супер-админ</Option>
             </Select>
           </Form.Item>
           <Form.Item name="is_active" valuePropName="checked">

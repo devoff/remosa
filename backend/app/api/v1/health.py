@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from sqlalchemy import text
 import logging
+import os
+import platform
+from datetime import datetime
 
 router = APIRouter()
 
@@ -24,9 +27,35 @@ async def health_check(db: Session = Depends(get_db)):
         logger.error(f"Database connection error: {e}")
         db_status = "unhealthy"
 
+    # Информация о версии и системе
+    version_info = {
+        "version": os.getenv("APP_VERSION", "1.0.0"),
+        "build_date": os.getenv("BUILD_DATE", datetime.now().isoformat()),
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "environment": os.getenv("ENVIRONMENT", "development")
+    }
+
     return JSONResponse({
         "status": "ok",
         "database": db_status,
         "jwt_key_loaded": True,  # Предполагаем, что если сервис работает, ключ загружен
-        "debug_mode": False  # Уточнить, если есть реальный способ проверки
+        "debug_mode": False,  # Уточнить, если есть реальный способ проверки
+        "version_info": version_info
     })
+
+@router.get("/version", summary="Получить информацию о версии")
+async def get_version():
+    """
+    Возвращает информацию о версии приложения и системе.
+    """
+    version_info = {
+        "version": os.getenv("APP_VERSION", "1.0.0"),
+        "build_date": os.getenv("BUILD_DATE", datetime.now().isoformat()),
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "api_version": "v1"
+    }
+    
+    return JSONResponse(version_info)

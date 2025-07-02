@@ -1,6 +1,10 @@
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
+
+class PlatformRole(BaseModel):
+    platform_id: int
+    role: str
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -18,6 +22,7 @@ class UserInDB(UserBase):
     role: str
     created_at: datetime
     updated_at: datetime
+    platform_roles: List[PlatformRole] = []
 
     class Config:
         from_attributes = True 

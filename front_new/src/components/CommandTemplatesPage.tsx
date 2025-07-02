@@ -17,6 +17,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, ArrowLeftOutlined } from '@
 import { useApi } from '../lib/useApi';
 import { CommandTemplate, CommandTemplateCreate } from '../types';
 import type { ColumnsType } from 'antd/es/table';
+import { useAuth } from '../lib/useAuth';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -33,11 +34,13 @@ const CommandTemplatesPage: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [form] = Form.useForm();
   const api = useApi();
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === 'admin';
 
   const fetchTemplates = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get('/command-templates');
+      const response = await api.get('/command_templates');
       const templatesData = Array.isArray(response) ? response : [];
       setTemplates(templatesData);
     } catch (error) {
@@ -81,7 +84,7 @@ const CommandTemplatesPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await api.remove(`/command-templates/${id}`);
+      await api.remove(`/command_templates/${id}`);
       message.success('Шаблон команды успешно удален');
       fetchTemplates();
     } catch (error) {
@@ -95,10 +98,10 @@ const CommandTemplatesPage: React.FC = () => {
       const payload: CommandTemplateCreate = { ...values, params_schema: parsedSchema };
       
       if (editingTemplate) {
-        await api.put(`/command-templates/${editingTemplate.id}`, payload);
+        await api.put(`/command_templates/${editingTemplate.id}`, payload);
         message.success('Шаблон успешно обновлен');
       } else {
-        await api.post('/command-templates', payload);
+        await api.post('/command_templates', payload);
         message.success('Шаблон успешно создан');
       }
       setIsModalVisible(false);
@@ -121,12 +124,14 @@ const CommandTemplatesPage: React.FC = () => {
       fixed: 'right',
       width: 200,
       render: (_: any, record: CommandTemplate) => (
-        <Space size="small">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Редактировать</Button>
-          <Popconfirm title="Вы уверены?" onConfirm={() => handleDelete(record.id)}>
-            <Button danger icon={<DeleteOutlined />}>Удалить</Button>
-          </Popconfirm>
-        </Space>
+        isSuperAdmin ? (
+          <Space size="small">
+            <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Редактировать</Button>
+            <Popconfirm title="Вы уверены?" onConfirm={() => handleDelete(record.id)}>
+              <Button danger icon={<DeleteOutlined />}>Удалить</Button>
+            </Popconfirm>
+          </Space>
+        ) : null
       ),
     },
   ];
@@ -156,14 +161,16 @@ const CommandTemplatesPage: React.FC = () => {
           )}
         />
       </div>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleAddModelOrTemplate}
-        className="mt-6"
-      >
-        Добавить модель или шаблон
-      </Button>
+      {isSuperAdmin && (
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleAddModelOrTemplate}
+          className="mt-6"
+        >
+          Добавить модель или шаблон
+        </Button>
+      )}
     </div>
   );
 
@@ -177,13 +184,15 @@ const CommandTemplatesPage: React.FC = () => {
           </Button>
           <div className="flex justify-between items-center">
             <Title level={3} style={{ color: 'white', margin: 0 }}>Шаблоны для модели: {selectedModel}</Title>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => handleAddTemplateForModel(selectedModel!)}
-            >
-              Добавить шаблон для {selectedModel}
-            </Button>
+            {isSuperAdmin && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => handleAddTemplateForModel(selectedModel!)}
+              >
+                Добавить шаблон для {selectedModel}
+              </Button>
+            )}
           </div>
           <Table
             columns={columns}
@@ -204,47 +213,49 @@ const CommandTemplatesPage: React.FC = () => {
     <>
       {selectedModel ? renderTemplateTable() : renderModelSelection()}
       
-      <Modal
-        title={editingTemplate ? 'Редактировать шаблон' : 'Добавить шаблон'}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={800}
-      >
-        <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ model: selectedModel || '' }}>
-            <Form.Item name="model" label="Модель" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="category" label="Категория" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="subcategory" label="Подкатегория">
-                <Input />
-            </Form.Item>
-            <Form.Item name="name" label="Название" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="template" label="Шаблон" rules={[{ required: true }]}>
-                <Input placeholder="#01#{param}#" />
-            </Form.Item>
-            <Form.Item name="description" label="Описание">
-                <Input.TextArea />
-            </Form.Item>
-            <Form.Item name="params_schema" label="Схема параметров (JSON)" rules={[{ required: true }]}>
-                 <Input.TextArea rows={8} placeholder={`{
+      {isSuperAdmin && (
+        <Modal
+          title={editingTemplate ? 'Редактировать шаблон' : 'Добавить шаблон'}
+          open={isModalVisible}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+          width={800}
+        >
+          <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ model: selectedModel || '' }}>
+              <Form.Item name="model" label="Модель" rules={[{ required: true }]}>
+                  <Input />
+              </Form.Item>
+              <Form.Item name="category" label="Категория" rules={[{ required: true }]}>
+                  <Input />
+              </Form.Item>
+              <Form.Item name="subcategory" label="Подкатегория">
+                  <Input />
+              </Form.Item>
+              <Form.Item name="name" label="Название" rules={[{ required: true }]}>
+                  <Input />
+              </Form.Item>
+              <Form.Item name="template" label="Шаблон" rules={[{ required: true }]}>
+                  <Input placeholder="#01#{param}#" />
+              </Form.Item>
+              <Form.Item name="description" label="Описание">
+                  <Input.TextArea />
+              </Form.Item>
+              <Form.Item name="params_schema" label="Схема параметров (JSON)" rules={[{ required: true }]}>
+                   <Input.TextArea rows={8} placeholder={`{
   "properties": {
     "param": { "type": "string", "title": "Параметр" }
   },
   "required": ["param"]
 }`} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Сохранить
-              </Button>
-            </Form.Item>
-        </Form>
-      </Modal>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Сохранить
+                </Button>
+              </Form.Item>
+          </Form>
+        </Modal>
+      )}
     </>
   );
 };

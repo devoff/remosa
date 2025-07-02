@@ -7,15 +7,21 @@ from app.schemas.device import DeviceCreate, DeviceUpdate, Device as DeviceSchem
 from app.services.device import DeviceService
 from app.core.auth import get_current_user
 from app.models.user import User
+from app.core.audit import log_audit
 
 router = APIRouter()
+
+def require_superadmin(user: User):
+    if user.role != 'admin':
+        raise HTTPException(status_code=403, detail="Требуются права супер-администратора")
 
 @router.get("/", response_model=List[DeviceSchema])
 async def get_devices(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get all devices."""
+    """Get all devices. (Superadmin only)"""
+    require_superadmin(current_user)
     return db.query(Device).all()
 
 @router.post("/", response_model=DeviceSchema)
@@ -24,9 +30,13 @@ async def create_device(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Create a new device."""
+    """Create a new device. (Superadmin only)"""
+    require_superadmin(current_user)
     if device.phone:
         device.phone = device.phone.lstrip('+')
+    # Супер-админ должен явно указать платформу при создании устройства
+    if not device.platform_id:
+        raise HTTPException(status_code=400, detail="platform_id является обязательным полем")
     db_device = Device(**device.model_dump())
     db.add(db_device)
     db.commit()
@@ -39,7 +49,8 @@ async def get_device(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get a device by ID."""
+    """Get a device by ID. (Superadmin only)"""
+    require_superadmin(current_user)
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -52,7 +63,8 @@ async def update_device(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Update a device."""
+    """Update a device. (Superadmin only)"""
+    require_superadmin(current_user)
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -74,7 +86,8 @@ async def delete_device(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Delete a device."""
+    """Delete a device. (Superadmin only)"""
+    require_superadmin(current_user)
     db_device = db.query(Device).filter(Device.id == device_id).first()
     if not db_device:
         raise HTTPException(status_code=404, detail="Device not found")
@@ -89,4 +102,31 @@ async def search_devices(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return DeviceService.get_device_by_phone(db, phone) 
+    """Search devices by phone. (Superadmin only)"""
+    require_superadmin(current_user)
+    return DeviceService.get_device_by_phone(db, phone)
+
+@router.patch("/{device_id}/move/{platform_id}", response_model=DeviceSchema)
+async def move_device_to_platform(
+    device_id: int, 
+    platform_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Move device to another platform. (Superadmin only)"""
+    require_superadmin(current_user)
+    
+    # Получаем старую платформу для логирования
+    old_device = db.query(Device).filter(Device.id == device_id).first()
+    if not old_device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    old_platform_id = old_device.platform_id
+    
+    # Перемещаем устройство
+    device = DeviceService.move_device(db, device_id, platform_id)
+    
+    # Логируем действие
+    log_audit(db, action="move_device", user_id=current_user.id,
+              details=f"Устройство {device.name} перемещено с платформы {old_platform_id} на {platform_id}")
+    
+    return device 

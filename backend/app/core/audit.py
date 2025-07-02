@@ -5,7 +5,6 @@ def log_audit(db: Session, action: str, user_id: int, platform_id: int = None, d
     log = AuditLog(
         action=action,
         user_id=user_id,
-        platform_id=platform_id,
         details=details
     )
     db.add(log)

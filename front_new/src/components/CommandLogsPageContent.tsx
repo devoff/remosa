@@ -37,7 +37,7 @@ export const CommandLogsPageContent: React.FC = () => {
     const fetchCommandLogs = async () => {
         setLoading(true);
         try {
-            let url = `/commands/logs`; // Используем эндпоинт с фильтрацией
+            let url = `/logs`; // Используем эндпоинт с фильтрацией
             const params = new URLSearchParams();
     
             if (selectedDeviceId) {

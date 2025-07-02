@@ -26,7 +26,7 @@ const ExecuteCommandModal: React.FC<ExecuteCommandModalProps> = ({ visible, onCl
   const fetchTemplates = async () => {
     try {
       setLoadingTemplates(true);
-      const response = await api.get(`/command-templates?model=${device.model || ''}`);
+      const response = await api.get(`/command_templates?model=${device.model || ''}`);
       const templates = Array.isArray(response) ? response : [];
       setTemplates(templates);
       setLoadingTemplates(false);

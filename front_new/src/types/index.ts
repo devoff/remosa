@@ -106,7 +106,7 @@ export interface FlowStore {
   setEditingConfig: (editing: boolean) => void;
 }
 
-export type DeviceStatus = 'online' | 'offline' | 'error' | 'unknown';
+export type DeviceStatus = 'ONLINE' | 'WARNING' | 'OFFLINE';
 
 export interface Device {
   id: string;
@@ -121,6 +121,7 @@ export interface Device {
   alert_sms_template_id?: number;
   send_alert_sms?: boolean;
   alert_sms_template_params?: Record<string, any>;
+  platform_id?: number;
 }
 
 export interface CommandTemplate {
@@ -178,6 +179,11 @@ export interface DeviceCommandsPanelProps {
   onClose: () => void;
 }
 
+export interface PlatformRole {
+  platform_id: number;
+  role: 'admin' | 'manager' | 'user' | 'viewer';
+}
+
 export interface User {
   id: number;
   email: string;
@@ -186,6 +192,7 @@ export interface User {
   platform_id?: number | null;
   created_at: string;
   updated_at: string;
+  platform_roles?: PlatformRole[];
 }
 
 export interface UserCreate {
@@ -203,4 +210,15 @@ export interface UserLogin {
 export interface Token {
   access_token: string;
   token_type: string;
+}
+
+export interface Platform {
+  id: number;
+  name: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+  owner_id: number;
+  devices_limit: number;
+  sms_limit: number;
 }

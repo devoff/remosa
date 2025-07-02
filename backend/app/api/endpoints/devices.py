@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from ...core.database import get_db
 from ...services.device import DeviceService
 from ...schemas.device import Device, DeviceCreate, DeviceUpdate, GrafanaWebhookAlert
+from ...core.audit import log_audit
+from ...core.auth import get_current_superadmin
+from fastapi import status
 
 router = APIRouter()
 
@@ -42,6 +45,7 @@ def update_device(
     db: Session = Depends(get_db)
 ):
     """Обновить устройство"""
+    log_audit(db, action="update_device", user_id=user.id, device_id=device.id, platform_id=device.platform_id, details=f"Обновлено устройство {device.name}")
     return DeviceService.update_device(db, device_id, device)
 
 @router.delete("/{device_id}", response_model=Device)
@@ -63,4 +67,18 @@ def grafana_webhook(
     if not grafana_uid:
         raise HTTPException(status_code=400, detail="device_uid not found in alert labels")
     
-    return DeviceService.update_device_status(db, grafana_uid, alert.status) 
+    return DeviceService.update_device_status(db, grafana_uid, alert.status)
+
+@router.patch("/devices/{device_id}/move/{platform_id}", response_model=Device)
+def move_device_to_platform(device_id: int, platform_id: int, db: Session = Depends(get_db), user=Depends(get_current_superadmin)):
+    old_platform_id = db.query(Device).filter(Device.id == device_id).first().platform_id
+    device = DeviceService.move_device(db, device_id, platform_id)
+    log_audit(db, action="move_device", user_id=user.id, device_id=device.id, details=f"Устройство {device.name} перемещено с платформы {old_platform_id} на {platform_id}")
+    return device
+
+@router.delete("/devices/{device_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_device(device_id: int, db: Session = Depends(get_db), user=Depends(get_current_superadmin)):
+    device = db.query(Device).filter(Device.id == device_id).first()
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return DeviceService.delete_device(db, device_id) 
