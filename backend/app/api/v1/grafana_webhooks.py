@@ -51,7 +51,7 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
 
         processed_starts_at = truncate_microseconds(starts_at_str)
         processed_ends_at = truncate_microseconds(ends_at_str)
-        logger.info(f"DEBUG_STARTSAT: Processed startsAt: {processed_starts_at}")
+        logger.debug(f"DEBUG_STARTSAT: Processed startsAt: {processed_starts_at}")
 
         device_id_for_alert = None
         device_phone_number = None
@@ -161,7 +161,7 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
             alert_title = payload.title if payload.title else alert_data.labels.alertname
             if not alert_title:
                 alert_title = "Generated Alert Title" # Запасной вариант, если title все еще None
-            logger.info(f"DEBUG_ALERT_TITLE: Title before DB add: {alert_title}") # Добавляем логирование для отладки
+            logger.debug(f"DEBUG_ALERT_TITLE: Title before DB add: {alert_title}") # Добавляем логирование для отладки
 
             db_alert = Alert(
                 device_id=device_id_for_alert,

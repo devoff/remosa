@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
+  Paper,
+  Box,
+  TableContainer,
   Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  message,
-  Space,
-  Popconfirm,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  CircularProgress,
   Typography,
-  List,
-  Spin
-} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+  TextField,
+  MenuItem,
+  Button
+} from '@mui/material';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import CommandTemplateDialog from './CommandTemplateDialog';
 import { useApi } from '../lib/useApi';
 import { CommandTemplate, CommandTemplateCreate } from '../types';
-import type { ColumnsType } from 'antd/es/table';
 import { useAuth } from '../lib/useAuth';
-
-const { Title } = Typography;
-const { Option } = Select;
+import { useNotification } from './NotificationProvider';
 
 interface CommandTemplateFormValues extends Omit<CommandTemplateCreate, 'params_schema'> {
   params_schema: string;
@@ -29,27 +28,27 @@ interface CommandTemplateFormValues extends Omit<CommandTemplateCreate, 'params_
 const CommandTemplatesPage: React.FC = () => {
   const [templates, setTemplates] = useState<CommandTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<CommandTemplate | null>(null);
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
-  const [form] = Form.useForm();
+  const [selectedModel, setSelectedModel] = useState<string>('');
+  const [search, setSearch] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
   const api = useApi();
   const { user } = useAuth();
-  const isSuperAdmin = user?.role === 'admin';
+  const isSuperAdmin = user?.role === 'superadmin';
+  const { notify } = useNotification();
 
   const fetchTemplates = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get('/command_templates');
+      const response = await api.get('/command_templates/');
       const templatesData = Array.isArray(response) ? response : [];
       setTemplates(templatesData);
     } catch (error) {
-      console.error('Ошибка при загрузке шаблонов команд:', error);
-      message.error('Не удалось загрузить шаблоны команд');
+      notify('Не удалось загрузить шаблоны команд', 'error');
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, notify]);
 
   useEffect(() => {
     fetchTemplates();
@@ -60,203 +59,151 @@ const CommandTemplatesPage: React.FC = () => {
     return Array.from(new Set(models as string[]));
   }, [templates]);
 
-  const handleAddModelOrTemplate = () => {
-    form.resetFields();
+  const filteredTemplates = templates.filter((t: CommandTemplate) => {
+    if (!selectedModel || t.model !== selectedModel) return false;
+    if (search && !(
+      t.name?.toLowerCase().includes(search.toLowerCase()) ||
+      t.category?.toLowerCase().includes(search.toLowerCase())
+    )) return false;
+    return true;
+  });
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
     setEditingTemplate(null);
-    setIsModalVisible(true);
   };
 
-  const handleAddTemplateForModel = (model: string) => {
-    form.resetFields();
-    setEditingTemplate(null);
-    form.setFieldsValue({ model });
-    setIsModalVisible(true);
-  };
-
-  const handleEdit = (template: CommandTemplate) => {
-    setEditingTemplate(template);
-    form.setFieldsValue({
-      ...template,
-      params_schema: JSON.stringify(template.params_schema, null, 2),
-    });
-    setIsModalVisible(true);
+  const handleDialogSave = async (values: any) => {
+    try {
+      const parsedSchema = JSON.parse(values.params_schema);
+      const payload: CommandTemplate = { ...values, params_schema: parsedSchema };
+      if (editingTemplate) {
+        await api.put(`/command_templates/${editingTemplate.id}`, payload);
+        notify('Шаблон успешно обновлен', 'success');
+      } else {
+        await api.post('/command_templates/', payload);
+        notify('Шаблон успешно создан', 'success');
+      }
+      setDialogOpen(false);
+      setEditingTemplate(null);
+      fetchTemplates();
+    } catch (error) {
+      notify('Ошибка сохранения. Проверьте JSON схемы параметров.', 'error');
+    }
   };
 
   const handleDelete = async (id: number) => {
+    if (!window.confirm('Удалить шаблон команды?')) return;
     try {
       await api.remove(`/command_templates/${id}`);
-      message.success('Шаблон команды успешно удален');
+      notify('Шаблон команды успешно удален', 'success');
       fetchTemplates();
     } catch (error) {
-      message.error('Не удалось удалить шаблон команды');
+      notify('Не удалось удалить шаблон команды', 'error');
     }
   };
-
-  const onFinish = async (values: CommandTemplateFormValues) => {
-    try {
-      const parsedSchema = JSON.parse(values.params_schema);
-      const payload: CommandTemplateCreate = { ...values, params_schema: parsedSchema };
-      
-      if (editingTemplate) {
-        await api.put(`/command_templates/${editingTemplate.id}`, payload);
-        message.success('Шаблон успешно обновлен');
-      } else {
-        await api.post('/command_templates', payload);
-        message.success('Шаблон успешно создан');
-      }
-      setIsModalVisible(false);
-      fetchTemplates();
-    } catch (error) {
-      message.error('Ошибка сохранения. Проверьте JSON схемы параметров.');
-    }
-  };
-
-  const columns: ColumnsType<CommandTemplate> = [
-    { title: 'Модель', dataIndex: 'model', key: 'model' },
-    { title: 'Категория', dataIndex: 'category', key: 'category' },
-    { title: 'Подкатегория', dataIndex: 'subcategory', key: 'subcategory' },
-    { title: 'Название', dataIndex: 'name', key: 'name' },
-    { title: 'Шаблон', dataIndex: 'template', key: 'template' },
-    { title: 'Описание', dataIndex: 'description', key: 'description', ellipsis: true },
-    {
-      title: 'Действия',
-      key: 'action',
-      fixed: 'right',
-      width: 200,
-      render: (_: any, record: CommandTemplate) => (
-        isSuperAdmin ? (
-          <Space size="small">
-            <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Редактировать</Button>
-            <Popconfirm title="Вы уверены?" onConfirm={() => handleDelete(record.id)}>
-              <Button danger icon={<DeleteOutlined />}>Удалить</Button>
-            </Popconfirm>
-          </Space>
-        ) : null
-      ),
-    },
-  ];
 
   if (loading) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#111827' }}>
-            <Spin size="large" />
-        </div>
+      <Paper sx={{ p: 2, textAlign: 'center' }}>
+        <CircularProgress />
+        <Typography>Загрузка шаблонов команд...</Typography>
+      </Paper>
     );
   }
 
-  const renderModelSelection = () => (
-    <div className="p-8 bg-gray-900 min-h-screen text-white">
-      <Title level={2} style={{ color: 'white' }}>Управление шаблонами команд</Title>
-      <p className="text-gray-400 mb-4">Выберите модель устройства:</p>
-      <div className="bg-gray-800 border border-gray-700 rounded-lg">
-        <List
-          header={<div className="px-4 py-2 font-semibold text-gray-300">Модель</div>}
-          dataSource={uniqueModels}
-          renderItem={(model) => (
-            <List.Item className="border-t border-gray-700 hover:bg-gray-700/50">
-              <a onClick={() => setSelectedModel(model)} className="px-4 py-2 text-blue-400 hover:text-blue-300 w-full block">
-                {model}
-              </a>
-            </List.Item>
-          )}
-        />
-      </div>
-      {isSuperAdmin && (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleAddModelOrTemplate}
-          className="mt-6"
-        >
-          Добавить модель или шаблон
-        </Button>
-      )}
-    </div>
-  );
-
-  const renderTemplateTable = () => {
-    const filteredTemplates = templates.filter((t: CommandTemplate) => t.model === selectedModel);
+  if (!selectedModel) {
     return (
-      <div className="p-8 bg-gray-900 min-h-screen">
-        <Space direction="vertical" style={{ width: '100%' }} size="large">
-          <Button icon={<ArrowLeftOutlined />} onClick={() => setSelectedModel(null)}>
-            Назад к моделям
-          </Button>
-          <div className="flex justify-between items-center">
-            <Title level={3} style={{ color: 'white', margin: 0 }}>Шаблоны для модели: {selectedModel}</Title>
-            {isSuperAdmin && (
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => handleAddTemplateForModel(selectedModel!)}
-              >
-                Добавить шаблон для {selectedModel}
-              </Button>
-            )}
-          </div>
-          <Table
-            columns={columns}
-            dataSource={filteredTemplates}
-            rowKey="id"
-            bordered
-            size="middle"
-            pagination={{ pageSize: 20 }}
-            scroll={{ x: 'max-content' }}
-            className="dark-table"
-          />
-        </Space>
-      </div>
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h5" component="h2" sx={{ mb: 2 }}>Выберите модель устройства</Typography>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Модель</TableCell>
+                <TableCell>Количество шаблонов</TableCell>
+                <TableCell>Действия</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {uniqueModels.map((m: string) => (
+                <TableRow key={m} hover>
+                  <TableCell>{m}</TableCell>
+                  <TableCell>{templates.filter(t => t.model === m).length}</TableCell>
+                  <TableCell>
+                    <Button variant="outlined" onClick={() => setSelectedModel(m)}>Показать шаблоны</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     );
-  };
+  }
 
   return (
-    <>
-      {selectedModel ? renderTemplateTable() : renderModelSelection()}
-      
-      {isSuperAdmin && (
-        <Modal
-          title={editingTemplate ? 'Редактировать шаблон' : 'Добавить шаблон'}
-          open={isModalVisible}
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          width={800}
-        >
-          <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ model: selectedModel || '' }}>
-              <Form.Item name="model" label="Модель" rules={[{ required: true }]}>
-                  <Input />
-              </Form.Item>
-              <Form.Item name="category" label="Категория" rules={[{ required: true }]}>
-                  <Input />
-              </Form.Item>
-              <Form.Item name="subcategory" label="Подкатегория">
-                  <Input />
-              </Form.Item>
-              <Form.Item name="name" label="Название" rules={[{ required: true }]}>
-                  <Input />
-              </Form.Item>
-              <Form.Item name="template" label="Шаблон" rules={[{ required: true }]}>
-                  <Input placeholder="#01#{param}#" />
-              </Form.Item>
-              <Form.Item name="description" label="Описание">
-                  <Input.TextArea />
-              </Form.Item>
-              <Form.Item name="params_schema" label="Схема параметров (JSON)" rules={[{ required: true }]}>
-                   <Input.TextArea rows={8} placeholder={`{
-  "properties": {
-    "param": { "type": "string", "title": "Параметр" }
-  },
-  "required": ["param"]
-}`} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Сохранить
-                </Button>
-              </Form.Item>
-          </Form>
-        </Modal>
-      )}
-    </>
+    <Paper sx={{ p: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" component="h2">Шаблоны команд для модели: {selectedModel}</Typography>
+        <Box>
+          <Button variant="outlined" sx={{ mr: 2 }} onClick={() => setSelectedModel('')}>Назад к моделям</Button>
+          {isSuperAdmin && (
+            <Button variant="contained" startIcon={<PlusOutlined />} onClick={() => { setEditingTemplate(null); setDialogOpen(true); }}>
+              Добавить шаблон
+            </Button>
+          )}
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <TextField
+          label="Поиск по названию/категории"
+          value={search}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+          size="small"
+          sx={{ minWidth: 220 }}
+        />
+      </Box>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Категория</TableCell>
+              <TableCell>Подкатегория</TableCell>
+              <TableCell>Название</TableCell>
+              <TableCell>Описание</TableCell>
+              <TableCell>Текст шаблона</TableCell>
+              <TableCell>Действия</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredTemplates.map((t: CommandTemplate) => (
+              <TableRow key={t.id} hover>
+                <TableCell>{t.category}</TableCell>
+                <TableCell>{t.subcategory}</TableCell>
+                <TableCell>{t.name}</TableCell>
+                <TableCell>{t.description}</TableCell>
+                <TableCell style={{ maxWidth: 250, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{t.template}</TableCell>
+                <TableCell>
+                  {isSuperAdmin && (
+                    <>
+                      <Button size="small" onClick={() => { setEditingTemplate(t); setDialogOpen(true); }}><EditOutlined /></Button>
+                      <Button size="small" color="error" onClick={() => handleDelete(t.id)}><DeleteOutlined /></Button>
+                    </>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <CommandTemplateDialog
+        open={dialogOpen}
+        template={editingTemplate}
+        onClose={handleDialogClose}
+        onSave={handleDialogSave}
+      />
+    </Paper>
   );
 };
 

@@ -11,5 +11,7 @@ class AuditLog(Base):
     details = Column(String, nullable=True)
     ip_address = Column(String, nullable=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
+    platform_id = Column(Integer, ForeignKey("platforms.id"), nullable=True)
+    device_id = Column(Integer, ForeignKey("devices.id"), nullable=True)
 
     user = relationship("User")

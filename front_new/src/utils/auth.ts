@@ -54,7 +54,7 @@ export const hasRole = (token: string, requiredRole: string): boolean => {
   const roleHierarchy = {
     'user': 1,
     'admin': 2,
-    'superuser': 3
+    'superadmin': 3
   };
   
   const userLevel = roleHierarchy[userRole as keyof typeof roleHierarchy] || 0;
@@ -63,10 +63,6 @@ export const hasRole = (token: string, requiredRole: string): boolean => {
   return userLevel >= requiredLevel;
 };
 
-export const isAdmin = (token: string): boolean => {
-  return hasRole(token, 'admin');
-};
-
-export const isSuperuser = (token: string): boolean => {
-  return hasRole(token, 'superuser');
+export const isSuperAdmin = (token: string): boolean => {
+  return hasRole(token, 'superadmin');
 }; 

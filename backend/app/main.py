@@ -23,23 +23,8 @@ logger = logging.getLogger(__name__)
 # Get the root logger
 root_logger = logging.getLogger()
 
-# Set logging level for the root logger based on DEBUG environment variable
-if os.getenv('DEBUG', 'False').lower() == 'true':
-    root_logger.setLevel(logging.INFO)
-    # Set Uvicorn loggers to INFO level
-    logging.getLogger("uvicorn").setLevel(logging.INFO)
-    logging.getLogger("uvicorn.access").setLevel(logging.INFO)
-    logging.getLogger("uvicorn.error").setLevel(logging.INFO)
-    # Set SQLAlchemy engine logger to INFO level for query details
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
-    # Set app.core.auth logger to INFO level for debugging
-    logging.getLogger("app.core.auth").setLevel(logging.INFO)
-else:
-    root_logger.setLevel(logging.WARNING)
-    logging.getLogger("uvicorn").setLevel(logging.WARNING)
-    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
-    logging.getLogger("uvicorn.error").setLevel(logging.WARNING)
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+# Set logging level for the root logger based on LOG_LEVEL
+logging.getLogger().setLevel(settings.LOG_LEVEL)
 
 # Ensure root logger has a StreamHandler if none exists
 if not any(isinstance(handler, logging.StreamHandler) for handler in root_logger.handlers):
@@ -103,7 +88,7 @@ logger.info(f"CORS allowed origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,  # Используем настройки из .env
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],

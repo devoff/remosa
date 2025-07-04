@@ -28,7 +28,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    log_audit(db, user_id=None, action="create_user", details=f"Создан пользователь {db_user.email}")
+    log_audit(db, user_id=None, action="create_user", platform_id=None, details=f"Создан пользователь {db_user.email}")
     logger.info(f"User created: {db_user.email}")
     return db_user
 
@@ -65,7 +65,7 @@ def update_user(
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    if db_user.id != current_user.id and current_user.role != "admin":
+    if db_user.id != current_user.id and current_user.role != "superadmin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
     update_data = user.dict(exclude_unset=True)
     for key, value in update_data.items():
@@ -73,7 +73,7 @@ def update_user(
     db_user.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(db_user)
-    log_audit(db, user_id=current_user.id, action="update_user", details=f"Обновлен пользователь {db_user.email}")
+    log_audit(db, user_id=current_user.id, action="update_user", platform_id=None, details=f"Обновлен пользователь {db_user.email}")
     logger.info(f"User updated: {db_user.email}")
     return db_user
 
@@ -87,9 +87,9 @@ def delete_user(
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    if db_user.id != current_user.id and current_user.role != "admin":
+    if db_user.id != current_user.id and current_user.role != "superadmin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    log_audit(db, user_id=current_user.id, action="delete_user", details=f"Удален пользователь {db_user.email}")
+    log_audit(db, user_id=current_user.id, action="delete_user", platform_id=None, details=f"Удален пользователь {db_user.email}")
     db.delete(db_user)
     db.commit()
     logger.info(f"User deleted: {db_user.email}") 

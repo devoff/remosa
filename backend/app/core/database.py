@@ -23,7 +23,7 @@ try:
         pool_pre_ping=True,
         pool_size=10,
         max_overflow=20,
-        echo=settings.DEBUG  # Включаем SQL логи если DEBUG=True
+        echo=(settings.LOG_LEVEL == 'DEBUG')  # Включаем SQL логи только если DEBUG
     )
     # Пытаемся подключиться для проверки
     with engine.connect() as conn:

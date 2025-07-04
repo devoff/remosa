@@ -12,7 +12,7 @@ from app.core.audit import log_audit
 router = APIRouter()
 
 def require_superadmin(user: User):
-    if user.role != 'admin':
+    if user.role != 'superadmin':
         raise HTTPException(status_code=403, detail="Требуются права супер-администратора")
 
 @router.get("/", response_model=List[DeviceSchema])
@@ -41,6 +41,7 @@ async def create_device(
     db.add(db_device)
     db.commit()
     db.refresh(db_device)
+    log_audit(db, action="create_device", user_id=current_user.id, platform_id=db_device.platform_id, device_id=db_device.id, details=f"Создано устройство: {db_device.name}")
     return db_device
 
 @router.get("/{device_id}", response_model=DeviceSchema)
@@ -78,6 +79,7 @@ async def update_device(
     
     db.commit()
     db.refresh(db_device)
+    log_audit(db, action="update_device", user_id=current_user.id, platform_id=db_device.platform_id, device_id=db_device.id, details=f"Обновлено устройство: {db_device.name}")
     return db_device
 
 @router.delete("/{device_id}", response_model=DeviceSchema)
@@ -94,6 +96,7 @@ async def delete_device(
     
     db.delete(db_device)
     db.commit()
+    log_audit(db, action="delete_device", user_id=current_user.id, platform_id=db_device.platform_id, device_id=db_device.id, details=f"Удалено устройство: {db_device.name}")
     return db_device
 
 @router.get("/search/")
@@ -126,7 +129,6 @@ async def move_device_to_platform(
     device = DeviceService.move_device(db, device_id, platform_id)
     
     # Логируем действие
-    log_audit(db, action="move_device", user_id=current_user.id,
-              details=f"Устройство {device.name} перемещено с платформы {old_platform_id} на {platform_id}")
+    log_audit(db, action="move_device", user_id=current_user.id, platform_id=platform_id, device_id=device.id, details=f"Устройство {device.name} перемещено с платформы {old_platform_id} на {platform_id}")
     
     return device 

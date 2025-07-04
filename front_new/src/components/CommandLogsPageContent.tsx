@@ -4,6 +4,7 @@ import { useApi } from '../lib/useApi';
 import { CommandLog, Device } from '../types';
 import { api, fetchDevices as fetchDevicesApi } from '../lib/api';
 import { DownloadOutlined } from '@ant-design/icons';
+import { useAuth } from '../lib/useAuth';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -12,6 +13,7 @@ const { RangePicker } = DatePicker;
 // Переименовано в CommandLogsPageContent
 export const CommandLogsPageContent: React.FC = () => {
   const { get } = useApi();
+  const { isSuperAdmin, currentPlatform } = useAuth();
   const [commandLogs, setCommandLogs] = useState<CommandLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,9 +39,8 @@ export const CommandLogsPageContent: React.FC = () => {
     const fetchCommandLogs = async () => {
         setLoading(true);
         try {
-            let url = `/logs`; // Используем эндпоинт с фильтрацией
+            let url = `/logs/`;
             const params = new URLSearchParams();
-    
             if (selectedDeviceId) {
                 params.append('device_id', selectedDeviceId);
             }
@@ -50,11 +51,12 @@ export const CommandLogsPageContent: React.FC = () => {
                 params.append('start_date', dateRange[0].toISOString());
                 params.append('end_date', dateRange[1].toISOString());
             }
-    
+            if (!isSuperAdmin && currentPlatform?.id) {
+                params.append('platform_id', String(currentPlatform.id));
+            }
             if (params.toString()) {
                 url = `${url}?${params.toString()}`;
             }
-            
             const data = await get(url);
             setCommandLogs(Array.isArray(data) ? data : []);
             setError(null);
@@ -67,7 +69,7 @@ export const CommandLogsPageContent: React.FC = () => {
     };
     
     fetchCommandLogs();
-  }, [selectedDeviceId, selectedLevel, dateRange, get]);
+  }, [selectedDeviceId, selectedLevel, dateRange, get, isSuperAdmin, currentPlatform]);
 
   const handleExport = () => {
     const headers = ['Время', 'Устройство', 'Команда', 'Сообщение', 'Ответ', 'Статус', 'Уровень'];
@@ -97,8 +99,8 @@ export const CommandLogsPageContent: React.FC = () => {
       dataIndex: 'created_at',
       key: 'created_at',
       render: (text: string) => new Date(text).toLocaleString(),
-      sorter: (a: CommandLog, b: CommandLog) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      defaultSortOrder: 'descend' as 'descend',
+      sorter: (a: CommandLog, b: CommandLog) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+      sortDirections: ['descend' as const, 'ascend' as const],
     },
     {
       title: 'Устройство',

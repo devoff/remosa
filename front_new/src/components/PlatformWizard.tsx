@@ -37,7 +37,7 @@ const PlatformWizard: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =
   React.useEffect(() => {
     if (activeStep === 2 && users.length === 0 && !loadingUsers) {
       setLoadingUsers(true);
-      get('/users')
+      get('/users/')
         .then((data: User[]) => setUsers(data))
         .catch(() => notify('Ошибка загрузки пользователей', 'error'))
         .finally(() => setLoadingUsers(false));
@@ -101,35 +101,48 @@ const PlatformWizard: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =
     </Box>
   );
 
-  // Step 2: Лимиты
+  // Step 2: Лимиты (таблица)
   const Step2 = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <Box>
-        <Typography gutterBottom>Лимит устройств</Typography>
-        <Tooltip title="Максимальное количество устройств, которые можно добавить на платформу">
-          <Slider
-            value={limits.devices_limit || 0}
-            min={1}
-            max={100}
-            step={1}
-            valueLabelDisplay="auto"
-            onChange={(_, v) => setLimits(l => ({ ...l, devices_limit: Number(v) }))}
-          />
-        </Tooltip>
-      </Box>
-      <Box>
-        <Typography gutterBottom>Лимит SMS</Typography>
-        <Tooltip title="Максимальное количество SMS, которые можно отправить в месяц">
-          <Slider
-            value={limits.sms_limit || 0}
-            min={10}
-            max={1000}
-            step={10}
-            valueLabelDisplay="auto"
-            onChange={(_, v) => setLimits(l => ({ ...l, sms_limit: Number(v) }))}
-          />
-        </Tooltip>
-      </Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16 }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: 8 }}>Параметр</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Значение</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={{ padding: 8 }}>Лимит устройств</td>
+            <td style={{ padding: 8 }}>
+              <input
+                type="number"
+                min={1}
+                max={10000}
+                value={limits.devices_limit || ''}
+                onChange={e => setLimits(l => ({ ...l, devices_limit: Number(e.target.value) }))}
+                style={{ width: 100, padding: 4 }}
+              />
+            </td>
+            <td style={{ padding: 8 }}>Максимальное количество устройств, которые можно добавить на платформу</td>
+          </tr>
+          <tr>
+            <td style={{ padding: 8 }}>Лимит SMS</td>
+            <td style={{ padding: 8 }}>
+              <input
+                type="number"
+                min={0}
+                max={100000}
+                value={limits.sms_limit || ''}
+                onChange={e => setLimits(l => ({ ...l, sms_limit: Number(e.target.value) }))}
+                style={{ width: 100, padding: 4 }}
+              />
+            </td>
+            <td style={{ padding: 8 }}>Максимальное количество SMS, которые можно отправить в месяц</td>
+          </tr>
+        </tbody>
+      </table>
     </Box>
   );
 

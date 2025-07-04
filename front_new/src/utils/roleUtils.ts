@@ -11,7 +11,7 @@ export interface PlatformUser {
  * Проверяет, является ли пользователь супер админом
  */
 export const isSuperAdmin = (user: User | null): boolean => {
-  return user?.role === 'admin';
+  return user?.role === 'superadmin';
 };
 
 /**
@@ -87,7 +87,7 @@ export const getRoleLabel = (role: string): string => {
     'manager': 'Менеджер', 
     'user': 'Пользователь платформы',
     'viewer': 'Наблюдатель',
-    'super_admin': 'Супер-админ'
+    'superadmin': 'Супер-админ'
   };
   return roleLabels[role] || role;
 };
@@ -113,7 +113,7 @@ export function getPlatformRole(user: User | null, platform: Platform | null): s
 
 export function canAddDevice(user: User | null, platform: Platform | null): boolean {
   if (!user) return false;
-  if (user.role === 'admin') return true; // super-admin
+  if (user.role === 'superadmin') return true; // super-admin
   const role = getPlatformRole(user, platform);
   return role === 'admin' || role === 'manager';
 }
@@ -124,7 +124,7 @@ export function canEditDevice(user: User | null, platform: Platform | null): boo
 
 export function canManageUsers(user: User | null, platform: Platform | null): boolean {
   if (!user) return false;
-  if (user.role === 'admin') return true;
+  if (user.role === 'superadmin') return true;
   const role = getPlatformRole(user, platform);
   return role === 'admin';
 } 

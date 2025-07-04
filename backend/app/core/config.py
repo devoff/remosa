@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 from pydantic import PostgresDsn
 from typing import Optional
+import logging
 
 class Settings(BaseSettings):
     # Основные настройки приложения
@@ -10,8 +11,8 @@ class Settings(BaseSettings):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print(f"DEBUG_CONFIG: Loaded DEBUG = {self.DEBUG}")
-        print(f"DEBUG_CONFIG: Loaded JWT_SECRET_KEY = {self.JWT_SECRET_KEY}")
+        logging.basicConfig(level=self.LOG_LEVEL)
+        logging.getLogger().setLevel(self.LOG_LEVEL)
 
     # Настройки базы данных
     POSTGRES_HOST: str
@@ -40,7 +41,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 300
 
-    # Настройки фронтенда (Vite/React)
+    # Настройки фонтенда (Vite/React)
     VITE_API_URL: str = "http://remosa.ru:8000/api/v1"
     VITE_WS_URL: str = "ws://remosa.ru:8000/ws" # Исправлено на ws://...
     REACT_APP_API_URL: Optional[str] = None # Устарело, но оставляем для совместимости

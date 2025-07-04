@@ -33,7 +33,7 @@ const SystemStatusPanel: React.FC = () => {
         try {
             const [statsData, healthData] = await Promise.all([
                 get('/stats/dashboard'),
-                get('/health')
+                get('/health/')
             ]);
             setStats(statsData);
             setHealth(healthData);

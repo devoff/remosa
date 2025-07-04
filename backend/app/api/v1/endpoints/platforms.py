@@ -1,4 +1,5 @@
 from typing import Any, List
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -13,6 +14,7 @@ from app.models.log import Log
 from app.core.platform_permissions import require_platform_role
 from app.schemas.device import Device as DeviceResponse, DeviceCreate, DeviceUpdate
 from app.models.user import User
+from app.core.audit import log_audit
 
 router = APIRouter()
 
@@ -54,6 +56,7 @@ def read_platform(
 def create_platform(
     platform: PlatformCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Создать новую платформу.
@@ -75,6 +78,7 @@ def create_platform(
     db.add(db_platform)
     db.commit()
     db.refresh(db_platform)
+    log_audit(db, action="create_platform", user_id=current_user.id, platform_id=db_platform.id, details=f"Создана платформа: {db_platform.name}")
     return db_platform
 
 @router.put("/{platform_id}", response_model=PlatformResponse, summary="Обновить платформу",
@@ -84,6 +88,7 @@ def update_platform(
     platform_id: int,
     platform_update: PlatformUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Обновить платформу.
@@ -111,6 +116,7 @@ def update_platform(
     
     db.commit()
     db.refresh(platform)
+    log_audit(db, action="update_platform", user_id=current_user.id, platform_id=platform.id, details=f"Обновлена платформа: {platform.name}")
     return platform
 
 @router.delete("/{platform_id}", summary="Удалить платформу",
@@ -119,6 +125,7 @@ def update_platform(
 def delete_platform(
     platform_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Удалить платформу.
@@ -139,6 +146,7 @@ def delete_platform(
     
     db.delete(platform)
     db.commit()
+    log_audit(db, action="delete_platform", user_id=current_user.id, platform_id=platform_id, details=f"Удалена платформа: {platform_id}")
     return {"message": "Платформа успешно удалена"}
 
 # Дополнительные endpoints для работы с пользователями платформ
@@ -187,6 +195,7 @@ def add_user_to_platform(
     platform_id: int,
     user_data: dict,  # {"user_id": int, "role": str}
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Добавить пользователя в платформу с определенной ролью.
@@ -228,7 +237,7 @@ def add_user_to_platform(
     
     db.add(platform_user)
     db.commit()
-    
+    log_audit(db, action="add_user_to_platform", user_id=current_user.id, platform_id=platform_id, details=f"Добавлен пользователь: {user.email}")
     return {"message": "Пользователь добавлен в платформу"}
 
 @router.put("/{platform_id}/users/{user_id}", summary="Обновить роль пользователя в платформе",
@@ -239,6 +248,7 @@ def update_platform_user_role(
     user_id: int,
     role_data: dict,  # {"role": str}
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Обновить роль пользователя в платформе.
@@ -258,7 +268,7 @@ def update_platform_user_role(
     
     platform_user.role = role_data["role"]
     db.commit()
-    
+    log_audit(db, action="update_platform_user_role", user_id=current_user.id, platform_id=platform_id, details=f"Изменена роль пользователя: {platform_user.user.email} -> {role_data['role']}")
     return {"message": "Роль пользователя обновлена"}
 
 @router.delete("/{platform_id}/users/{user_id}", summary="Удалить пользователя из платформы",
@@ -268,6 +278,7 @@ def remove_user_from_platform(
     platform_id: int,
     user_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> Any:
     """
     Удалить пользователя из платформы.
@@ -287,7 +298,7 @@ def remove_user_from_platform(
     
     db.delete(platform_user)
     db.commit()
-    
+    log_audit(db, action="remove_user_from_platform", user_id=current_user.id, platform_id=platform_id, details=f"Удалён пользователь: {platform_user.user.email}")
     return {"message": "Пользователь удален из платформы"}
 
 @router.get("/{platform_id}/devices", summary="Получить устройства платформы",
@@ -341,6 +352,7 @@ def add_device_to_platform(
     db.add(db_device)
     db.commit()
     db.refresh(db_device)
+    log_audit(db, action="add_device_to_platform", user_id=user.id, platform_id=platform_id, device_id=db_device.id, details=f"Добавлено устройство: {db_device.name}")
     return db_device
 
 @router.put("/{platform_id}/devices/{device_id}", response_model=DeviceResponse, summary="Обновить устройство в платформе", tags=["Platforms"])
@@ -369,6 +381,7 @@ def update_device_in_platform(
     
     db.commit()
     db.refresh(device)
+    log_audit(db, action="update_device_in_platform", user_id=user.id, platform_id=platform_id, device_id=device.id, details=f"Обновлено устройство: {device.name}")
     return device
 
 @router.delete("/{platform_id}/devices/{device_id}", summary="Удалить устройство из платформы", tags=["Platforms"])
@@ -389,7 +402,7 @@ def remove_device_from_platform(
         
     db.delete(device)
     db.commit()
-    
+    log_audit(db, action="remove_device_from_platform", user_id=user.id, platform_id=platform_id, device_id=device_id, details=f"Удалено устройство: {device_id}")
     return {"message": "Устройство удалено из платформы"}
 
 @router.get("/my-platforms/", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
@@ -453,3 +466,68 @@ def get_platform_limits(
     }
     
     return limits_info
+
+@router.get("/{platform_id}/stats", summary="Получить статистику по платформе", tags=["Platforms"])
+def get_platform_stats(
+    platform_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    """Получить статистику по платформе."""
+    platform = db.query(Platform).filter(Platform.id == platform_id).first()
+    if not platform:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Платформа не найдена"
+        )
+    # Количество устройств в платформе
+    total_devices = db.query(Device).filter(Device.platform_id == platform_id).count()
+    # Количество активных и решенных алертов для платформы
+    device_ids = db.query(Device.id).filter(Device.platform_id == platform_id).subquery()
+    active_alerts = db.query(Log).filter(
+        Log.level == "alert",
+        Log.status == "firing",
+        Log.device_id.in_(device_ids)
+    ).count()
+    resolved_alerts = db.query(Log).filter(
+        Log.level == "alert",
+        Log.status == "resolved",
+        Log.device_id.in_(device_ids)
+    ).count()
+    latest_alert_log = db.query(Log).filter(
+        Log.level == "alert",
+        Log.device_id.in_(device_ids)
+    ).order_by(Log.created_at.desc()).first()
+    latest_alert_time = latest_alert_log.created_at.isoformat() if latest_alert_log else "N/A"
+    # Uptime платформы (с момента создания)
+    now = datetime.now(tz=platform.created_at.tzinfo)
+    platform_age = now - platform.created_at
+    days = platform_age.days
+    hours = platform_age.seconds // 3600
+    minutes = (platform_age.seconds % 3600) // 60
+    uptime_parts = []
+    if days > 0:
+        uptime_parts.append(f"{days}д")
+    if hours > 0:
+        uptime_parts.append(f"{hours}ч")
+    if minutes > 0 or not uptime_parts:
+        uptime_parts.append(f"{minutes}м")
+    uptime_str = " ".join(uptime_parts)
+
+    # Проверка статуса SMS шлюза
+    try:
+        from app.services.sms_poller import ping_sms_gateway
+        sms_gateway_ok = ping_sms_gateway()
+        sms_gateway_status = "Подключен" if sms_gateway_ok else "Ошибка"
+    except Exception:
+        sms_gateway_status = "Ошибка"
+
+    return {
+        "uptime": uptime_str,
+        "totalDevices": total_devices,
+        "activeAlerts": active_alerts,
+        "resolvedAlerts": resolved_alerts,
+        "latestAlert": latest_alert_time,
+        "apiStatus": "Онлайн",  # Если endpoint работает, backend жив
+        "smsGatewayStatus": sms_gateway_status
+    }

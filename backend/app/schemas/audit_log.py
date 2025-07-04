@@ -6,6 +6,8 @@ class AuditLogBase(BaseModel):
     action: str
     details: Optional[str] = None
     ip_address: Optional[str] = None
+    platform_id: Optional[int] = None
+    device_id: Optional[int] = None
 
 class AuditLogCreate(AuditLogBase):
     user_id: Optional[int] = None

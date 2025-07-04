@@ -1,11 +1,12 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-interface AuditLogPanelProps {
+interface JournalPanelProps {
   logs: any[];
+  platformId?: number;
 }
 
-const AuditLogPanel: React.FC<AuditLogPanelProps> = ({ logs }) => (
+const JournalPanel: React.FC<JournalPanelProps> = ({ logs }) => (
   <TableContainer>
     <Table>
       <TableHead>
@@ -21,7 +22,7 @@ const AuditLogPanel: React.FC<AuditLogPanelProps> = ({ logs }) => (
           <TableRow key={log.id}>
             <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
             <TableCell>{log.action}</TableCell>
-            <TableCell>{log.user_id}</TableCell>
+            <TableCell>{log.user_email || log.user_id}</TableCell>
             <TableCell>{log.details}</TableCell>
           </TableRow>
         ))}
@@ -30,4 +31,4 @@ const AuditLogPanel: React.FC<AuditLogPanelProps> = ({ logs }) => (
   </TableContainer>
 );
 
-export default AuditLogPanel; 
+export default JournalPanel; 

@@ -34,7 +34,9 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
 
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-  const isSuperAdmin = user?.role === 'admin';
+  const isSuperAdmin = user?.role === 'superadmin';
+
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (device) {
@@ -98,7 +100,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
   useEffect(() => {
     async function fetchPlatforms() {
       let response;
-      if (user?.role === 'admin') {
+      if (user?.role === 'superadmin') {
         response = await apiClient.get('/platforms/');
       } else {
         response = await apiClient.get('/platforms/my-platforms/');
@@ -110,6 +112,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
     try {
       await onSave(formData as Device);
       onClose();
@@ -121,6 +124,8 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
       } else {
         message.error('Ошибка при сохранении устройства');
       }
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -336,7 +341,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             <Button onClick={onClose} icon={<CloseOutlined />} size="large">
               Отмена
             </Button>
-            <Button type="primary" htmlType="submit" icon={<SaveOutlined />} size="large" style={{ borderRadius: 8 }}>
+            <Button type="primary" htmlType="submit" icon={<SaveOutlined />} size="large" style={{ borderRadius: 8 }} disabled={saving} loading={saving}>
               Сохранить
             </Button>
           </div>

@@ -15,6 +15,8 @@ interface Platform {
   description?: string;
   devices_limit?: number;
   sms_limit?: number;
+  devices_count?: number;
+  sms_count?: number;
 }
 
 const AdminPlatformsPage: React.FC = () => {
@@ -33,7 +35,7 @@ const AdminPlatformsPage: React.FC = () => {
     setLoading(true);
     try {
       let data;
-      if (user?.role === 'admin') {
+      if (user?.role === 'superadmin') {
         data = await get('/platforms/');
       } else {
         data = await get('/platforms/my-platforms/');
@@ -143,7 +145,14 @@ const AdminPlatformsPage: React.FC = () => {
                     <Typography variant="body2" color="textSecondary">
                       {p.devices_limit ? `до ${p.devices_limit}` : '—'}
                     </Typography>
-                    <LinearProgress variant="determinate" value={30} sx={{ height: 6, borderRadius: 2, mt: 0.5 }} />
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={p.devices_limit && p.devices_count !== undefined ? Math.min(100, (p.devices_count / p.devices_limit) * 100) : 0} 
+                      sx={{ height: 6, borderRadius: 2, mt: 0.5 }} 
+                    />
+                    <Typography variant="caption" color="textSecondary">
+                      {p.devices_count !== undefined && p.devices_limit ? `${p.devices_count} / ${p.devices_limit}` : ''}
+                    </Typography>
                   </Box>
                 </TableCell>
                 <TableCell>
@@ -151,7 +160,15 @@ const AdminPlatformsPage: React.FC = () => {
                     <Typography variant="body2" color="textSecondary">
                       {p.sms_limit ? `до ${p.sms_limit}` : '—'}
                     </Typography>
-                    <LinearProgress variant="determinate" value={10} sx={{ height: 6, borderRadius: 2, mt: 0.5, bgcolor: '#e0e7ef' }} color="secondary" />
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={p.sms_limit && p.sms_count !== undefined ? Math.min(100, (p.sms_count / p.sms_limit) * 100) : 0} 
+                      sx={{ height: 6, borderRadius: 2, mt: 0.5, bgcolor: '#e0e7ef' }} 
+                      color="secondary" 
+                    />
+                    <Typography variant="caption" color="textSecondary">
+                      {p.sms_count !== undefined && p.sms_limit ? `${p.sms_count} / ${p.sms_limit}` : ''}
+                    </Typography>
                   </Box>
                 </TableCell>
                 <TableCell>
