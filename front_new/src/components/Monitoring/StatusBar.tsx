@@ -12,18 +12,30 @@ import { useApi } from '../../lib/useApi';
 import { SystemStatus } from '../../types/SystemStatus';
 import { message } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
+import { useAuth } from '../../lib/useAuth';
 
 const StatusBar: React.FC = () => {
   const [status, setStatus] = useState<SystemStatus | null>(null);
   const { get } = useApi();
+  const { isAuthenticated, isSuperAdmin, currentPlatform } = useAuth();
 
   const fetchSystemStatus = async () => {
     try {
-      const data: SystemStatus = await get('/api/v1/stats/dashboard');
+      let data: SystemStatus;
+      if (isSuperAdmin) {
+        data = await get('/stats/dashboard');
+      } else if (currentPlatform?.id) {
+        data = await get(`/platforms/${currentPlatform.id}/stats`);
+      } else {
+        setStatus(null);
+        return;
+      }
       setStatus(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка при получении статуса системы:', error);
-      message.error('Не удалось загрузить статус системы.');
+      if (error.response && error.response.status !== 401) {
+        message.error('Не удалось загрузить статус системы.');
+      }
     }
   };
 
@@ -39,10 +51,12 @@ const StatusBar: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchSystemStatus();
-    const interval = setInterval(fetchSystemStatus, 60000); // Обновляем каждые 60 секунд
-    return () => clearInterval(interval);
-  }, []);
+    if (isAuthenticated) {
+      fetchSystemStatus();
+      const interval = setInterval(fetchSystemStatus, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, isSuperAdmin, currentPlatform]);
 
   if (!status) {
     return (
@@ -98,12 +112,12 @@ const StatusBar: React.FC = () => {
           </div>
           
           <div className="flex items-center">
-            <span className="mr-2">Telegram:</span>
+            <span className="mr-2">SMS шлюз:</span>
             <span className={`inline-flex items-center ${
-              status.telegramStatus === 'Подключен' ? 'text-green-500' : 'text-red-500'
+              status.smsStatus === 'Подключен' ? 'text-green-500' : 'text-red-500'
             }`}>
               <Activity size={14} className="mr-1" />
-              {status.telegramStatus === 'Подключен' ? 'Подключен' : 'Ошибка'}
+              {status.smsStatus === 'Подключен' ? 'Подключен' : 'Ошибка'}
             </span>
           </div>
           

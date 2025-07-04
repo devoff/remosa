@@ -9,13 +9,19 @@ import {
   Users, 
   Settings, 
   ChevronRight, 
-  ChevronDown 
+  ChevronDown,
+  Briefcase,
+  FileText,
+  Shield,
+  Home
 } from 'lucide-react';
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
 import { nodeTypes } from '../components/NodeTypes';
 import { useApi } from '../lib/useApi'; 
 import { SystemStatus } from '../types/SystemStatus'; 
+import { Alert } from '../types/alert';
+import { useAuth } from '../lib/useAuth';
 
 interface SidebarSectionProps {
   title: string;
@@ -61,6 +67,38 @@ const Sidebar: React.FC = () => {
   const categoryColors = getCategoryColors();
   const { get } = useApi(); 
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null); 
+  const { user, isSuperAdmin } = useAuth();
+
+  // --- История алертов ---
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [alertsLoading, setAlertsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        setAlertsLoading(true);
+        const data = await get('/alerts/');
+        setAlerts(Array.isArray(data) ? data : []);
+      } catch (e) {
+        setAlerts([]);
+      } finally {
+        setAlertsLoading(false);
+      }
+    };
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 60000);
+    return () => clearInterval(interval);
+  }, [get]);
+
+  // Подсчёт алертов по датам
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const yesterday = new Date(now.getTime() - 24*60*60*1000).toISOString().slice(0, 10);
+  const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+
+  const countToday = alerts.filter(a => a.created_at && a.created_at.slice(0,10) === today).length;
+  const countYesterday = alerts.filter(a => a.created_at && a.created_at.slice(0,10) === yesterday).length;
+  const countWeek = alerts.filter(a => a.created_at && new Date(a.created_at) >= weekAgo).length;
 
   const formatTime = (isoString: string | null) => {
     if (!isoString || isoString === "N/A") return "N/A";
@@ -76,7 +114,7 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const fetchSystemStatus = async () => {
       try {
-        const data: SystemStatus = await get('/api/v1/stats/dashboard');
+        const data: SystemStatus = await get('/stats/dashboard');
         setSystemStatus(data);
       } catch (error) {
         console.error('Ошибка при получении статуса системы в сайдбаре:', error);
@@ -100,129 +138,146 @@ const Sidebar: React.FC = () => {
     return acc;
   }, {} as Record<string, number>);
   
-  return (
-    <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col overflow-y-auto">
-      <div className="p-4 pb-2">
-        <h2 className="text-lg font-semibold text-gray-200 mb-4">
-          Панель мониторинга
-        </h2>
-        
-        <SidebarSection 
-          title="Статус системы" 
-          icon={<Activity size={18} className="text-green-500" />}
-          defaultOpen={true}
-        >
-          <div className="space-y-2 text-gray-300">
-            <div className="flex items-center justify-between">
-              <span>Активно:</span>
-              <span className="font-medium text-green-400">Да</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Uptime:</span>
-              <span>{systemStatus?.uptime || 'Загрузка...'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Последний алерт:</span>
-              <span>{formatTime(systemStatus?.latestAlert || null)}</span>
-            </div>
-          </div>
-        </SidebarSection>
-        
-        <SidebarSection 
-          title="Telegram" 
-          icon={<MessageSquare size={18} className="text-blue-500" />}
-        >
-          <div className="space-y-1">
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Пользователи</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">12</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Сообщения</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">47</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Команды</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">8</span>
-            </div>
-          </div>
-        </SidebarSection>
-        
-        <SidebarSection 
-          title="База данных" 
-          icon={<Database size={18} className="text-green-500" />}
-        >
-          <div className="space-y-1">
-            <Link to="/" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Устройства
-            </Link>
-            <Link to="/telegram-users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Пользователи Telegram
+  // Для superadmin показываем обновленный sidebar
+  if (isSuperAdmin) {
+    return (
+      <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col overflow-y-auto">
+        <div className="p-4 pb-2">
+          <h2 className="text-lg font-semibold text-gray-200 mb-4">
+            Панель мониторинга
+          </h2>
+
+          <Link to="/" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+            <Home size={18} className="text-cyan-400 mr-2" />
+            <span className="font-medium">Устройства</span>
+          </Link>
+
+          <SidebarSection 
+            title="Администрирование" 
+            icon={<Briefcase size={18} className="text-orange-400" />}
+            defaultOpen={true}
+          >
+            <Link to="/users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Пользователи и роли
             </Link>
             <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Шаблоны команд
             </Link>
-            <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Журнал алертов
+            <Link to="/admin/platforms" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Платформы
+            </Link>
+            <Link to="/devices" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Устройства (админ)
+            </Link>
+          </SidebarSection>
+
+          <SidebarSection 
+            title="Мониторинг" 
+            icon={<Activity size={18} className="text-green-400" />}
+          >
+            <Link to="/status" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Статус системы
+            </Link>
+          </SidebarSection>
+
+          {/* Журналы */}
+          <SidebarSection 
+            title="Журналы" 
+            icon={<FileText size={18} className="text-orange-400" />}
+          >
+            <Link to="/audit-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Журнал действий
+            </Link>
+            <Link to="/logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Журнал уведомлений
             </Link>
             <Link to="/command-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Журнал команд
             </Link>
-          </div>
-        </SidebarSection>
-        
-        <SidebarSection 
-          title="Компоненты" 
-          icon={<Server size={18} className="text-purple-500" />}
-        >
-          <div className="space-y-1">
-            {Object.entries(categoryStats).map(([category, count]) => (
-              <div 
-                key={category}
-                className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <span 
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: categoryColors[category] || '#888' }}
-                  ></span>
-                  <span>{category}</span>
+          </SidebarSection>
+        </div>
+        <div className="mt-auto border-t border-gray-700">
+          <div className="p-4 space-y-2">
+            <div className="mb-2">
+              <div className="text-xs text-gray-400 font-semibold mb-1">История алертов</div>
+              {alertsLoading ? (
+                <div className="text-xs text-gray-400">Загрузка...</div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span>Сегодня</span>
+                    <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countToday}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Вчера</span>
+                    <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countYesterday}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>За неделю</span>
+                    <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countWeek}</span>
+                  </div>
                 </div>
-                <span className="bg-gray-600 text-xs px-1.5 rounded-full">{count}</span>
-              </div>
-            ))}
+              )}
+            </div>
+            <Link to="/settings" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
+              <Settings size={18} className="mr-2" />
+              <span>Настройки</span>
+            </Link>
           </div>
-        </SidebarSection>
-        
+        </div>
+      </aside>
+    );
+  }
+
+  // Для пользователей платформы — новый лаконичный sidebar
+  return (
+    <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col overflow-y-auto">
+      <div className="p-4 pb-2">
+        <Link to="/" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+          <Home size={18} className="text-cyan-400 mr-2" />
+          <span className="font-medium">Устройства</span>
+        </Link>
+        <Link to="/command-templates" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+          <FileText size={18} className="text-blue-400 mr-2" />
+          <span className="font-medium">Шаблоны команд</span>
+        </Link>
         <SidebarSection 
-          title="История алертов" 
-          icon={<Clock size={18} className="text-amber-500" />}
-        >
-          <div className="space-y-1">
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Сегодня</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">7</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>Вчера</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">12</span>
-            </div>
-            <div className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer flex items-center justify-between">
-              <span>За неделю</span>
-              <span className="bg-gray-600 text-xs px-1.5 rounded-full">43</span>
-            </div>
-          </div>
+          title="Журналы" 
+          icon={<FileText size={18} className="text-orange-400" />}>
+          <Link to="/audit-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Журнал действий
+          </Link>
+          <Link to="/logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Журнал уведомлений
+          </Link>
+          <Link to="/command-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Журнал команд
+          </Link>
         </SidebarSection>
       </div>
-      
       <div className="mt-auto border-t border-gray-700">
-        {/* <StatusBar /> */}
         <div className="p-4 space-y-2">
-          <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
-            <Users size={18} className="mr-2" />
-            <span>Пользователи</span>
-          </Link>
-          
+          <div className="mb-2">
+            <div className="text-xs text-gray-400 font-semibold mb-1">История алертов</div>
+            {alertsLoading ? (
+              <div className="text-xs text-gray-400">Загрузка...</div>
+            ) : (
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span>Сегодня</span>
+                  <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countToday}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Вчера</span>
+                  <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countYesterday}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>За неделю</span>
+                  <span className="bg-gray-600 text-xs px-1.5 rounded-full">{countWeek}</span>
+                </div>
+              </div>
+            )}
+          </div>
           <Link to="/settings" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Settings size={18} className="mr-2" />
             <span>Настройки</span>

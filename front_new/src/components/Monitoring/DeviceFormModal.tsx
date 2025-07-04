@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Device, CommandTemplate } from '../../types';
-import { Select, Switch, Input } from 'antd';
+import { Device, CommandTemplate, Platform } from '../../types';
+import { Select, Switch, Input, Button, Modal, Typography, Popconfirm, message } from 'antd';
 import { useApi } from '../../lib/useApi';
- 
+import { useAuth } from '../../lib/useAuth';
+import apiClient from '../../lib/api';
+import { SaveOutlined, CloseOutlined, MobileOutlined, AppstoreOutlined, FileTextOutlined, ToolOutlined, DeleteOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
+
 interface DeviceFormModalProps {
   device: Device | null;
   onSave: (data: Device) => void;
@@ -17,23 +22,46 @@ interface CommandParam {
   enum?: any[];
 }
 
-export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: DeviceFormModalProps) => {
-  const { get } = useApi();
-  const [formData, setFormData] = useState<Partial<Device>>(device || {
-    name: '',
-    phone: '',
-    description: '',
-    status: 'ONLINE',
-    model: '',
-    alert_sms_template_id: undefined,
-    send_alert_sms: false,
-    alert_sms_template_params: {},
-  });
+export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _availableModels }: DeviceFormModalProps) => {
+  const { get, remove } = useApi();
+  const { user, currentPlatform } = useAuth();
+  const [formData, setFormData] = useState<Partial<Device>>({});
 
   const [commandTemplates, setCommandTemplates] = useState<CommandTemplate[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [selectedCommandTemplate, setSelectedCommandTemplate] = useState<CommandTemplate | null>(null);
+
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const isSuperAdmin = user?.role === 'superadmin';
+
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (device) {
+        setFormData(device);
+    } else {
+        setFormData({
+            name: '',
+            phone: '',
+            description: '',
+            status: 'ONLINE',
+            model: '',
+            alert_sms_template_id: undefined,
+            send_alert_sms: false,
+            alert_sms_template_params: {},
+            platform_id: isSuperAdmin ? undefined : currentPlatform?.id
+        });
+    }
+  }, [device, isSuperAdmin, currentPlatform]);
+
+  useEffect(() => {
+    apiClient.get('/command_templates/').then(res => {
+      const models = Array.from(new Set(res.data.map((t: any) => String(t.model)).filter(Boolean))) as string[];
+      setAvailableModels(models);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchCommandTemplates = async () => {
@@ -46,7 +74,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
       }
       setLoadingTemplates(true);
       try {
-        const data: CommandTemplate[] = await get(`/api/v1/commands/templates/${formData.model}`);
+        const data: CommandTemplate[] = await get(`/commands/templates/${formData.model}`);
         setCommandTemplates(data);
 
         if (device && device.alert_sms_template_id) {
@@ -69,10 +97,36 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
     fetchCommandTemplates();
   }, [formData.model, get, device]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    async function fetchPlatforms() {
+      let response;
+      if (user?.role === 'superadmin') {
+        response = await apiClient.get('/platforms/');
+      } else {
+        response = await apiClient.get('/platforms/my-platforms/');
+      }
+      setPlatforms(response.data);
+    }
+    fetchPlatforms();
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData as Device);
-    onClose();
+    setSaving(true);
+    try {
+      await onSave(formData as Device);
+      onClose();
+    } catch (err: any) {
+      if (err?.response?.data?.detail) {
+        message.error(err.response.data.detail);
+      } else if (err?.message) {
+        message.error(err.message);
+      } else {
+        message.error('Ошибка при сохранении устройства');
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const categories = Array.from(new Set(commandTemplates.map((t: CommandTemplate) => t.category).filter(Boolean) as string[]));
@@ -107,258 +161,194 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels }: De
     }));
   };
 
-  const inputClasses = "p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 w-full";
+  // Удаление устройства
+  const handleDelete = async () => {
+    if (!device || !device.id) return;
+    try {
+      // Определяем эндпоинт
+      let endpoint = `/devices/${device.id}`;
+      if (device.platform_id && user?.platform_roles?.some(r => r.platform_id === device.platform_id && (r.role === 'admin' || r.role === 'manager'))) {
+        endpoint = `/platforms/${device.platform_id}/devices/${device.id}`;
+      }
+      await remove(endpoint);
+      message.success('Устройство удалено');
+      onSave(null as any); // чтобы обновить список
+      onClose();
+    } catch (err) {
+      message.error('Ошибка при удалении устройства');
+    }
+  };
 
+  // --- Новый современный стиль ---
   return (
-    <div className="modal-overlay" style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    }}>
-      <div className="modal-content bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-h-[90vh] overflow-y-auto relative" style={{
-        padding: '20px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        maxWidth: '90%'
-      }}>
-        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+    <Modal
+      open={true}
+      onCancel={onClose}
+      footer={null}
+      centered
+      width={480}
+      closeIcon={<CloseOutlined style={{ fontSize: 20 }} />}
+      bodyStyle={{
+        background: '#fff',
+        borderRadius: 16,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+        padding: 32,
+        color: '#222',
+      }}
+      style={{ borderRadius: 16 }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24 }}>
+        <ToolOutlined style={{ fontSize: 32, color: '#1890ff', marginRight: 12 }} />
+        <Title level={4} style={{ color: '#222', margin: 0, flex: 1 }}>
           {device ? 'Редактировать устройство' : 'Добавить устройство'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="form-group flex flex-col">
-            <label htmlFor="name" className="text-gray-700 dark:text-gray-300 mb-1">Название</label>
-            <input
-              id="name"
-              className={inputClasses}
-              value={formData.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, name: e.target.value})}
-              required
-            />
-          </div>
-          <div className="form-group flex flex-col">
-            <label htmlFor="phone" className="text-gray-700 dark:text-gray-300 mb-1">Телефон</label>
-            <input
-              id="phone"
-              type="tel"
-              className={inputClasses}
-              value={formData.phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, phone: e.target.value})}
-              pattern="\+?[0-9\s\-\(\)]+"
-            />
-          </div>
-          <div className="form-group flex flex-col">
-            <label htmlFor="grafana_player_id" className="text-gray-700 dark:text-gray-300 mb-1">ID плеера Grafana</label>
-            <input
-              id="grafana_player_id"
-              className={inputClasses}
-              value={formData.grafana_uid || ''}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, grafana_uid: e.target.value})}
-            />
-          </div>
-          <div className="form-group flex flex-col">
-            <label htmlFor="model" className="text-gray-700 dark:text-gray-300 mb-1">Модель</label>
-            <Select
-              id="model"
-              value={formData.model}
-              onChange={(value: string) => setFormData({...formData, model: value})}
-              options={availableModels.map((model: string) => ({ label: model, value: model }))}
-              placeholder="Выберите модель"
-              className={inputClasses}
-              styles={{
-                popup: {
-                  root: { backgroundColor: '#334155', border: '1px solid #475569', borderRadius: '4px' },
-                },
-              }}
-              optionRender={(option) => {
-                const isSelected = option.value === formData.model;
-                return (
-                  <div
-                    style={{
-                      padding: '8px 12px',
-                      color: isSelected ? 'black' : '#e2e8f0',
-                    }}
-                  >
-                    {option.label}
-                  </div>
-                );
-              }}
-              style={{ width: '100%' }}
-            />
-          </div>
-          
-          <div className="form-group flex items-center justify-between">
-            <label htmlFor="send_alert_sms" className="text-gray-700 dark:text-gray-300">Включить управление по СМС</label>
-            <Switch
-              id="send_alert_sms"
-              checked={formData.send_alert_sms}
-              onChange={(checked: boolean) => setFormData({...formData, send_alert_sms: checked})}
-            />
-          </div>
-
-          {formData.send_alert_sms && (
-            <>
-              <div className="form-group flex flex-col">
-                <label htmlFor="command_category" className="text-gray-700 dark:text-gray-300 mb-1">Категория команды</label>
-                <Select
-                  id="command_category"
-                  value={selectedCategory}
-                  onChange={handleCategoryChange}
-                  options={categories.map((cat: string) => ({ label: cat, value: cat }))}
-                  placeholder="Выберите категорию"
-                  loading={loadingTemplates}
-                  disabled={!formData.model || loadingTemplates}
-                  className={inputClasses}
-                  style={{ width: '100%' }}
-                  size="large"
-                  styles={{
-                    popup: {
-                      root: { backgroundColor: '#334155', border: '1px solid #475569', borderRadius: '4px' },
-                    },
-                  }}
-                  optionRender={(option) => {
-                    const isSelected = option.value === selectedCategory;
-                    return (
-                      <div
-                        style={{
-                          padding: '8px 12px',
-                          color: isSelected ? 'black' : '#e2e8f0',
-                        }}
-                      >
-                        {option.label}
-                      </div>
-                    );
-                  }}
-                />
-              </div>
-
-              {selectedCategory && (
-                <div className="form-group flex flex-col">
-                  <label htmlFor="alert_sms_template_id" className="text-gray-700 dark:text-gray-300 mb-1">Команда SMS-оповещения</label>
-                  <Select
-                    id="alert_sms_template_id"
-                    value={formData.alert_sms_template_id}
-                    onChange={(value: number) => handleCommandTemplateChange(value)}
-                    options={filteredCommands.map((template: CommandTemplate) => ({
-                      label: template.name,
-                      value: template.id
-                    }))}
-                    placeholder="Выберите команду"
-                    loading={loadingTemplates}
-                    disabled={!selectedCategory || loadingTemplates}
-                    className={inputClasses}
-                    style={{ width: '100%' }}
-                    styles={{
-                      popup: {
-                        root: { backgroundColor: '#334155', border: '1px solid #475569', borderRadius: '4px' },
-                      },
-                    }}
-                    optionRender={(option) => {
-                      const isSelected = option.value === formData.alert_sms_template_id;
-                      return (
-                        <div
-                          style={{
-                            padding: '8px 12px',
-                            color: isSelected ? 'black' : '#e2e8f0',
-                          }}
-                        >
-                          {option.label}
-                        </div>
-                      );
-                    }}
-                  />
-                </div>
-              )}
-
-              {selectedCommandTemplate && selectedCommandTemplate.params_schema?.properties && (
-                <div className="space-y-4 border p-3 rounded-md dark:border-gray-600">
-                  <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Параметры команды:</h4>
-                  {Object.entries(selectedCommandTemplate.params_schema.properties).map(([paramName, param]: [string, CommandParam]) => {
-                    const isRequired = selectedCommandTemplate.params_schema.required?.includes(paramName);
-                    
-                    let inputComponent;
-                    if (param.type === 'string') {
-                      inputComponent = <Input placeholder={param.title || paramName} />;
-                    } else if (param.type === 'number' || param.type === 'integer') {
-                      inputComponent = <Input type="number" placeholder={param.title || paramName} />;
-                    } else if (param.type === 'boolean') {
-                      inputComponent = <Switch checkedChildren="Вкл" unCheckedChildren="Выкл" />;
-                    } else if (param.enum) {
-                      inputComponent = (
-                        <Select placeholder={param.title || paramName} className={inputClasses} style={{ width: '100%' }}
-                          styles={{
-                            popup: {
-                              root: { backgroundColor: '#334155', border: '1px solid #475569', borderRadius: '4px' },
-                            },
-                          }}
-                          optionRender={(option) => {
-                            const isSelected = option.value === formData.alert_sms_template_params?.[paramName];
-                            return (
-                              <div
-                                style={{
-                                  padding: '8px 12px',
-                                  color: isSelected ? 'black' : '#e2e8f0',
-                                }}
-                              >
-                                {option.label}
-                              </div>
-                            );
-                          }}
-                        >
-                          {param.enum.map((option: any) => (
-                            <Select.Option key={option} value={option}>{String(option)}</Select.Option>
-                          ))}
-                        </Select>
-                      );
-                    } else {
-                      inputComponent = <Input placeholder={param.title || paramName} />;
-                    }
-
-                    return (
-                      <div className="form-group flex flex-col" key={paramName}>
-                        <label htmlFor={`param-${paramName}`} className="text-gray-700 dark:text-gray-300 mb-1">
-                          {param.title || paramName}{isRequired ? ' *' : ''}
-                        </label>
-                        {React.cloneElement(inputComponent, {
-                          id: `param-${paramName}`,
-                          value: formData.alert_sms_template_params?.[paramName] || '',
-                          onChange: (e: React.ChangeEvent<HTMLInputElement> | boolean | string | number) => handleParamChange(paramName, (typeof e === 'object' && 'target' in e) ? e.target.value : e),
-                          className: inputClasses,
-                          style: { width: '100%' }
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-
-          <div className="form-group flex flex-col">
-            <label htmlFor="description" className="text-gray-700 dark:text-gray-300 mb-1">Описание</label>
-            <textarea
-              id="description"
-              className={`${inputClasses} h-24`}
-              value={formData.description}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({...formData, description: e.target.value})}
-            />
-          </div>
-          <div className="form-actions flex justify-end space-x-2 mt-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-md bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 hover:bg-gray-400 dark:hover:bg-gray-700 transition duration-300">
-              Отмена
-            </button>
-            <button type="submit" className="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition duration-300">
-              Сохранить
-            </button>
-          </div>
-        </form>
+        </Title>
       </div>
-    </div>
+      <form onSubmit={handleSubmit}>
+        {/* Платформа */}
+        {platforms.length > 0 && (
+          <div style={{ marginBottom: 18 }}>
+            <label style={{ color: '#555', marginBottom: 4, display: 'block' }}>Платформа</label>
+            {isSuperAdmin ? (
+              <Select
+                value={formData.platform_id}
+                onChange={(value: number) => {
+                  setFormData(prev => ({ ...prev, platform_id: value }));
+                }}
+                options={platforms.map((p) => ({ label: p.name, value: p.id }))}
+                placeholder="Выберите платформу"
+                style={{ width: '100%' }}
+                size="large"
+              />
+            ) : (
+              <Input
+                value={platforms.find(p => p.id === formData.platform_id)?.name || '—'}
+                disabled
+                size="large"
+                style={{ width: '100%' }}
+              />
+            )}
+          </div>
+        )}
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Название</label>
+          <Input
+            prefix={<AppstoreOutlined />}
+            value={formData.name}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
+            required
+            size="large"
+            placeholder="Введите название устройства"
+            style={{ borderRadius: 8 }}
+          />
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Телефон</label>
+          <Input
+            prefix={<MobileOutlined />}
+            value={formData.phone}
+            onChange={e => setFormData({ ...formData, phone: e.target.value })}
+            pattern="\+?[0-9\s\-\(\)]+"
+            size="large"
+            placeholder="+7 (999) 123-45-67"
+            style={{ borderRadius: 8 }}
+          />
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>ID плеера Grafana</label>
+          <Input
+            value={formData.grafana_uid || ''}
+            onChange={e => setFormData({ ...formData, grafana_uid: e.target.value })}
+            size="large"
+            placeholder="ID Grafana"
+            style={{ borderRadius: 8 }}
+          />
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Модель</label>
+          <Select
+            value={formData.model}
+            onChange={value => setFormData({ ...formData, model: value })}
+            options={availableModels.map((model) => ({ label: model, value: model }))}
+            placeholder="Выберите модель"
+            style={{ width: '100%' }}
+            size="large"
+            showSearch
+            filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+          />
+        </div>
+        <div style={{ marginBottom: 18, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Switch
+            checked={!!formData.send_alert_sms}
+            onChange={checked => setFormData({ ...formData, send_alert_sms: checked })}
+            style={{ background: formData.send_alert_sms ? '#1890ff' : '#444' }}
+          />
+          <span style={{ color: '#b0b8c9' }}>Включить управление по СМС</span>
+        </div>
+
+        {formData.send_alert_sms && (
+          <>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Категория команды</label>
+              <Select
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                options={categories.map(cat => ({ label: cat, value: cat }))}
+                placeholder="Выберите категорию"
+                style={{ width: '100%' }}
+                size="large"
+              />
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Команда SMS-оповещения</label>
+              <Select
+                value={selectedCommandTemplate?.id}
+                onChange={handleCommandTemplateChange}
+                options={filteredCommands.map(cmd => ({ label: cmd.name, value: cmd.id }))}
+                placeholder="Выберите команду"
+                style={{ width: '100%' }}
+                size="large"
+              />
+            </div>
+          </>
+        )}
+
+        <div style={{ marginBottom: 24 }}>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Описание</label>
+          <Input.TextArea
+            value={formData.description}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
+            rows={3}
+            size="large"
+            placeholder="Описание устройства"
+            style={{ borderRadius: 8, resize: 'vertical' }}
+          />
+        </div>
+        <div style={{ display: 'flex', justifyContent: device ? 'space-between' : 'flex-end', gap: 12, marginTop: 24 }}>
+          {device && device.id && (
+            <Popconfirm
+              title="Удалить устройство?"
+              description="Вы уверены, что хотите удалить это устройство?"
+              onConfirm={handleDelete}
+              okText="Да"
+              cancelText="Нет"
+            >
+              <Button danger icon={<DeleteOutlined />} size="large">
+                Удалить
+              </Button>
+            </Popconfirm>
+          )}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button onClick={onClose} icon={<CloseOutlined />} size="large">
+              Отмена
+            </Button>
+            <Button type="primary" htmlType="submit" icon={<SaveOutlined />} size="large" style={{ borderRadius: 8 }} disabled={saving} loading={saving}>
+              Сохранить
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Modal>
   );
 };
+
+export default DeviceFormModal;

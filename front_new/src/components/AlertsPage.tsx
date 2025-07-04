@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Key } from 'react';
 import { AlertCircle, ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert } from '@/types/alert';
 import { api } from '@/lib/api';
-import { Card, Spin, Alert as AntdAlert, Typography } from 'antd';
+import { Card, Spin, Alert as AntdAlert, Typography, Table, Tag, Select, Descriptions } from 'antd';
+import { config } from '../config/runtime';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 console.log('AlertsPage: Компонент загружен');
 
@@ -92,54 +94,162 @@ const AlertsPage = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
 
   const fetchAlerts = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('AlertsPage: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
       const data = await api.getAlerts();
-      // Сортируем алерты от новых к старым (по убыванию created_at)
       const sortedData = data.sort((a: Alert, b: Alert) => {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
       setAlerts(sortedData);
       setError(null);
     } catch (err) {
-      console.error("Ошибка при получении алертов:", err);
       setError("Не удалось загрузить алерты.");
     } finally {
       setLoading(false);
     }
-  }, [setAlerts, setError, setLoading]);
+  }, []);
 
   useEffect(() => {
-    console.log('AlertsPage: useEffect запущен');
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 60000);
     return () => clearInterval(interval);
   }, [fetchAlerts]);
 
-  if (loading) {
-    return <Spin tip="Загрузка алертов..." style={{ margin: '20px' }}/>;
-  }
+  // Фильтрация по статусу
+  const filteredAlerts = statusFilter
+    ? alerts.filter(a => a.status === statusFilter)
+    : alerts;
 
-  if (error) {
-    return <AntdAlert message="Ошибка" description={error} type="error" showIcon style={{ margin: '20px' }}/>;
-  }
+  // Явная сортировка по времени (от нового к старому)
+  const sortedAlerts = [...filteredAlerts].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  const columns = [
+    {
+      title: 'Время',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (text: string) => new Date(text).toLocaleString(),
+      sorter: (a: Alert, b: Alert) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      sortDirections: ['descend' as const, 'ascend' as const],
+    },
+    {
+      title: 'Название',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: 'Сообщение',
+      dataIndex: 'message',
+      key: 'message',
+      render: (_: any, record: Alert) => record.data?.summary || '-',
+    },
+    {
+      title: 'Статус',
+      dataIndex: 'status',
+      key: 'status',
+      filters: [
+        { text: 'Активен', value: 'firing' },
+        { text: 'Решен', value: 'resolved' },
+      ],
+      onFilter: (value: boolean | Key, record: Alert) => record.status === String(value),
+      render: (status: string) =>
+        status === 'firing' ? (
+          <Tag color="red">Активен</Tag>
+        ) : (
+          <Tag color="green">Решен</Tag>
+        ),
+    },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    // ...добавьте другие нужные поля
+  ];
+
+  const expandedRowRender = (alert: Alert) => (
+    <Descriptions column={1} bordered size="small">
+      <Descriptions.Item label="ID">{alert.id}</Descriptions.Item>
+      <Descriptions.Item label="Название">{alert.title}</Descriptions.Item>
+      <Descriptions.Item label="Сообщение">{alert.data?.summary || '-'}</Descriptions.Item>
+      <Descriptions.Item label="Статус">{alert.status === 'firing' ? 'Активен' : 'Решен'}</Descriptions.Item>
+      {alert.description && (
+        <Descriptions.Item label="Описание">{alert.description}</Descriptions.Item>
+      )}
+      {alert.player_id && (
+        <Descriptions.Item label="Player ID">{alert.player_id}</Descriptions.Item>
+      )}
+      {alert.resolved_at && (
+        <Descriptions.Item label="Разрешено">{new Date(alert.resolved_at).toLocaleString()}</Descriptions.Item>
+      )}
+      {alert.data && typeof alert.data === 'object' && (
+        <Descriptions.Item label="Детали из Grafana">
+          <div>
+            <div>Серьёзность: {alert.data.severity || 'Не указано'}</div>
+            <div>Начало: {alert.data.startsAt || 'Не указано'}</div>
+            <div>Конец: {alert.data.endsAt || 'Не указано'}</div>
+            <div>Плеер: {alert.data.player_name || 'Неизвестный'}</div>
+            <div>Платформа: {alert.data.platform || 'Неизвестная'}</div>
+            {Object.entries(alert.data).map(([key, value]) => (
+              key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && (
+                <div key={key}>{key}: {JSON.stringify(value)}</div>
+              )
+            ))}
+          </div>
+        </Descriptions.Item>
+      )}
+    </Descriptions>
+  );
 
   return (
-    <Card 
-      title={<h2 className="text-xl font-semibold dark:text-gray-100">Журнал Алертов</h2>} 
-      style={{ margin: '20px' }} 
-      className="dark:bg-gray-800 rounded-lg" 
-      bodyStyle={{ padding: '16px' }} 
+    <Card
+      title={<h2 className="text-xl font-semibold dark:text-gray-100">Журнал Алертов</h2>}
+      className="dark:bg-gray-800 rounded-lg"
+      style={{ margin: '20px' }}
     >
-      {alerts.length === 0 && (
-        <p className="text-gray-400 text-center">Нет активных алертов.</p>
+      <div style={{ marginBottom: 16 }}>
+        <Select
+          placeholder="Фильтр по статусу"
+          style={{ width: 200 }}
+          allowClear
+          onChange={value => setStatusFilter(value)}
+        >
+          <Option value="firing">Активен</Option>
+          <Option value="resolved">Решен</Option>
+        </Select>
+      </div>
+      {loading ? (
+        <Spin tip="Загрузка журнала алертов..." />
+      ) : error ? (
+        <AntdAlert message="Ошибка" description={error} type="error" showIcon />
+      ) : (
+        <Table
+          dataSource={sortedAlerts}
+          columns={columns}
+          rowKey="id"
+          pagination={{
+            current: page,
+            pageSize: pageSize,
+            onChange: (p, ps) => {
+              setPage(p);
+              setPageSize(ps);
+            },
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '15', '30', '50'],
+          }}
+          expandable={{
+            expandedRowRender,
+            rowExpandable: () => true,
+          }}
+        />
       )}
-      {alerts.length > 0 && alerts.map(alert => (
-        <AlertItem key={alert.id} alert={alert} onResolve={fetchAlerts} setParentError={setError} />
-      ))}
     </Card>
   );
 };

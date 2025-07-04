@@ -10,10 +10,16 @@ services:
       - PYTHONPATH=/app
     ports:
       - "8000:8000"
-    # volumes: # Удаляем монтирование кода для продакшена
-    #   - ./backend/alembic:/app/alembic # Оставляем для миграций, если нужно
+    volumes: # Оставляем для миграций в продакшене
+      - ./backend/alembic:/app/alembic  # Необходимо для миграций
     depends_on:
       - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     image: remosa-frontend:latest
@@ -28,6 +34,8 @@ services:
     environment:
       NODE_ENV: production
       VITE_API_URL: ${VITE_API_URL}
+      VITE_WS_URL: ${VITE_WS_URL}
+      VITE_DEBUG_LOGGING: ${VITE_DEBUG_LOGGING:-false}
       GENERATE_SOURCEMAP: "false"
     depends_on:
       - backend
@@ -57,7 +65,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      #- ./nginx/logs:/var/log/nginx
+      - ./nginx/logs:/var/log/nginx  # логи nginx в продакшене
     depends_on:
       - backend
       - frontend

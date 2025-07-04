@@ -8,4 +8,5 @@ export interface SystemStatus {
   dbConnections: number;
   apiStatus: string;
   telegramStatus: string;
+  smsStatus: string;
 } 

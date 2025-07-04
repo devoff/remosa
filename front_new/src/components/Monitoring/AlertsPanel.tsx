@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { Alert } from '@/types/alert';
 import { api } from '@/lib/api';
 import { Spin, Alert as AntdAlert, Typography } from 'antd';
+import { config } from '../../config/runtime';
 
 const { Title } = Typography;
 
@@ -77,7 +78,7 @@ const AlertsPanel = () => {
   const fetchAlerts = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('AlertsPanel: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
+      console.log('AlertsPanel: Отправка запроса на алерты к API_URL:', `${config.API_URL}/alerts/`);
       const data = await api.getAlerts();
       setAlerts(data);
       setError(null);

@@ -1,20 +1,40 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import Device, Log # Убедитесь, что Log импортирован из app.models
 from datetime import datetime, timedelta
+from app.core.auth import get_current_user # Добавил импорт get_current_user
+from app.models.user import User # Добавил импорт User
+from app.services.sms_gateway import SMSGateway
+import asyncio
+import aiohttp
 
 router = APIRouter()
 
 @router.get("/dashboard")
-async def get_dashboard_stats(db: Session = Depends(get_db)):
+async def get_dashboard_stats(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user) # Добавил зависимость
+):
     """Get dashboard statistics."""
-    # Расчет Uptime (заглушка: реальный uptime нужно получать из системных данных)
-    # Для примера, пусть система "работает" 2 дня
-    uptime_seconds = (datetime.now() - datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=2)).total_seconds()
-    hours = int(uptime_seconds // 3600)
+    # Расчет Uptime на основе времени старта приложения
+    start_time = request.app.state.start_time
+    uptime_seconds = (datetime.now() - start_time).total_seconds()
+    
+    days = int(uptime_seconds // (24 * 3600))
+    hours = int((uptime_seconds % (24 * 3600)) // 3600)
     minutes = int((uptime_seconds % 3600) // 60)
-    uptime_str = f"{hours}ч {minutes}м"
+
+    uptime_parts = []
+    if days > 0:
+        uptime_parts.append(f"{days}д")
+    if hours > 0:
+        uptime_parts.append(f"{hours}ч")
+    if minutes > 0 or not uptime_parts:
+        uptime_parts.append(f"{minutes}м")
+    
+    uptime_str = " ".join(uptime_parts)
 
     # Количество устройств
     total_devices = db.query(Device).count()
@@ -30,6 +50,17 @@ async def get_dashboard_stats(db: Session = Depends(get_db)):
     # Статус БД (заглушка: в реальной системе нужна более сложная проверка)
     db_connections = 5 # Примерное количество соединений
 
+    # Проверка статуса SMS шлюза
+    sms_gateway = SMSGateway()
+    try:
+        # Пробуем отправить тестовый запрос (например, GET /ping или аналогичный)
+        async with aiohttp.ClientSession() as session:
+            headers = {"Authorization": f"{sms_gateway.api_key}"}
+            async with session.get(f"{sms_gateway.base_url}/ping", headers=headers) as resp:
+                sms_status = 'Подключен' if resp.status == 200 else 'Ошибка'
+    except Exception:
+        sms_status = 'Ошибка'
+
     return {
         "uptime": uptime_str,
         "totalDevices": total_devices,
@@ -39,5 +70,6 @@ async def get_dashboard_stats(db: Session = Depends(get_db)):
         "dbStatus": "Онлайн", # Или количество соединений
         "dbConnections": db_connections,
         "apiStatus": "Онлайн", # Заглушка
-        "telegramStatus": "Подключен" # Заглушка
+        "telegramStatus": "Подключен", # Заглушка
+        "smsStatus": sms_status
     }

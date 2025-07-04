@@ -106,11 +106,13 @@ export interface FlowStore {
   setEditingConfig: (editing: boolean) => void;
 }
 
+export type DeviceStatus = 'ONLINE' | 'WARNING' | 'OFFLINE';
+
 export interface Device {
   id: string;
   name: string;
   phone?: string;
-  status: 'ONLINE' | 'OFFLINE' | 'WARNING';
+  status: DeviceStatus;
   description?: string;
   last_update: string;
   created_at: string;
@@ -119,6 +121,7 @@ export interface Device {
   alert_sms_template_id?: number;
   send_alert_sms?: boolean;
   alert_sms_template_params?: Record<string, any>;
+  platform_id?: number;
 }
 
 export interface CommandTemplate {
@@ -133,16 +136,19 @@ export interface CommandTemplate {
     properties: { [key: string]: { type: string; title?: string; pattern?: string; enum?: any[]; }; };
     required?: string[];
   };
+  template: string;
 }
 
 export interface CommandParamDefinition {
   name: string;
-  type: string;
+  type: 'string' | 'number';
+  title?: string;
+  description?: string;
   pattern?: string;
   min?: number;
   max?: number;
-  title?: string;
   enum?: any[];
+  required?: boolean;
 }
 
 export interface CommandTemplateCreate extends Omit<CommandTemplate, 'id'> {}
@@ -174,17 +180,27 @@ export interface DeviceCommandsPanelProps {
   onClose: () => void;
 }
 
+export interface PlatformRole {
+  platform_id: number;
+  role: 'admin' | 'manager' | 'user' | 'viewer';
+}
+
 export interface User {
   id: number;
-  username: string;
-  email?: string;
+  email: string;
   is_active: boolean;
+  role: 'superadmin' | 'admin' | 'user';
+  platform_id?: number | null;
+  created_at: string;
+  updated_at: string;
+  platform_roles?: PlatformRole[];
 }
 
 export interface UserCreate {
-  username: string;
-  email?: string;
+  email: string;
   password: string;
+  role?: string;
+  platform_id?: number | null;
 }
 
 export interface UserLogin {
@@ -195,4 +211,15 @@ export interface UserLogin {
 export interface Token {
   access_token: string;
   token_type: string;
+}
+
+export interface Platform {
+  id: number;
+  name: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+  owner_id: number;
+  devices_limit: number;
+  sms_limit: number;
 }

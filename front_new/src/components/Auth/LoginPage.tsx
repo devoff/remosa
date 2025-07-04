@@ -1,40 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Token, UserLogin } from '../../types';
+import { useAuth } from '../../lib/useAuth';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Проверяем, авторизован ли пользователь при загрузке страницы
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/users'); // Перенаправляем на страницу пользователей, если уже авторизован
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
-      const response = await fetch('/api/v1/auth/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          username,
-          password,
-        }).toString(),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Ошибка входа');
+      await login(username, password);
+      // После успешного входа useAuth автоматически перенаправит пользователя
+    } catch (err: any) {
+      // Обрабатываем различные типы ошибок
+      let errorMessage = 'Неизвестная ошибка';
+      
+      if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.response?.status === 401) {
+        errorMessage = 'Неправильное имя пользователя или пароль';
+      } else if (err.response?.status === 422) {
+        errorMessage = 'Неверный формат данных. Проверьте введенные данные.';
+      } else if (err.response?.status >= 500) {
+        errorMessage = 'Ошибка сервера. Попробуйте позже.';
+      } else if (err.code === 'NETWORK_ERROR' || !err.response) {
+        errorMessage = 'Ошибка сети. Проверьте подключение к интернету.';
+      } else if (err.message) {
+        errorMessage = err.message;
       }
-
-      const data: Token = await response.json();
-      localStorage.setItem('access_token', data.access_token);
-      navigate('/'); // Перенаправляем на главную страницу после успешного входа
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      
+      setError(errorMessage);
       console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,13 +56,14 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Вход</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="mb-4">
-          <label htmlFor="username" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Имя пользователя:</label>
+          <label htmlFor="username" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Email:</label>
           <input
-            type="text"
+            type="email"
             id="username"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white dark:border-gray-600"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled={isLoading}
             required
           />
         </div>
@@ -62,15 +75,21 @@ const LoginPage = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white dark:border-gray-600"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
             required
           />
         </div>
         <div className="flex items-center justify-between">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+            disabled={isLoading}
+            className={`font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed text-gray-600' 
+                : 'bg-blue-500 hover:bg-blue-700 text-white'
+            }`}
           >
-            Войти
+            {isLoading ? 'Вход...' : 'Войти'}
           </button>
         </div>
       </form>
