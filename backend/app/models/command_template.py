@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, JSON
-from app.core.database import Base
+from app.db.base_class import Base
 
 class CommandTemplate(Base):
     __tablename__ = "command_templates"

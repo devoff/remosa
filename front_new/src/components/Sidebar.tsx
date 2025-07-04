@@ -9,7 +9,11 @@ import {
   Users, 
   Settings, 
   ChevronRight, 
-  ChevronDown 
+  ChevronDown,
+  Briefcase,
+  FileText,
+  Shield,
+  Home
 } from 'lucide-react';
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
@@ -108,24 +112,55 @@ const Sidebar: React.FC = () => {
         </h2>
         
         <SidebarSection 
-          title="Статус системы" 
-          icon={<Activity size={18} className="text-green-500" />}
+          title="Dashboard" 
+          icon={<Home size={18} className="text-cyan-400" />}
+        >
+          <Link to="/" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Устройства
+          </Link>
+        </SidebarSection>
+
+        <SidebarSection 
+          title="Администрирование" 
+          icon={<Briefcase size={18} className="text-orange-400" />}
           defaultOpen={true}
         >
-          <div className="space-y-2 text-gray-300">
-            <div className="flex items-center justify-between">
-              <span>Активно:</span>
-              <span className="font-medium text-green-400">Да</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Uptime:</span>
-              <span>{systemStatus?.uptime || 'Загрузка...'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Последний алерт:</span>
-              <span>{formatTime(systemStatus?.latestAlert || null)}</span>
-            </div>
-          </div>
+          <Link to="/users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Пользователи
+          </Link>
+          <Link to="/roles" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Роли
+          </Link>
+          <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Шаблоны команд
+          </Link>
+          <Link to="/admin/platforms" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Платформы
+          </Link>
+        </SidebarSection>
+        
+        <SidebarSection 
+          title="Мониторинг" 
+          icon={<Activity size={18} className="text-green-400" />}
+        >
+          <Link to="/devices" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Устройства
+          </Link>
+          <Link to="/status" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Статус системы
+          </Link>
+        </SidebarSection>
+        
+        <SidebarSection 
+          title="Логи" 
+          icon={<FileText size={18} className="text-orange-400" />}
+        >
+          <Link to="/logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Все логи
+          </Link>
+          <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+            Журнал алертов
+          </Link>
         </SidebarSection>
         
         <SidebarSection 
@@ -145,29 +180,6 @@ const Sidebar: React.FC = () => {
               <span>Команды</span>
               <span className="bg-gray-600 text-xs px-1.5 rounded-full">8</span>
             </div>
-          </div>
-        </SidebarSection>
-        
-        <SidebarSection 
-          title="База данных" 
-          icon={<Database size={18} className="text-green-500" />}
-        >
-          <div className="space-y-1">
-            <Link to="/" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Устройства
-            </Link>
-            <Link to="/telegram-users" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Пользователи Telegram
-            </Link>
-            <Link to="/command-templates" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Шаблоны команд
-            </Link>
-            <Link to="/alert-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Журнал алертов
-            </Link>
-            <Link to="/command-logs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
-              Журнал команд
-            </Link>
           </div>
         </SidebarSection>
         
@@ -216,7 +228,6 @@ const Sidebar: React.FC = () => {
       </div>
       
       <div className="mt-auto border-t border-gray-700">
-        {/* <StatusBar /> */}
         <div className="p-4 space-y-2">
           <Link to="/users" className="w-full flex items-center text-gray-300 hover:bg-gray-700 py-2 px-3 rounded-md transition-colors">
             <Users size={18} className="mr-2" />

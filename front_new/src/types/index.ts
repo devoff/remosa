@@ -106,11 +106,13 @@ export interface FlowStore {
   setEditingConfig: (editing: boolean) => void;
 }
 
+export type DeviceStatus = 'online' | 'offline' | 'error' | 'unknown';
+
 export interface Device {
   id: string;
   name: string;
   phone?: string;
-  status: 'ONLINE' | 'OFFLINE' | 'WARNING';
+  status: DeviceStatus;
   description?: string;
   last_update: string;
   created_at: string;
@@ -137,12 +139,14 @@ export interface CommandTemplate {
 
 export interface CommandParamDefinition {
   name: string;
-  type: string;
+  type: 'string' | 'number';
+  title?: string;
+  description?: string;
   pattern?: string;
   min?: number;
   max?: number;
-  title?: string;
   enum?: any[];
+  required?: boolean;
 }
 
 export interface CommandTemplateCreate extends Omit<CommandTemplate, 'id'> {}

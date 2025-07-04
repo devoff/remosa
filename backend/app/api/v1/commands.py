@@ -1,5 +1,5 @@
 from typing import List, Dict, Optional
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Query
 from sqlalchemy.orm import Session
 from app.services.command_service import CommandService
 from app.schemas.command_template import CommandTemplateResponse, CommandParamSchema, CommandTemplateCreate
@@ -11,6 +11,7 @@ from app.core.auth import get_current_user
 from app.models.user import User
 import re
 import logging
+from datetime import datetime
 
 router = APIRouter()
 
@@ -124,12 +125,25 @@ async def execute_command(
 @router.get("/logs", response_model=List[CommandLogResponse])
 async def get_all_command_logs(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    device_id: Optional[int] = None,
+    level: Optional[str] = None,
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None,
 ):
-    """Получить всю историю команд"""
-    logs = CommandService.get_all_command_logs(db)
+    """
+    Получить всю историю команд с возможностью фильтрации.
+    """
+    logs = CommandService.get_all_command_logs(
+        db, 
+        device_id=device_id, 
+        level=level, 
+        start_date=start_date, 
+        end_date=end_date
+    )
     if not logs:
-        raise HTTPException(status_code=404, detail="No logs found")
+        # Возвращаем пустой список вместо 404, если по фильтрам ничего не найдено
+        return []
     return logs
 
 @router.get("/logs/{device_id}", response_model=List[CommandLogResponse])

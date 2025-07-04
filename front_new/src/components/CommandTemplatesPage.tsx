@@ -1,109 +1,72 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Modal, Form, Input, Select, Space, message, Collapse } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { CommandTemplate, CommandTemplateCreate, CommandParamDefinition } from '../types';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  message,
+  Space,
+  Popconfirm,
+  Typography,
+  List,
+  Spin
+} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useApi } from '../lib/useApi';
+import { CommandTemplate, CommandTemplateCreate } from '../types';
+import type { ColumnsType } from 'antd/es/table';
 
+const { Title } = Typography;
 const { Option } = Select;
-const { Panel } = Collapse;
 
-// Define a type for the form values, where params_schema is a string
 interface CommandTemplateFormValues extends Omit<CommandTemplateCreate, 'params_schema'> {
   params_schema: string;
 }
 
 const CommandTemplatesPage: React.FC = () => {
   const [templates, setTemplates] = useState<CommandTemplate[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<CommandTemplate | null>(null);
-  const [form] = Form.useForm<CommandTemplateFormValues>();
-  const { get, post, put, delete: del } = useApi();
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
-  const [selectedCategoryInForm, setSelectedCategoryInForm] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [form] = Form.useForm();
+  const api = useApi();
 
-  const fetchCommandTemplates = async (): Promise<CommandTemplate[]> => {
-    try {
-      const url = selectedModel 
-        ? `/commands/templates/${selectedModel}` 
-        : '/commands/templates';
-      const data = await get(url);
-      return data.map((template: any) => ({
-        ...template,
-        params_schema: typeof template.params_schema === 'string' 
-                       ? JSON.parse(template.params_schema || '{}') 
-                       : template.params_schema || {}
-      }));
-    } catch (error) {
-      console.error('Ошибка при получении шаблонов команд:', error);
-      message.error('Не удалось загрузить шаблоны команд.');
-      return [];
-    }
-  };
-
-  const saveCommandTemplate = async (values: CommandTemplateCreate) => {
-    try {
-      const payload = {
-        ...values,
-        params_schema: JSON.stringify(values.params_schema)
-      };
-
-      if (editingTemplate) {
-        await put(`/commands/templates/${editingTemplate.id}`, payload);
-        message.success('Шаблон команды успешно обновлен!');
-      } else {
-        await post('/commands/templates', payload);
-        message.success('Шаблон команды успешно добавлен!');
-      }
-      setIsModalVisible(false);
-      fetchTemplates();
-    } catch (error) {
-      console.error('Ошибка при сохранении шаблона команды:', error);
-      message.error('Не удалось сохранить шаблон команды.');
-    }
-  };
-
-  const deleteCommandTemplate = async (id: number) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот шаблон?')) {
-      try {
-        await del(`/commands/templates/${id}`);
-        message.success('Шаблон команды успешно удален!');
-        fetchTemplates();
-      } catch (error) {
-        console.error('Ошибка при удалении шаблона команды:', error);
-        message.error('Не удалось удалить шаблон команды.');
-      }
-    }
-  };
-
-  const fetchTemplates = useCallback(async (model?: string) => {
+  const fetchTemplates = useCallback(async () => {
     try {
       setLoading(true);
-      const url = model 
-        ? `/commands/templates/${model}`
-        : '/commands/templates';
-      const data = await get(url);
-      setTemplates(data);
-      setError(null);
-    } catch (err) {
-      console.error('Ошибка загрузки шаблонов команд:', err);
-      message.error('Не удалось загрузить шаблоны команд.');
+      const response = await api.get('/command-templates');
+      const templatesData = Array.isArray(response) ? response : [];
+      setTemplates(templatesData);
+    } catch (error) {
+      console.error('Ошибка при загрузке шаблонов команд:', error);
+      message.error('Не удалось загрузить шаблоны команд');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     fetchTemplates();
-  }, [selectedModel]);
+  }, [fetchTemplates]);
 
-  const handleAdd = () => {
-    setEditingTemplate(null);
+  const uniqueModels = useMemo(() => {
+    const models = templates.map((t: CommandTemplate) => t.model).filter(Boolean);
+    return Array.from(new Set(models as string[]));
+  }, [templates]);
+
+  const handleAddModelOrTemplate = () => {
     form.resetFields();
-    if (selectedModel) {
-      form.setFieldsValue({ model: selectedModel });
-    }
+    setEditingTemplate(null);
+    setIsModalVisible(true);
+  };
+
+  const handleAddTemplateForModel = (model: string) => {
+    form.resetFields();
+    setEditingTemplate(null);
+    form.setFieldsValue({ model });
     setIsModalVisible(true);
   };
 
@@ -111,228 +74,178 @@ const CommandTemplatesPage: React.FC = () => {
     setEditingTemplate(template);
     form.setFieldsValue({
       ...template,
-      params_schema: JSON.stringify(template.params_schema, null, 2)
+      params_schema: JSON.stringify(template.params_schema, null, 2),
     });
-    setSelectedCategoryInForm(template.category);
     setIsModalVisible(true);
   };
 
-  const handleDelete = (id: number) => {
-    Modal.confirm({
-      title: 'Вы уверены, что хотите удалить этот шаблон?',
-      onOk: () => deleteCommandTemplate(id),
-    });
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
-  };
-
-  const onFinish = (values: CommandTemplateFormValues) => {
+  const handleDelete = async (id: number) => {
     try {
-      const parsedParamsSchema = values.params_schema ? JSON.parse(values.params_schema) : {};
-      saveCommandTemplate({
-        ...values,
-        params_schema: parsedParamsSchema
-      } as CommandTemplateCreate);
-    } catch (e) {
-      message.error('Неверный формат JSON для схемы параметров.');
-      console.error('Ошибка парсинга params_schema:', e);
+      await api.remove(`/command-templates/${id}`);
+      message.success('Шаблон команды успешно удален');
+      fetchTemplates();
+    } catch (error) {
+      message.error('Не удалось удалить шаблон команды');
     }
   };
 
-  // Группируем шаблоны по моделям
-  const models = Array.from(new Set(templates.map((t: CommandTemplate) => t.model))).filter(Boolean) as string[];
+  const onFinish = async (values: CommandTemplateFormValues) => {
+    try {
+      const parsedSchema = JSON.parse(values.params_schema);
+      const payload: CommandTemplateCreate = { ...values, params_schema: parsedSchema };
+      
+      if (editingTemplate) {
+        await api.put(`/command-templates/${editingTemplate.id}`, payload);
+        message.success('Шаблон успешно обновлен');
+      } else {
+        await api.post('/command-templates', payload);
+        message.success('Шаблон успешно создан');
+      }
+      setIsModalVisible(false);
+      fetchTemplates();
+    } catch (error) {
+      message.error('Ошибка сохранения. Проверьте JSON схемы параметров.');
+    }
+  };
 
-  // Собираем уникальные категории и названия
-  const uniqueCategories = Array.from(new Set(templates.map((t: CommandTemplate) => t.category))).filter(Boolean) as string[];
-  const uniqueNames = Array.from(new Set(templates.map((t: CommandTemplate) => t.name))).filter(Boolean) as string[];
-
-  const filteredTemplates = selectedModel 
-    ? templates.filter((t: CommandTemplate) => t.model === selectedModel) 
-    : templates;
-
-  const columns = [
+  const columns: ColumnsType<CommandTemplate> = [
     { title: 'Модель', dataIndex: 'model', key: 'model' },
     { title: 'Категория', dataIndex: 'category', key: 'category' },
     { title: 'Подкатегория', dataIndex: 'subcategory', key: 'subcategory' },
     { title: 'Название', dataIndex: 'name', key: 'name' },
     { title: 'Шаблон', dataIndex: 'template', key: 'template' },
-    { title: 'Описание', dataIndex: 'description', key: 'description' },
+    { title: 'Описание', dataIndex: 'description', key: 'description', ellipsis: true },
     {
       title: 'Действия',
-      key: 'actions',
+      key: 'action',
+      fixed: 'right',
+      width: 200,
       render: (_: any, record: CommandTemplate) => (
-        <Space size="middle">
+        <Space size="small">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Редактировать</Button>
-          <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)}>Удалить</Button>
+          <Popconfirm title="Вы уверены?" onConfirm={() => handleDelete(record.id)}>
+            <Button danger icon={<DeleteOutlined />}>Удалить</Button>
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h2>Управление шаблонами команд</h2>
-      {!selectedModel ? (
-        <>
-          <h3>Выберите модель устройства:</h3>
-          <Table 
-            dataSource={models.map(model => ({ model }))} 
-            columns={[
-              { 
-                title: 'Модель', 
-                dataIndex: 'model', 
-                key: 'model',
-                render: (text: string) => (
-                  <Button type="link" onClick={() => setSelectedModel(text)}>{text}</Button>
-                )
-              }
-            ]} 
-            rowKey="model" 
-            pagination={false}
-          />
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} style={{ marginTop: '20px' }}>
-            Добавить модель или шаблон
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button onClick={() => setSelectedModel(null)} style={{ marginBottom: '20px' }}>
-            ← Назад к моделям
-          </Button>
-          <h3>Шаблоны для модели: {selectedModel}</h3>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} style={{ marginBottom: '20px' }}>
-            Добавить шаблон для {selectedModel}
-          </Button>
-          <Table 
-            columns={columns} 
-            dataSource={filteredTemplates} 
-            rowKey="id" 
-          />
-        </>
-      )}
+  if (loading) {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#111827' }}>
+            <Spin size="large" />
+        </div>
+    );
+  }
 
-      <Modal
-        title={editingTemplate ? 'Редактировать шаблон команды' : 'Добавить шаблон команды'}
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
+  const renderModelSelection = () => (
+    <div className="p-8 bg-gray-900 min-h-screen text-white">
+      <Title level={2} style={{ color: 'white' }}>Управление шаблонами команд</Title>
+      <p className="text-gray-400 mb-4">Выберите модель устройства:</p>
+      <div className="bg-gray-800 border border-gray-700 rounded-lg">
+        <List
+          header={<div className="px-4 py-2 font-semibold text-gray-300">Модель</div>}
+          dataSource={uniqueModels}
+          renderItem={(model) => (
+            <List.Item className="border-t border-gray-700 hover:bg-gray-700/50">
+              <a onClick={() => setSelectedModel(model)} className="px-4 py-2 text-blue-400 hover:text-blue-300 w-full block">
+                {model}
+              </a>
+            </List.Item>
+          )}
+        />
+      </div>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={handleAddModelOrTemplate}
+        className="mt-6"
       >
-        <Form
-          form={form}
-          onFinish={onFinish}
-          layout="vertical"
-        >
-          <Form.Item
-            name="model"
-            label="Модель"
-            rules={[{ required: true, message: 'Пожалуйста, введите модель!' }]}
-          >
-            <Input disabled={!!selectedModel && !!editingTemplate} />
-          </Form.Item>
-          <Form.Item
-            name="category"
-            label="Категория"
-            rules={[{ required: true, message: 'Пожалуйста, введите категорию!' }]}
-          >
-            <Select
-              showSearch
-              allowClear
-              options={uniqueCategories.map(cat => ({ label: cat, value: cat }))}
-              placeholder="Выберите или введите категорию"
-              onChange={(value: string) => setSelectedCategoryInForm(value)}
-            />
-          </Form.Item>
-          <Form.Item
-            name="subcategory"
-            label="Подкатегория"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            label="Название"
-            rules={[{ required: true, message: 'Пожалуйста, введите название!' }]}
-          >
-            <Select
-              showSearch
-              allowClear
-              options={templates
-                .filter((t: CommandTemplate) => t.category === selectedCategoryInForm)
-                .map((t: CommandTemplate) => t.name)
-                .filter(Boolean)
-                .map(name => ({ label: name, value: name }))}
-              placeholder="Выберите или введите название"
-              disabled={!selectedCategoryInForm}
-            />
-          </Form.Item>
-          <Form.Item
-            name="template"
-            label="Шаблон"
-            rules={[{ required: true, message: 'Пожалуйста, введите шаблон команды!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Описание"
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          
-          <Collapse ghost items={[
-            {
-              key: '1',
-              label: 'Параметры команды (JSON)',
-              children: (
-                <Form.Item
-                  name="params_schema"
-                  label="Схема параметров (JSON)"
-                  rules={[
-                    { required: true, message: 'Пожалуйста, введите схему параметров!' },
-                    () => ({
-                      validator(_: any, value: string) {
-                        try {
-                          if (value) JSON.parse(value);
-                          return Promise.resolve();
-                        } catch (error) {
-                          return Promise.reject(new Error('Неверный формат JSON!'));
-                        }
-                      },
-                    }),
-                  ]}
-                >
-                  <Input.TextArea 
-                    rows={6} 
-                    placeholder={
-                      JSON.stringify({
-                        "type": "object",
-                        "properties": {
-                          "param1": {"type": "string", "title": "Параметр 1"},
-                          "param2": {"type": "number", "title": "Параметр 2"}
-                        },
-                        "required": ["param1"]
-                      }, null, 2)
-                    }
-                  />
-                </Form.Item>
-              ),
-            },
-          ]} />
+        Добавить модель или шаблон
+      </Button>
+    </div>
+  );
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Сохранить
+  const renderTemplateTable = () => {
+    const filteredTemplates = templates.filter((t: CommandTemplate) => t.model === selectedModel);
+    return (
+      <div className="p-8 bg-gray-900 min-h-screen">
+        <Space direction="vertical" style={{ width: '100%' }} size="large">
+          <Button icon={<ArrowLeftOutlined />} onClick={() => setSelectedModel(null)}>
+            Назад к моделям
+          </Button>
+          <div className="flex justify-between items-center">
+            <Title level={3} style={{ color: 'white', margin: 0 }}>Шаблоны для модели: {selectedModel}</Title>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => handleAddTemplateForModel(selectedModel!)}
+            >
+              Добавить шаблон для {selectedModel}
             </Button>
-            <Button onClick={handleCancel} style={{ marginLeft: '8px' }}>
-              Отмена
-            </Button>
-          </Form.Item>
+          </div>
+          <Table
+            columns={columns}
+            dataSource={filteredTemplates}
+            rowKey="id"
+            bordered
+            size="middle"
+            pagination={{ pageSize: 20 }}
+            scroll={{ x: 'max-content' }}
+            className="dark-table"
+          />
+        </Space>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {selectedModel ? renderTemplateTable() : renderModelSelection()}
+      
+      <Modal
+        title={editingTemplate ? 'Редактировать шаблон' : 'Добавить шаблон'}
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+        width={800}
+      >
+        <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ model: selectedModel || '' }}>
+            <Form.Item name="model" label="Модель" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="category" label="Категория" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="subcategory" label="Подкатегория">
+                <Input />
+            </Form.Item>
+            <Form.Item name="name" label="Название" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="template" label="Шаблон" rules={[{ required: true }]}>
+                <Input placeholder="#01#{param}#" />
+            </Form.Item>
+            <Form.Item name="description" label="Описание">
+                <Input.TextArea />
+            </Form.Item>
+            <Form.Item name="params_schema" label="Схема параметров (JSON)" rules={[{ required: true }]}>
+                 <Input.TextArea rows={8} placeholder={`{
+  "properties": {
+    "param": { "type": "string", "title": "Параметр" }
+  },
+  "required": ["param"]
+}`} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Сохранить
+              </Button>
+            </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

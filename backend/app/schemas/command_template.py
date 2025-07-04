@@ -20,6 +20,9 @@ class CommandTemplateBase(BaseModel):
 class CommandTemplateCreate(CommandTemplateBase):
     pass
 
+class CommandTemplateUpdate(CommandTemplateBase):
+    pass
+
 class CommandTemplateResponse(CommandTemplateBase):
     id: int
 
