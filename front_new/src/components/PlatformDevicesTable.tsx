@@ -5,26 +5,39 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DeviceFormModal from './Monitoring/DeviceFormModal';
+import { useAuth } from '../lib/useAuth';
+import apiClient from '../lib/api';
+import type { Device as GlobalDevice, DeviceStatus } from '../types';
 
-interface Device {
-  id: number;
-  name: string;
-  description?: string;
-  status: string;
-  last_update?: string;
-  created_at: string;
-  model?: string;
-  phone?: string;
-}
+type Device = GlobalDevice;
 
 interface PlatformDevicesTableProps {
   devices: Device[];
   onAdd: () => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, onAdd, onDelete }) => {
+  const [editDevice, setEditDevice] = React.useState<Device | null>(null);
+  const [addModalOpen, setAddModalOpen] = React.useState(false);
+  const [availableModels, setAvailableModels] = React.useState<string[]>([]);
+  const { currentPlatform } = useAuth();
+  const [deviceList, setDeviceList] = React.useState<Device[]>(devices);
+
+  React.useEffect(() => {
+    // Fetch models for dropdown
+    import('../lib/api').then(({ default: apiClient }) => {
+      apiClient.get('/command_templates/').then(res => {
+        const models = Array.from(new Set(res.data.map((t: any) => String(t.model)).filter(Boolean))) as string[];
+        setAvailableModels(models);
+      });
+    });
+  }, []);
+
+  React.useEffect(() => { setDeviceList(devices); }, [devices]);
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'online':
@@ -51,10 +64,37 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
     });
   };
 
-  const handleDeleteDevice = (deviceId: number) => {
+  const handleDeleteDevice = (deviceId: string) => {
     if (window.confirm('Удалить устройство из платформы?')) {
       onDelete(deviceId);
     }
+  };
+
+  const handleEditDevice = (device: Device) => {
+    setEditDevice(device);
+  };
+  const handleSaveEditDevice = async (updated: Device) => {
+    setEditDevice(null);
+    if (!updated.platform_id) return;
+    try {
+      await apiClient.put(`/platforms/${updated.platform_id}/devices/${updated.id}`, updated);
+      // Обновить список устройств после успешного редактирования
+      const res = await apiClient.get(`/platforms/${updated.platform_id}/devices/`);
+      setDeviceList(res.data);
+    } catch (e) { alert('Ошибка при сохранении изменений устройства'); }
+  };
+  const handleAddDevice = () => {
+    setAddModalOpen(true);
+  };
+  const handleSaveAddDevice = async (newDevice: Device) => {
+    setAddModalOpen(false);
+    if (!currentPlatform) return;
+    try {
+      await apiClient.post(`/platforms/${currentPlatform.id}/devices`, newDevice);
+      // Обновить список устройств после успешного добавления
+      const res = await apiClient.get(`/platforms/${currentPlatform.id}/devices/`);
+      setDeviceList(res.data);
+    } catch (e) { alert('Ошибка при добавлении устройства'); }
   };
 
   if (devices.length === 0) {
@@ -66,7 +106,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Добавьте устройства для управления ими через эту платформу
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={onAdd}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddDevice}>
           Добавить устройство
         </Button>
       </Box>
@@ -75,7 +115,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
 
   return (
     <>
-      <Button variant="contained" startIcon={<AddIcon />} onClick={onAdd} sx={{ mb: 2 }}>
+      <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddDevice} sx={{ mb: 2 }}>
         Добавить устройство
       </Button>
       
@@ -94,7 +134,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
             </TableRow>
           </TableHead>
           <TableBody>
-            {devices.map((device) => (
+            {deviceList.map((device) => (
               <TableRow key={device.id} hover>
                 <TableCell>
                   <Typography variant="subtitle2">{device.name}</Typography>
@@ -116,8 +156,8 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
                 <TableCell>{formatDate(device.last_update)}</TableCell>
                 <TableCell>{formatDate(device.created_at)}</TableCell>
                 <TableCell>
-                  <IconButton size="small" title="Просмотр">
-                    <VisibilityIcon />
+                  <IconButton size="small" title="Редактировать" onClick={() => handleEditDevice(device)}>
+                    <EditIcon />
                   </IconButton>
                   <IconButton 
                     size="small" 
@@ -133,6 +173,22 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
           </TableBody>
         </Table>
       </TableContainer>
+      {editDevice && (
+        <DeviceFormModal
+          device={editDevice}
+          availableModels={availableModels}
+          onSave={handleSaveEditDevice}
+          onClose={() => setEditDevice(null)}
+        />
+      )}
+      {addModalOpen && (
+        <DeviceFormModal
+          device={null}
+          availableModels={availableModels}
+          onSave={handleSaveAddDevice}
+          onClose={() => setAddModalOpen(false)}
+        />
+      )}
     </>
   );
 };

@@ -136,6 +136,7 @@ export interface CommandTemplate {
     properties: { [key: string]: { type: string; title?: string; pattern?: string; enum?: any[]; }; };
     required?: string[];
   };
+  template: string;
 }
 
 export interface CommandParamDefinition {
@@ -188,7 +189,7 @@ export interface User {
   id: number;
   email: string;
   is_active: boolean;
-  role: 'admin' | 'user';
+  role: 'superadmin' | 'admin' | 'user';
   platform_id?: number | null;
   created_at: string;
   updated_at: string;

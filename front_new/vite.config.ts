@@ -11,7 +11,9 @@ const __dirname = dirname(decodeURIComponent(__filename));
 export default defineConfig(({ mode }) => {
   // Загружаем env-переменные из корневой директории проекта
   const env = loadEnv(mode, './', 'VITE_');
+  if (process.env.VITE_DEBUG_LOGGING === 'true' || process.env.VITE_DEBUG_LOGGING === 'full') {
   console.log('Loaded env vars:', env); 
+  }
 
   return {
     envPrefix: 'VITE_',

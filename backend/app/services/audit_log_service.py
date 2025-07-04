@@ -20,6 +20,8 @@ class AuditLogService:
         action: Optional[str] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
+        platform_id: Optional[int] = None,
+        device_id: Optional[int] = None,
     ) -> List[AuditLog]:
         query = db.query(AuditLog)
 
@@ -34,5 +36,10 @@ class AuditLogService:
             
         if end_date:
             query = query.filter(AuditLog.timestamp <= end_date)
+
+        if platform_id:
+            query = query.filter(AuditLog.platform_id == platform_id)
+        if device_id:
+            query = query.filter(AuditLog.device_id == device_id)
 
         return query.order_by(AuditLog.timestamp.desc()).all() 

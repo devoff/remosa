@@ -22,7 +22,7 @@ const UsersPage = () => {
   const [form] = Form.useForm();
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [search, setSearch] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'superadmin' | 'user'>('all');
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -132,10 +132,10 @@ const UsersPage = () => {
       key: 'role',
       render: (role: string) => (
         <Tag color={
-          role === 'admin' ? 'blue' : 
+          role === 'superadmin' ? 'blue' : 
           'green'
         }>
-          {role === 'admin' ? 'Супер-админ' : 'Пользователь'}
+          {role === 'superadmin' ? 'Супер-админ' : 'Пользователь'}
         </Tag>
       ),
       sorter: (a: User, b: User) => a.role.localeCompare(b.role),
@@ -206,7 +206,7 @@ const UsersPage = () => {
           style={{ width: 150 }}
         >
           <Option value="all">Все роли</Option>
-          <Option value="admin">Супер-админ</Option>
+          <Option value="superadmin">Супер-админ</Option>
           <Option value="user">Пользователь</Option>
         </Select>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser} style={{ marginLeft: 'auto' }}>
@@ -272,7 +272,7 @@ const UsersPage = () => {
           >
             <Select>
               <Option value="user">Пользователь</Option>
-              <Option value="admin">Супер-админ</Option>
+              <Option value="superadmin">Супер-админ</Option>
             </Select>
           </Form.Item>
           <Form.Item name="is_active" valuePropName="checked">

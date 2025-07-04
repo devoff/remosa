@@ -19,6 +19,8 @@ async def get_audit_logs(
     action: Optional[str] = None,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
+    platform_id: Optional[int] = None,
+    device_id: Optional[int] = None,
 ):
     """Get all audit logs with filters."""
     logs = AuditLogService.get_logs(
@@ -26,7 +28,9 @@ async def get_audit_logs(
         user_id=user_id, 
         action=action, 
         start_date=start_date, 
-        end_date=end_date
+        end_date=end_date,
+        platform_id=platform_id,
+        device_id=device_id
     )
     return logs
 

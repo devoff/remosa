@@ -32,12 +32,12 @@ const RolesPage: React.FC = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleRoleChange = async (userId: number, newRole: 'admin' | 'user') => {
+  const handleRoleChange = async (userId: number, newRole: 'superadmin' | 'user') => {
     const userToUpdate = users.find(u => u.id === userId);
     if (!userToUpdate) return;
 
-    const adminCount = users.filter(u => u.role === 'admin').length;
-    if (userToUpdate.role === 'admin' && newRole === 'user' && adminCount <= 1) {
+    const adminCount = users.filter(u => u.role === 'superadmin').length;
+    if (userToUpdate.role === 'superadmin' && newRole === 'user' && adminCount <= 1) {
       message.error('Нельзя понизить роль последнего администратора!');
       return;
     }
@@ -76,15 +76,15 @@ const RolesPage: React.FC = () => {
       dataIndex: 'role',
       key: 'role',
       width: 200,
-      render: (role: 'admin' | 'user', record: User) => (
+      render: (role: 'superadmin' | 'user', record: User) => (
         <Select
           value={role}
-          onChange={(newRole) => handleRoleChange(record.id, newRole)}
+          onChange={(newRole) => handleRoleChange(record.id, newRole as any)}
           style={{ width: 150 }}
           loading={updatingUsers.has(record.id)}
           disabled={updatingUsers.has(record.id)}
         >
-          <Option value="admin">
+          <Option value="superadmin">
             <Tag color="blue">Администратор</Tag>
           </Option>
           <Option value="user">

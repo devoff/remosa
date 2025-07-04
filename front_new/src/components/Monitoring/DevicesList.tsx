@@ -26,22 +26,18 @@ const DevicesList = () => {
   const fetchDevices = useCallback(async () => {
     setLoading(true);
     try {
-      let allDevices: Device[] = [];
-      let allPlatforms: Platform[] = [];
+      let url = '';
       if (isSuperAdmin) {
-        const data = await get('/devices/');
-        allDevices = Array.isArray(data) ? data : [];
-        allPlatforms = await get('/platforms/');
+        url = '/devices/';
+      } else if (currentPlatform?.id) {
+        url = `/platforms/${currentPlatform.id}/devices`;
       } else {
-        const myPlatforms: Platform[] = await get('/platforms/my-platforms/');
-        allPlatforms = myPlatforms;
-        const devicePromises = myPlatforms.map(p => get(`/platforms/${p.id}/devices/`));
-        const results = await Promise.all(devicePromises);
-        allDevices = results.flat();
+        setDevices([]);
+        return;
       }
-      setDevices(allDevices);
-      setPlatforms(allPlatforms);
-      const models = Array.from(new Set(allDevices.map((d: Device) => d.model).filter(Boolean) as string[]));
+      const data = await get(url);
+      setDevices(data);
+      const models = Array.from(new Set(data.map((d: Device) => d.model).filter(Boolean) as string[]));
       setAvailableModels(models);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -49,7 +45,7 @@ const DevicesList = () => {
     } finally {
       setLoading(false);
     }
-  }, [get, isSuperAdmin]);
+  }, [get, isSuperAdmin, currentPlatform]);
 
   useEffect(() => {
     fetchDevices();

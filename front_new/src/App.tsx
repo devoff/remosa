@@ -18,8 +18,12 @@ import RolesPage from './components/RolesPage';
 import StatusPage from './components/StatusPage';
 import DevicesPage from './components/DevicesPage';
 import { AuditLogsPage } from './components/AuditLogsPage';
+import { CommandLogsPageContent } from './components/CommandLogsPageContent';
+import { config } from './config/runtime';
 
-console.log('API URL:', import.meta.env.VITE_API_URL);
+if (config.DEBUG_LOGGING === 'true' || config.DEBUG_LOGGING === 'full') {
+      console.log('API URL:', config.API_URL);
+}
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -50,8 +54,8 @@ function AppContent() {
             <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
             <Route path="/roles" element={<PrivateRoute><RolesPage /></PrivateRoute>} />
             <Route path="/command-templates" element={<PrivateRoute><CommandTemplatesPage /></PrivateRoute>} />
-            <Route path="/logs" element={<PrivateRoute><LogsPage /></PrivateRoute>} />
-            <Route path="/alert-logs" element={<PrivateRoute><AlertsPage /></PrivateRoute>} />
+            <Route path="/logs" element={<PrivateRoute><AlertsPage /></PrivateRoute>} />
+            <Route path="/command-logs" element={<PrivateRoute><CommandLogsPageContent /></PrivateRoute>} />
             <Route path="/audit-logs" element={<PrivateRoute><AuditLogsPage /></PrivateRoute>} />
             <Route path="/status" element={<PrivateRoute><StatusPage /></PrivateRoute>} />
             <Route path="/admin/platforms" element={<PrivateRoute><AdminPlatformsPage /></PrivateRoute>} />

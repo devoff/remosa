@@ -17,13 +17,14 @@ import {
 } from '@mui/material';
 import { useAuth } from '../lib/useAuth';
 import apiClient from '../lib/api';
-import { Platform } from '../types';
+import { Platform, Device as GlobalDevice } from '../types';
 import { canAddDevice, getPlatformRole } from '../utils/roleUtils';
 
 interface AddDeviceDialogProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (deviceData: { name: string; description?: string; phone: string; model?: string }) => void;
+  onAdd: (deviceData: { name: string; description?: string; phone: string; model?: string; platform_id?: number }) => void;
+  device?: GlobalDevice | null;
 }
 
 interface PlatformLimits {
@@ -43,7 +44,7 @@ interface PlatformLimits {
   };
 }
 
-const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => {
+const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd, device }) => {
   const { token, currentPlatform, isSuperAdmin, user } = useAuth();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -54,6 +55,7 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
   const [error, setError] = useState<string | null>(null);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(currentPlatform);
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
 
   const canAdd = canAddDevice(user, selectedPlatform);
 
@@ -77,6 +79,34 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
       loadPlatformLimits(selectedPlatform.id);
     }
   }, [open, selectedPlatform, token]);
+
+  // Fetch available device models from /command_templates/ on open
+  useEffect(() => {
+    if (open) {
+      apiClient.get('/command_templates/').then(res => {
+        const models = Array.from(new Set(res.data.map((t: any) => String(t.model)).filter(Boolean))) as string[];
+        setAvailableModels(models);
+      });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (device) {
+      setName(device.name || '');
+      setDescription(device.description || '');
+      setPhone(device.phone || '');
+      setModel(device.model || '');
+      if (device.platform_id) {
+        setSelectedPlatform(platforms.find(p => p.id === device.platform_id) || null);
+      }
+    } else {
+      setName('');
+      setDescription('');
+      setPhone('');
+      setModel('');
+      setSelectedPlatform(currentPlatform);
+    }
+  }, [device, open]);
 
   const loadPlatformLimits = async (platformId: number) => {
     if (!platformId || !token) return;
@@ -112,13 +142,11 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
         model: model.trim(),
         platform_id: selectedPlatform.id
       };
-      const response = await apiClient.post(`/platforms/${selectedPlatform.id}/devices`, deviceData);
-      onAdd(response.data);
+      await onAdd(deviceData);
       handleCloseDialog();
       loadPlatformLimits(selectedPlatform.id);
     } catch (error) {
-      console.error('Ошибка добавления устройства:', error);
-      setError('Ошибка при добавлении устройства');
+      setError('Ошибка при сохранении устройства');
     } finally {
       setLoading(false);
     }
@@ -145,13 +173,6 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
         <DialogContentText>
           Введите данные нового устройства. Название и телефон обязательны для заполнения.
         </DialogContentText>
-        {/* DEBUG: platforms и selectedPlatform */}
-        {isSuperAdmin && (
-          <Box sx={{ mb: 1 }}>
-            <Typography variant="caption" color="secondary">DEBUG platforms: {JSON.stringify(platforms)}</Typography>
-            <Typography variant="caption" color="secondary">DEBUG selectedPlatform: {JSON.stringify(selectedPlatform)}</Typography>
-          </Box>
-        )}
         {isSuperAdmin && (
           <TextField
             select
@@ -174,7 +195,6 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
             ))}
           </TextField>
         )}
-        {/* Информация о лимитах */}
         {platformLimits && (
           <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
             <Typography variant="subtitle2" gutterBottom>
@@ -244,16 +264,20 @@ const AddDeviceDialog: FC<AddDeviceDialogProps> = ({ open, onClose, onAdd }) => 
           disabled={loading || Boolean(isLimitReached) || !canAdd}
         />
         <TextField
+          select
           margin="dense"
           id="model"
           label="Модель устройства"
-          type="text"
           fullWidth
           variant="standard"
           value={model}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setModel(e.target.value)}
-          disabled={loading || Boolean(isLimitReached) || !canAdd}
-        />
+          disabled={loading || Boolean(isLimitReached) || !canAdd || availableModels.length === 0}
+        >
+          {availableModels.map((m) => (
+            <MenuItem key={m} value={m}>{m}</MenuItem>
+          ))}
+        </TextField>
         <TextField
           margin="dense"
           id="description"

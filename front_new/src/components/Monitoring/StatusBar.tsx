@@ -17,11 +17,19 @@ import { useAuth } from '../../lib/useAuth';
 const StatusBar: React.FC = () => {
   const [status, setStatus] = useState<SystemStatus | null>(null);
   const { get } = useApi();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isSuperAdmin, currentPlatform } = useAuth();
 
   const fetchSystemStatus = async () => {
     try {
-      const data: SystemStatus = await get('/stats/dashboard');
+      let data: SystemStatus;
+      if (isSuperAdmin) {
+        data = await get('/stats/dashboard');
+      } else if (currentPlatform?.id) {
+        data = await get(`/platforms/${currentPlatform.id}/stats`);
+      } else {
+        setStatus(null);
+        return;
+      }
       setStatus(data);
     } catch (error: any) {
       console.error('Ошибка при получении статуса системы:', error);
@@ -48,7 +56,7 @@ const StatusBar: React.FC = () => {
       const interval = setInterval(fetchSystemStatus, 60000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isSuperAdmin, currentPlatform]);
 
   if (!status) {
     return (
@@ -104,12 +112,12 @@ const StatusBar: React.FC = () => {
           </div>
           
           <div className="flex items-center">
-            <span className="mr-2">Telegram:</span>
+            <span className="mr-2">SMS шлюз:</span>
             <span className={`inline-flex items-center ${
-              status.telegramStatus === 'Подключен' ? 'text-green-500' : 'text-red-500'
+              status.smsStatus === 'Подключен' ? 'text-green-500' : 'text-red-500'
             }`}>
               <Activity size={14} className="mr-1" />
-              {status.telegramStatus === 'Подключен' ? 'Подключен' : 'Ошибка'}
+              {status.smsStatus === 'Подключен' ? 'Подключен' : 'Ошибка'}
             </span>
           </div>
           

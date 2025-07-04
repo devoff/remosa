@@ -9,9 +9,9 @@ from app.services.log import LogService
 router = APIRouter()
 
 @router.get("/", response_model=List[LogResponse])
-async def get_logs(db: Session = Depends(get_db), level: Optional[str] = None):
-    """Get all logs, optionally filtered by level."""
-    return await LogService.get_logs(db, level=level)
+async def get_logs(db: Session = Depends(get_db), level: Optional[str] = None, platform_id: Optional[int] = None):
+    """Get all logs, optionally filtered by level and platform_id."""
+    return await LogService.get_logs(db, level=level, platform_id=platform_id)
 
 @router.post("/", response_model=LogResponse)
 async def create_log(log: LogCreate, db: Session = Depends(get_db)):

@@ -5,6 +5,9 @@ from app.models import Device, Log # Убедитесь, что Log импорт
 from datetime import datetime, timedelta
 from app.core.auth import get_current_user # Добавил импорт get_current_user
 from app.models.user import User # Добавил импорт User
+from app.services.sms_gateway import SMSGateway
+import asyncio
+import aiohttp
 
 router = APIRouter()
 
@@ -47,6 +50,17 @@ async def get_dashboard_stats(
     # Статус БД (заглушка: в реальной системе нужна более сложная проверка)
     db_connections = 5 # Примерное количество соединений
 
+    # Проверка статуса SMS шлюза
+    sms_gateway = SMSGateway()
+    try:
+        # Пробуем отправить тестовый запрос (например, GET /ping или аналогичный)
+        async with aiohttp.ClientSession() as session:
+            headers = {"Authorization": f"{sms_gateway.api_key}"}
+            async with session.get(f"{sms_gateway.base_url}/ping", headers=headers) as resp:
+                sms_status = 'Подключен' if resp.status == 200 else 'Ошибка'
+    except Exception:
+        sms_status = 'Ошибка'
+
     return {
         "uptime": uptime_str,
         "totalDevices": total_devices,
@@ -56,5 +70,6 @@ async def get_dashboard_stats(
         "dbStatus": "Онлайн", # Или количество соединений
         "dbConnections": db_connections,
         "apiStatus": "Онлайн", # Заглушка
-        "telegramStatus": "Подключен" # Заглушка
+        "telegramStatus": "Подключен", # Заглушка
+        "smsStatus": sms_status
     }

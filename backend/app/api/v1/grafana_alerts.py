@@ -14,8 +14,8 @@ router = APIRouter()
 async def receive_grafana_webhook(request: Request, payload: GrafanaWebhookPayload, db: Session = Depends(get_db)):
     try:
         raw_body = await request.body()
-        logging.info(f'DEBUG_WEBHOOK_RAW: Received raw payload: {raw_body.decode("utf-8")}')  # Логируем сырые данные
-        logging.info(f'DEBUG_WEBHOOK_PAYLOAD: Received validated payload: {payload.dict()}')  # Логируем валидированный payload как словарь
+        logging.debug(f'DEBUG_WEBHOOK_RAW: Received raw payload: {raw_body.decode("utf-8")}')  # Логируем сырые данные
+        logging.debug(f'DEBUG_WEBHOOK_PAYLOAD: Received validated payload: {payload.dict()}')  # Логируем валидированный payload как словарь
         
         for alert_data in payload.alerts:
             details = alert_data.dict()
@@ -54,9 +54,9 @@ def get_alerts(
 ) -> list[dict]:
     try:
         # Добавляем отладку для URL сессии
-        print(f'DEBUG_GRAFANA_SESSION: Database URL in session: {db.bind.engine.url}')  # Выводим URL из сессии
+        logging.debug(f'DEBUG_GRAFANA_SESSION: Database URL in session: {db.bind.engine.url}')  # Выводим URL из сессии
         alerts = db.query(DBAlert).offset(skip).limit(limit).all()
         return [alert.__dict__ for alert in alerts]
     except Exception as e:
-        print(f'DEBUG_GRAFANA_ERROR: Error in query: {e}')  # Логируем ошибку
+        logging.debug(f'DEBUG_GRAFANA_ERROR: Error in query: {e}')  # Логируем ошибку
         raise HTTPException(status_code=500, detail=str(e)) 

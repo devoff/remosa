@@ -3,6 +3,7 @@ import { Card, Spin, Alert, Table, Tag, Typography, Input, DatePicker, Button, S
 import { useApi } from '../lib/useApi';
 import { User } from '../types';
 import { DownloadOutlined } from '@ant-design/icons';
+import { useAuth } from '../lib/useAuth';
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -20,6 +21,7 @@ interface AuditLog {
 
 export const AuditLogsPage: React.FC = () => {
     const { get } = useApi();
+    const { isSuperAdmin, currentPlatform } = useAuth();
     const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -58,6 +60,9 @@ export const AuditLogsPage: React.FC = () => {
                     params.append('start_date', dateRange[0].toISOString());
                     params.append('end_date', dateRange[1].toISOString());
                 }
+                if (!isSuperAdmin && currentPlatform?.id) {
+                    params.append('platform_id', String(currentPlatform.id));
+                }
 
                 if (params.toString()) {
                     url = `${url}?${params.toString()}`;
@@ -85,7 +90,7 @@ export const AuditLogsPage: React.FC = () => {
              fetchAuditLogs();
         }
 
-    }, [selectedUserId, actionFilter, dateRange, get, users]);
+    }, [selectedUserId, actionFilter, dateRange, get, users, isSuperAdmin, currentPlatform]);
 
     const handleExport = () => {
         const headers = ['Время', 'Пользователь', 'Действие', 'Детали', 'IP Адрес'];
@@ -114,7 +119,7 @@ export const AuditLogsPage: React.FC = () => {
             key: 'timestamp',
             render: (text: string) => new Date(text).toLocaleString('ru-RU'),
             sorter: (a: AuditLog, b: AuditLog) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-            defaultSortOrder: 'descend' as 'descend',
+            sortDirections: ['descend' as const, 'ascend' as const],
         },
         {
             title: 'Пользователь',

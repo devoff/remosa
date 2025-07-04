@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
   IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Select, MenuItem, FormControl, InputLabel, Chip, Tooltip
+  TextField, Select, MenuItem, FormControl, InputLabel, Chip, Tooltip, FormControlLabel, Switch
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -38,7 +38,7 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<PlatformUser | null>(null);
   const [newUserForm, setNewUserForm] = useState({ user_id: '', role: 'user' });
-  const [editForm, setEditForm] = useState({ role: 'user' });
+  const [editForm, setEditForm] = useState({ role: 'user', email: '', password: '', is_active: true });
   const { get } = useApi();
   const { user } = useAuth();
 
@@ -67,14 +67,19 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
 
   const handleOpenEditDialog = (user: PlatformUser) => {
     setSelectedUser(user);
-    setEditForm({ role: user.platform_role });
+    setEditForm({
+      role: user.platform_role,
+      email: user.email,
+      password: '',
+      is_active: user.is_active
+    });
     setOpenEditDialog(true);
   };
 
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
     setSelectedUser(null);
-    setEditForm({ role: 'user' });
+    setEditForm({ role: 'user', email: '', password: '', is_active: true });
   };
 
   const handleAddUser = () => {
@@ -86,7 +91,9 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
 
   const handleEditUser = () => {
     if (selectedUser) {
-      onEdit(selectedUser.id, { role: editForm.role });
+      onEdit(selectedUser.id, {
+        role: editForm.role
+      });
       handleCloseEditDialog();
     }
   };
@@ -200,15 +207,34 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
         </DialogActions>
       </Dialog>
 
-      {/* Диалог редактирования роли */}
+      {/* Диалог редактирования пользователя */}
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
-        <DialogTitle>Изменить роль пользователя</DialogTitle>
+        <DialogTitle>Изменить пользователя</DialogTitle>
         <DialogContent sx={{ minWidth: 400, pt: '20px !important' }}>
-          <FormControl fullWidth>
+          <TextField
+            margin="dense"
+            label="Email"
+            type="email"
+            fullWidth
+            value={editForm.email}
+            onChange={e => setEditForm({ ...editForm, email: e.target.value })}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Пароль"
+            type="password"
+            fullWidth
+            value={editForm.password}
+            onChange={e => setEditForm({ ...editForm, password: e.target.value })}
+            sx={{ mb: 2 }}
+            placeholder="Оставьте пустым, чтобы не менять"
+          />
+          <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Роль</InputLabel>
             <Select
               value={editForm.role}
-              onChange={(e) => setEditForm({ role: e.target.value })}
+              onChange={e => setEditForm({ ...editForm, role: e.target.value })}
             >
               {PLATFORM_ROLES.map((role) => (
                 <MenuItem key={role.value} value={role.value}>
@@ -217,6 +243,16 @@ const PlatformUsersTable: React.FC<PlatformUsersTableProps> = ({ users, onAdd, o
               ))}
             </Select>
           </FormControl>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={editForm.is_active}
+                onChange={e => setEditForm({ ...editForm, is_active: e.target.checked })}
+              />
+            }
+            label={editForm.is_active ? 'Активен' : 'Заблокирован'}
+            sx={{ mb: 2 }}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditDialog}>Отмена</Button>
