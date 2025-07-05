@@ -60,7 +60,21 @@ services:
       - frontend
       - backend
 
+  cubic_exporter:
+    build:
+      context: ./CubicExporter
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./CubicExporter/.env
+    ports:
+      - "9000:9000"
+    volumes:
+      - cubic_exporter_cache:/app/device_cache
+    depends_on:
+      - backend
 
 volumes:
   backend_code:
   frontend_node_modules:
+  cubic_exporter_cache:

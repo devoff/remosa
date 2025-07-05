@@ -219,7 +219,7 @@ const AlertsPage = () => {
           placeholder="Фильтр по статусу"
           style={{ width: 200 }}
           allowClear
-          onChange={value => setStatusFilter(value)}
+          onChange={(value: string | undefined) => setStatusFilter(value)}
         >
           <Option value="firing">Активен</Option>
           <Option value="resolved">Решен</Option>
@@ -237,7 +237,7 @@ const AlertsPage = () => {
           pagination={{
             current: page,
             pageSize: pageSize,
-            onChange: (p, ps) => {
+            onChange: (p: number, ps: number) => {
               setPage(p);
               setPageSize(ps);
             },

@@ -13,7 +13,9 @@ import {
   Briefcase,
   FileText,
   Shield,
-  Home
+  Home,
+  BarChart3,
+  AlertTriangle
 } from 'lucide-react';
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
@@ -177,6 +179,18 @@ const Sidebar: React.FC = () => {
           >
             <Link to="/status" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
               Статус системы
+            </Link>
+            <Link to="/exporters" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Экспортеры Prometheus
+            </Link>
+            <Link to="/jobs" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Задания (Алерты)
+            </Link>
+            <Link to="/devices-prometheus" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Устройства из Prometheus
+            </Link>
+            <Link to="/monitoring" className="hover:bg-gray-700 py-1 px-2 rounded-md cursor-pointer block">
+              Мониторинг системы
             </Link>
           </SidebarSection>
 

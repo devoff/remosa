@@ -15,4 +15,7 @@ class Platform(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     users = relationship("PlatformUser", back_populates="platform")
-    devices = relationship("Device", back_populates="platform") 
+    devices = relationship("Device", back_populates="platform")
+    exporters = relationship("Exporter", back_populates="platform")
+    task_templates = relationship("TaskTemplate", back_populates="platform")
+    jobs = relationship("Job", back_populates="platform") 

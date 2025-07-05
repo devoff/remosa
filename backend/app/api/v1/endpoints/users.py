@@ -6,7 +6,7 @@ from app.db.session import get_db
 from app.core.auth import get_password_hash, get_current_user
 from datetime import datetime
 import logging
-from app.utils.audit import log_audit
+from app.core.audit import log_audit
 from app.models.platform_user import PlatformUser
 
 router = APIRouter()

@@ -41,3 +41,18 @@
 - Все сервисы работают в Docker контейнерах
 - Миграции БД через Alembic из контейнера
 - Конфигурация через environment variables
+
+# Стандарт авторизации фронта (фиксировано)
+
+- Для авторизации на backend (эндпоинт /api/v1/auth/token) фронтенд всегда отправляет запрос в формате application/x-www-form-urlencoded (form-data) с помощью URLSearchParams.
+- Поля: username, password.
+- Пример:
+  ```js
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+  axios.post('/api/v1/auth/token', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+  ```
+- Полученный access_token сохраняется в localStorage под ключом access_token.
+- Для всех последующих запросов токен автоматически подставляется в заголовок Authorization: Bearer ... через интерцептор axios.
+- Любые отклонения от этого стандарта запрещены.

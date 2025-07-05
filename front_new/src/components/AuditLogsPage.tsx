@@ -145,6 +145,11 @@ export const AuditLogsPage: React.FC = () => {
         },
     ];
 
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // loadData() function doesn't exist, removing this call
+    };
+
     if (loading && auditLogs.length === 0) {
         return <Spin tip="Загрузка журнала аудита..." />;
     }

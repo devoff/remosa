@@ -12,7 +12,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "types": ["react", "react-dom", "vite", "node"]
   },

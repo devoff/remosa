@@ -8,3 +8,5 @@ from app.models.log import Log # noqa
 from app.models.command_template import CommandTemplate # noqa
 from app.models.alert import Alert # noqa
 from app.models.audit_log import AuditLog # noqa
+from app.models.job import Job, JobExecution # noqa
+from app.models.notification import Notification # noqa

@@ -33,4 +33,5 @@ class Device(Base):
     alerts = relationship("Alert", back_populates="device")
     command_logs = relationship("Log", back_populates="device")
     platform = relationship("Platform", back_populates="devices")
+    jobs = relationship("Job", back_populates="device")
  

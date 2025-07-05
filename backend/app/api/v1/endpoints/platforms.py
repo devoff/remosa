@@ -312,7 +312,7 @@ def get_platform_devices(
     """
     Получить список устройств платформы.
     """
-    require_platform_role(platform_id, user.id, allowed_roles=['admin', 'manager', 'user', 'viewer'], db=db)
+    require_platform_role(user, platform_id, allowed_roles=['admin', 'manager', 'user', 'viewer'], db=db)
     
     platform = db.query(Platform).filter(Platform.id == platform_id).first()
     if not platform:
@@ -334,7 +334,7 @@ def add_device_to_platform(
     """
     Добавить новое устройство в платформу.
     """
-    require_platform_role(platform_id, user.id, allowed_roles=['admin', 'manager'], db=db)
+    require_platform_role(user, platform_id, allowed_roles=['admin', 'manager'], db=db)
     
     platform = db.query(Platform).filter(Platform.id == platform_id).first()
     if not platform:
@@ -366,7 +366,7 @@ def update_device_in_platform(
     """
     Обновить устройство в платформе.
     """
-    require_platform_role(platform_id, user.id, allowed_roles=['admin', 'manager'], db=db)
+    require_platform_role(user, platform_id, allowed_roles=['admin', 'manager'], db=db)
     
     device = db.query(Device).filter(Device.id == device_id, Device.platform_id == platform_id).first()
     if not device:
@@ -394,7 +394,7 @@ def remove_device_from_platform(
     """
     Удалить устройство из платформы.
     """
-    require_platform_role(platform_id, user.id, allowed_roles=['admin', 'manager'], db=db)
+    require_platform_role(user, platform_id, allowed_roles=['admin', 'manager'], db=db)
     
     device = db.query(Device).filter(Device.id == device_id, Device.platform_id == platform_id).first()
     if not device:
@@ -416,7 +416,7 @@ def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
 
 @router.get("/{platform_id}/logs", summary="Получить логи команд платформы", tags=["Platforms"])
 def get_platform_logs(platform_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    require_platform_role(platform_id, user.id, allowed_roles=["admin", "manager", "user", "viewer"], db=db)
+    require_platform_role(user, platform_id, allowed_roles=["admin", "manager", "user", "viewer"], db=db)
     device_ids = [d.id for d in db.query(Device).filter(Device.platform_id == platform_id).all()]
     if not device_ids:
         return []
@@ -432,7 +432,7 @@ def get_platform_limits(
     """
     Получить информацию о лимитах платформы и текущем использовании.
     """
-    require_platform_role(platform_id, user.id, allowed_roles=['admin', 'manager', 'user', 'viewer'], db=db)
+    require_platform_role(user, platform_id, allowed_roles=['admin', 'manager', 'user', 'viewer'], db=db)
     
     platform = db.query(Platform).filter(Platform.id == platform_id).first()
     if not platform:

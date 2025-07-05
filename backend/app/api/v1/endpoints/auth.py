@@ -60,9 +60,9 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(
-    user_credentials: UserLogin, db: Session = Depends(get_db)
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ) -> Any:
-    user = authenticate_user(db, user_credentials.username, user_credentials.password)
+    user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

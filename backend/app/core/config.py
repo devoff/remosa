@@ -83,6 +83,14 @@ class Settings(BaseSettings):
     ALERT_TIMEOUT_SECONDS: int = 300
     SMS_QUEUE_TIMEOUT: int = 60
 
+    # Настройки автоматизации заданий
+    JOB_PROCESSOR_INTERVAL: int = 60  # секунды между циклами обработки
+    
+    # Настройки уведомлений
+    NOTIFICATION_WEBHOOK_URL: Optional[str] = None
+    TELEGRAM_BOT_TOKEN: Optional[str] = None
+    TELEGRAM_CHAT_ID: Optional[str] = None
+
     # Настройки Python
     PYTHONPATH: Optional[str] = "/app"
     

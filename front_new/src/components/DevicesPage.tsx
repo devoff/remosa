@@ -48,7 +48,7 @@ const DevicesPage: React.FC = () => {
             if (isSuperAdmin) {
                 url = '/devices/';
             } else if (currentPlatform?.id) {
-                url = `/platforms/${currentPlatform.id}/devices`;
+                url = `/platforms/${currentPlatform.id}/devices/`;
             } else {
                 setDevices([]);
                 setLoading(false);

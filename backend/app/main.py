@@ -16,6 +16,7 @@ from contextlib import asynccontextmanager
 from app.db.session import get_db
 from app.db.base import Base
 from app.db.session import engine
+from app.api.v1.endpoints import exporter_macs
 
 # Configure a logger for this module
 logger = logging.getLogger(__name__)
@@ -95,6 +96,7 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(exporter_macs.router, prefix="/api/v1")
 
 # Дублированные определения lifespan и start_sms_polling_background_task удалены выше
 

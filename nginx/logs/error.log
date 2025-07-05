@@ -3347,3 +3347,504 @@
 2025/07/04 08:37:19 [notice] 1#1: start worker processes
 2025/07/04 08:37:19 [notice] 1#1: start worker process 22
 2025/07/04 08:37:19 [notice] 1#1: start worker process 23
+2025/07/04 14:12:10 [notice] 1#1: using the "epoll" event method
+2025/07/04 14:12:10 [notice] 1#1: nginx/1.21.6
+2025/07/04 14:12:10 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 14:12:10 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 14:12:10 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 14:12:10 [notice] 1#1: start worker processes
+2025/07/04 14:12:10 [notice] 1#1: start worker process 21
+2025/07/04 14:12:10 [notice] 1#1: start worker process 22
+2025/07/04 15:05:08 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 15:05:08 [notice] 21#21: gracefully shutting down
+2025/07/04 15:05:08 [notice] 21#21: exiting
+2025/07/04 15:05:08 [notice] 21#21: exit
+2025/07/04 15:05:08 [notice] 22#22: gracefully shutting down
+2025/07/04 15:05:08 [notice] 22#22: exiting
+2025/07/04 15:05:08 [notice] 22#22: exit
+2025/07/04 15:05:08 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 15:05:08 [notice] 1#1: worker process 21 exited with code 0
+2025/07/04 15:05:08 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 15:05:08 [notice] 1#1: exit
+2025/07/04 15:15:45 [notice] 1#1: using the "epoll" event method
+2025/07/04 15:15:45 [notice] 1#1: nginx/1.21.6
+2025/07/04 15:15:45 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 15:15:45 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 15:15:45 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 15:15:45 [notice] 1#1: start worker processes
+2025/07/04 15:15:45 [notice] 1#1: start worker process 22
+2025/07/04 15:15:45 [notice] 1#1: start worker process 23
+2025/07/04 15:16:00 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 15:16:00 [notice] 22#22: gracefully shutting down
+2025/07/04 15:16:00 [notice] 22#22: exiting
+2025/07/04 15:16:00 [notice] 22#22: exit
+2025/07/04 15:16:00 [notice] 23#23: gracefully shutting down
+2025/07/04 15:16:00 [notice] 23#23: exiting
+2025/07/04 15:16:00 [notice] 23#23: exit
+2025/07/04 15:16:00 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 15:16:00 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 15:16:00 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 15:16:00 [notice] 1#1: exit
+2025/07/04 15:16:24 [notice] 1#1: using the "epoll" event method
+2025/07/04 15:16:24 [notice] 1#1: nginx/1.21.6
+2025/07/04 15:16:24 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 15:16:24 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 15:16:24 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 15:16:24 [notice] 1#1: start worker processes
+2025/07/04 15:16:24 [notice] 1#1: start worker process 22
+2025/07/04 15:16:24 [notice] 1#1: start worker process 23
+2025/07/04 15:50:11 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 15:50:11 [notice] 22#22: gracefully shutting down
+2025/07/04 15:50:11 [notice] 23#23: gracefully shutting down
+2025/07/04 15:50:11 [notice] 23#23: exiting
+2025/07/04 15:50:11 [notice] 22#22: exiting
+2025/07/04 15:50:11 [notice] 23#23: exit
+2025/07/04 15:50:11 [notice] 22#22: exit
+2025/07/04 15:50:11 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 15:50:11 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 15:50:11 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 15:50:11 [notice] 1#1: exit
+2025/07/04 15:56:49 [notice] 1#1: using the "epoll" event method
+2025/07/04 15:56:49 [notice] 1#1: nginx/1.21.6
+2025/07/04 15:56:49 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 15:56:49 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 15:56:49 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 15:56:49 [notice] 1#1: start worker processes
+2025/07/04 15:56:49 [notice] 1#1: start worker process 22
+2025/07/04 15:56:49 [notice] 1#1: start worker process 23
+2025/07/04 18:13:09 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 18:13:09 [notice] 22#22: gracefully shutting down
+2025/07/04 18:13:09 [notice] 22#22: exiting
+2025/07/04 18:13:09 [notice] 22#22: exit
+2025/07/04 18:13:09 [notice] 23#23: gracefully shutting down
+2025/07/04 18:13:09 [notice] 23#23: exiting
+2025/07/04 18:13:09 [notice] 23#23: exit
+2025/07/04 18:13:09 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 18:13:09 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 18:13:09 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 18:13:09 [notice] 1#1: exit
+2025/07/04 19:15:09 [notice] 1#1: using the "epoll" event method
+2025/07/04 19:15:09 [notice] 1#1: nginx/1.21.6
+2025/07/04 19:15:09 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 19:15:09 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 19:15:09 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 19:15:09 [notice] 1#1: start worker processes
+2025/07/04 19:15:09 [notice] 1#1: start worker process 21
+2025/07/04 19:15:09 [notice] 1#1: start worker process 22
+2025/07/04 19:15:20 [error] 21#21: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "POST /api/v1/auth/token HTTP/1.1", upstream: "http://192.168.128.2:8000/api/v1/auth/token", host: "192.168.1.122", referrer: "http://192.168.1.122/login"
+2025/07/04 19:18:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 19:18:04 [notice] 21#21: gracefully shutting down
+2025/07/04 19:18:04 [notice] 21#21: exiting
+2025/07/04 19:18:04 [notice] 22#22: gracefully shutting down
+2025/07/04 19:18:04 [notice] 22#22: exiting
+2025/07/04 19:18:04 [notice] 21#21: exit
+2025/07/04 19:18:04 [notice] 22#22: exit
+2025/07/04 19:18:04 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 19:18:04 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 19:18:04 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/04 19:18:04 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/04 19:18:04 [notice] 1#1: worker process 21 exited with code 0
+2025/07/04 19:18:04 [notice] 1#1: exit
+2025/07/04 19:18:18 [notice] 1#1: using the "epoll" event method
+2025/07/04 19:18:18 [notice] 1#1: nginx/1.21.6
+2025/07/04 19:18:18 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 19:18:18 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 19:18:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 19:18:18 [notice] 1#1: start worker processes
+2025/07/04 19:18:18 [notice] 1#1: start worker process 22
+2025/07/04 19:18:18 [notice] 1#1: start worker process 23
+2025/07/04 19:28:59 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 19:28:59 [notice] 23#23: gracefully shutting down
+2025/07/04 19:28:59 [notice] 22#22: gracefully shutting down
+2025/07/04 19:28:59 [notice] 23#23: exiting
+2025/07/04 19:28:59 [notice] 23#23: exit
+2025/07/04 19:28:59 [notice] 22#22: exiting
+2025/07/04 19:28:59 [notice] 22#22: exit
+2025/07/04 19:28:59 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 19:28:59 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 19:28:59 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/04 19:28:59 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 19:28:59 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 19:28:59 [notice] 1#1: exit
+2025/07/04 19:29:44 [notice] 1#1: using the "epoll" event method
+2025/07/04 19:29:44 [notice] 1#1: nginx/1.21.6
+2025/07/04 19:29:44 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 19:29:44 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 19:29:44 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 19:29:44 [notice] 1#1: start worker processes
+2025/07/04 19:29:44 [notice] 1#1: start worker process 22
+2025/07/04 19:29:44 [notice] 1#1: start worker process 23
+2025/07/04 19:40:01 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 19:40:01 [notice] 22#22: gracefully shutting down
+2025/07/04 19:40:01 [notice] 22#22: exiting
+2025/07/04 19:40:01 [notice] 22#22: exit
+2025/07/04 19:40:01 [notice] 23#23: gracefully shutting down
+2025/07/04 19:40:01 [notice] 23#23: exiting
+2025/07/04 19:40:01 [notice] 23#23: exit
+2025/07/04 19:40:01 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 19:40:01 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 19:40:01 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 19:40:01 [notice] 1#1: exit
+2025/07/04 20:08:01 [notice] 1#1: using the "epoll" event method
+2025/07/04 20:08:01 [notice] 1#1: nginx/1.21.6
+2025/07/04 20:08:01 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 20:08:01 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 20:08:01 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 20:08:01 [notice] 1#1: start worker processes
+2025/07/04 20:08:01 [notice] 1#1: start worker process 22
+2025/07/04 20:08:01 [notice] 1#1: start worker process 23
+2025/07/04 20:17:01 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 20:17:01 [notice] 22#22: gracefully shutting down
+2025/07/04 20:17:01 [notice] 22#22: exiting
+2025/07/04 20:17:01 [notice] 22#22: exit
+2025/07/04 20:17:01 [notice] 23#23: gracefully shutting down
+2025/07/04 20:17:01 [notice] 23#23: exiting
+2025/07/04 20:17:01 [notice] 23#23: exit
+2025/07/04 20:17:01 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 20:17:01 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 20:17:01 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 20:17:01 [notice] 1#1: exit
+2025/07/04 20:19:33 [notice] 1#1: using the "epoll" event method
+2025/07/04 20:19:33 [notice] 1#1: nginx/1.21.6
+2025/07/04 20:19:33 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 20:19:33 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 20:19:33 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 20:19:33 [notice] 1#1: start worker processes
+2025/07/04 20:19:33 [notice] 1#1: start worker process 22
+2025/07/04 20:19:33 [notice] 1#1: start worker process 23
+2025/07/04 20:31:38 [error] 23#23: *89 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://192.168.192.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/status"
+2025/07/04 20:46:18 [error] 22#22: *130 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://192.168.192.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/"
+2025/07/04 21:00:25 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 21:00:25 [notice] 22#22: gracefully shutting down
+2025/07/04 21:00:25 [notice] 22#22: exiting
+2025/07/04 21:00:25 [notice] 22#22: exit
+2025/07/04 21:00:25 [notice] 23#23: gracefully shutting down
+2025/07/04 21:00:25 [notice] 23#23: exiting
+2025/07/04 21:00:25 [notice] 23#23: exit
+2025/07/04 21:00:25 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 21:00:25 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 21:00:25 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/04 21:00:25 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 21:00:25 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 21:00:25 [notice] 1#1: exit
+2025/07/04 21:02:36 [notice] 1#1: using the "epoll" event method
+2025/07/04 21:02:36 [notice] 1#1: nginx/1.21.6
+2025/07/04 21:02:36 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 21:02:36 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 21:02:36 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 21:02:36 [notice] 1#1: start worker processes
+2025/07/04 21:02:36 [notice] 1#1: start worker process 22
+2025/07/04 21:02:36 [notice] 1#1: start worker process 23
+2025/07/04 21:32:22 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 21:32:22 [notice] 22#22: gracefully shutting down
+2025/07/04 21:32:22 [notice] 22#22: exiting
+2025/07/04 21:32:22 [notice] 22#22: exit
+2025/07/04 21:32:22 [notice] 23#23: gracefully shutting down
+2025/07/04 21:32:22 [notice] 23#23: exiting
+2025/07/04 21:32:22 [notice] 23#23: exit
+2025/07/04 21:32:22 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 21:32:22 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 21:32:22 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/04 21:32:22 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 21:32:22 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 21:32:22 [notice] 1#1: exit
+2025/07/04 21:33:38 [notice] 1#1: using the "epoll" event method
+2025/07/04 21:33:38 [notice] 1#1: nginx/1.21.6
+2025/07/04 21:33:38 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 21:33:38 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 21:33:38 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 21:33:38 [notice] 1#1: start worker processes
+2025/07/04 21:33:38 [notice] 1#1: start worker process 22
+2025/07/04 21:33:38 [notice] 1#1: start worker process 23
+2025/07/04 22:27:18 [warn] 23#23: *224 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-DOp_lFq5.js HTTP/1.1", upstream: "http://192.168.224.4:3000/assets/index-DOp_lFq5.js", host: "192.168.1.122", referrer: "http://192.168.1.122/login"
+2025/07/04 22:28:53 [error] 23#23: *240 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "POST /api/v1/exporters/3/sync HTTP/1.1", upstream: "http://192.168.224.2:8000/api/v1/exporters/3/sync", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 22:30:34 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 22:30:34 [notice] 22#22: gracefully shutting down
+2025/07/04 22:30:34 [notice] 22#22: exiting
+2025/07/04 22:30:34 [notice] 22#22: exit
+2025/07/04 22:30:34 [notice] 23#23: gracefully shutting down
+2025/07/04 22:30:34 [notice] 23#23: exiting
+2025/07/04 22:30:34 [notice] 23#23: exit
+2025/07/04 22:30:34 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 22:30:34 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 22:30:34 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/04 22:30:34 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 22:30:34 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 22:30:34 [notice] 1#1: exit
+2025/07/04 22:38:12 [notice] 1#1: using the "epoll" event method
+2025/07/04 22:38:12 [notice] 1#1: nginx/1.21.6
+2025/07/04 22:38:12 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 22:38:12 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 22:38:12 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 22:38:12 [notice] 1#1: start worker processes
+2025/07/04 22:38:12 [notice] 1#1: start worker process 22
+2025/07/04 22:38:12 [notice] 1#1: start worker process 23
+2025/07/04 22:38:15 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 22:38:15 [notice] 22#22: gracefully shutting down
+2025/07/04 22:38:15 [notice] 23#23: gracefully shutting down
+2025/07/04 22:38:16 [notice] 23#23: exiting
+2025/07/04 22:38:16 [notice] 23#23: exit
+2025/07/04 22:38:16 [notice] 22#22: exiting
+2025/07/04 22:38:16 [notice] 22#22: exit
+2025/07/04 22:38:16 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 22:38:16 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 22:38:16 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 22:38:16 [notice] 1#1: exit
+2025/07/04 22:38:28 [notice] 1#1: using the "epoll" event method
+2025/07/04 22:38:28 [notice] 1#1: nginx/1.21.6
+2025/07/04 22:38:28 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 22:38:28 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 22:38:28 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 22:38:28 [notice] 1#1: start worker processes
+2025/07/04 22:38:28 [notice] 1#1: start worker process 22
+2025/07/04 22:38:28 [notice] 1#1: start worker process 23
+2025/07/04 22:57:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 22:57:04 [notice] 22#22: gracefully shutting down
+2025/07/04 22:57:04 [notice] 22#22: exiting
+2025/07/04 22:57:04 [notice] 22#22: exit
+2025/07/04 22:57:04 [notice] 23#23: gracefully shutting down
+2025/07/04 22:57:04 [notice] 23#23: exiting
+2025/07/04 22:57:04 [notice] 23#23: exit
+2025/07/04 22:57:04 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 22:57:04 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 22:57:04 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 22:57:04 [notice] 1#1: exit
+2025/07/04 22:57:32 [notice] 1#1: using the "epoll" event method
+2025/07/04 22:57:32 [notice] 1#1: nginx/1.21.6
+2025/07/04 22:57:32 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 22:57:32 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 22:57:32 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 22:57:32 [notice] 1#1: start worker processes
+2025/07/04 22:57:32 [notice] 1#1: start worker process 22
+2025/07/04 22:57:32 [notice] 1#1: start worker process 23
+2025/07/04 22:57:38 [error] 22#22: *1 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 22:57:38 [error] 23#23: *2 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/ HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/exporters/", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 22:57:38 [error] 22#22: *6 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 22:57:38 [error] 22#22: *11 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/stats HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/exporters/stats", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 22:57:38 [error] 22#22: *12 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/users/me HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/users/me", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/04 23:11:31 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 23:11:31 [notice] 23#23: gracefully shutting down
+2025/07/04 23:11:31 [notice] 23#23: exiting
+2025/07/04 23:11:31 [notice] 23#23: exit
+2025/07/04 23:11:31 [notice] 22#22: gracefully shutting down
+2025/07/04 23:11:31 [notice] 22#22: exiting
+2025/07/04 23:11:31 [notice] 22#22: exit
+2025/07/04 23:11:31 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 23:11:31 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 23:11:31 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 23:11:31 [notice] 1#1: exit
+2025/07/04 23:14:08 [notice] 1#1: using the "epoll" event method
+2025/07/04 23:14:08 [notice] 1#1: nginx/1.21.6
+2025/07/04 23:14:08 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 23:14:08 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 23:14:08 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 23:14:08 [notice] 1#1: start worker processes
+2025/07/04 23:14:08 [notice] 1#1: start worker process 22
+2025/07/04 23:14:08 [notice] 1#1: start worker process 23
+2025/07/04 23:40:53 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 23:40:53 [notice] 22#22: gracefully shutting down
+2025/07/04 23:40:53 [notice] 23#23: gracefully shutting down
+2025/07/04 23:40:53 [notice] 23#23: exiting
+2025/07/04 23:40:53 [notice] 22#22: exiting
+2025/07/04 23:40:53 [notice] 23#23: exit
+2025/07/04 23:40:53 [notice] 22#22: exit
+2025/07/04 23:40:53 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/04 23:40:53 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 23:40:53 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 23:40:53 [notice] 1#1: exit
+2025/07/04 23:41:19 [notice] 1#1: using the "epoll" event method
+2025/07/04 23:41:19 [notice] 1#1: nginx/1.21.6
+2025/07/04 23:41:19 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 23:41:19 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 23:41:19 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 23:41:19 [notice] 1#1: start worker processes
+2025/07/04 23:41:19 [notice] 1#1: start worker process 22
+2025/07/04 23:41:19 [notice] 1#1: start worker process 23
+2025/07/04 23:52:44 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/04 23:52:44 [notice] 22#22: gracefully shutting down
+2025/07/04 23:52:44 [notice] 22#22: exiting
+2025/07/04 23:52:44 [notice] 22#22: exit
+2025/07/04 23:52:44 [notice] 23#23: gracefully shutting down
+2025/07/04 23:52:44 [notice] 23#23: exiting
+2025/07/04 23:52:44 [notice] 23#23: exit
+2025/07/04 23:52:44 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/04 23:52:44 [notice] 1#1: worker process 22 exited with code 0
+2025/07/04 23:52:44 [notice] 1#1: worker process 23 exited with code 0
+2025/07/04 23:52:44 [notice] 1#1: exit
+2025/07/04 23:53:25 [notice] 1#1: using the "epoll" event method
+2025/07/04 23:53:25 [notice] 1#1: nginx/1.21.6
+2025/07/04 23:53:25 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/04 23:53:25 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/04 23:53:25 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/04 23:53:25 [notice] 1#1: start worker processes
+2025/07/04 23:53:25 [notice] 1#1: start worker process 22
+2025/07/04 23:53:25 [notice] 1#1: start worker process 23
+2025/07/05 07:42:49 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 07:42:49 [notice] 22#22: gracefully shutting down
+2025/07/05 07:42:49 [notice] 22#22: exiting
+2025/07/05 07:42:49 [notice] 22#22: exit
+2025/07/05 07:42:49 [notice] 23#23: gracefully shutting down
+2025/07/05 07:42:49 [notice] 23#23: exiting
+2025/07/05 07:42:49 [notice] 23#23: exit
+2025/07/05 07:42:49 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 07:42:49 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 07:42:49 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 07:42:49 [notice] 1#1: exit
+2025/07/05 07:48:26 [notice] 1#1: using the "epoll" event method
+2025/07/05 07:48:26 [notice] 1#1: nginx/1.21.6
+2025/07/05 07:48:26 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 07:48:26 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 07:48:26 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 07:48:26 [notice] 1#1: start worker processes
+2025/07/05 07:48:26 [notice] 1#1: start worker process 22
+2025/07/05 07:48:26 [notice] 1#1: start worker process 23
+2025/07/05 07:54:45 [error] 22#22: *63 connect() failed (113: Host is unreachable) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET / HTTP/1.1", upstream: "http://172.24.0.2:3000/", host: "192.168.1.122"
+2025/07/05 07:54:48 [error] 22#22: *63 connect() failed (113: Host is unreachable) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /favicon.ico HTTP/1.1", upstream: "http://172.24.0.2:3000/favicon.ico", host: "192.168.1.122", referrer: "http://192.168.1.122/"
+2025/07/05 07:55:01 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 07:55:01 [notice] 22#22: gracefully shutting down
+2025/07/05 07:55:01 [notice] 22#22: exiting
+2025/07/05 07:55:01 [notice] 22#22: exit
+2025/07/05 07:55:01 [notice] 23#23: gracefully shutting down
+2025/07/05 07:55:01 [notice] 23#23: exiting
+2025/07/05 07:55:01 [notice] 23#23: exit
+2025/07/05 07:55:01 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 07:55:01 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 07:55:01 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 07:55:01 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 07:55:01 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 07:55:01 [notice] 1#1: exit
+2025/07/05 07:55:26 [notice] 1#1: using the "epoll" event method
+2025/07/05 07:55:26 [notice] 1#1: nginx/1.21.6
+2025/07/05 07:55:26 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 07:55:26 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 07:55:26 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 07:55:26 [notice] 1#1: start worker processes
+2025/07/05 07:55:26 [notice] 1#1: start worker process 22
+2025/07/05 07:55:26 [notice] 1#1: start worker process 23
+2025/07/05 07:56:54 [warn] 22#22: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-BqZ6Y07I.js HTTP/1.1", upstream: "http://172.25.0.4:3000/assets/index-BqZ6Y07I.js", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:19:20 [error] 22#22: *136 connect() failed (113: Host is unreachable) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /login HTTP/1.1", upstream: "http://172.25.0.4:3000/login", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:19:24 [error] 22#22: *136 connect() failed (113: Host is unreachable) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /favicon.ico HTTP/1.1", upstream: "http://172.25.0.4:3000/favicon.ico", host: "192.168.1.122", referrer: "http://192.168.1.122/login"
+2025/07/05 08:39:35 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 08:39:35 [notice] 22#22: gracefully shutting down
+2025/07/05 08:39:35 [notice] 23#23: gracefully shutting down
+2025/07/05 08:39:35 [notice] 23#23: exiting
+2025/07/05 08:39:35 [notice] 23#23: exit
+2025/07/05 08:39:35 [notice] 22#22: exiting
+2025/07/05 08:39:35 [notice] 22#22: exit
+2025/07/05 08:39:35 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 08:39:35 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 08:39:35 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 08:39:35 [notice] 1#1: exit
+2025/07/05 08:40:07 [notice] 1#1: using the "epoll" event method
+2025/07/05 08:40:07 [notice] 1#1: nginx/1.21.6
+2025/07/05 08:40:07 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 08:40:07 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 08:40:07 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 08:40:07 [notice] 1#1: start worker processes
+2025/07/05 08:40:07 [notice] 1#1: start worker process 22
+2025/07/05 08:40:07 [notice] 1#1: start worker process 23
+2025/07/05 08:50:57 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 08:50:57 [notice] 22#22: gracefully shutting down
+2025/07/05 08:50:57 [notice] 22#22: exiting
+2025/07/05 08:50:57 [notice] 23#23: gracefully shutting down
+2025/07/05 08:50:57 [notice] 23#23: exiting
+2025/07/05 08:50:57 [notice] 23#23: exit
+2025/07/05 08:50:57 [notice] 22#22: exit
+2025/07/05 08:50:57 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 08:50:57 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 08:50:57 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 08:50:57 [notice] 1#1: exit
+2025/07/05 08:56:05 [notice] 1#1: using the "epoll" event method
+2025/07/05 08:56:05 [notice] 1#1: nginx/1.21.6
+2025/07/05 08:56:05 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 08:56:05 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 08:56:05 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 08:56:05 [notice] 1#1: start worker processes
+2025/07/05 08:56:05 [notice] 1#1: start worker process 22
+2025/07/05 08:56:05 [notice] 1#1: start worker process 23
+2025/07/05 08:56:07 [error] 22#22: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.27.0.3:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:56:07 [error] 22#22: *6 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.27.0.3:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:56:07 [error] 23#23: *3 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/ HTTP/1.1", upstream: "http://172.27.0.3:8000/api/v1/exporters/", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:56:07 [error] 22#22: *11 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/stats HTTP/1.1", upstream: "http://172.27.0.3:8000/api/v1/exporters/stats", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:56:07 [error] 22#22: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/users/me HTTP/1.1", upstream: "http://172.27.0.3:8000/api/v1/users/me", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 08:56:39 [warn] 22#22: *30 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-DVtfMFRw.js HTTP/1.1", upstream: "http://172.27.0.2:3000/assets/index-DVtfMFRw.js", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/05 09:10:59 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 09:10:59 [notice] 22#22: gracefully shutting down
+2025/07/05 09:10:59 [notice] 22#22: exiting
+2025/07/05 09:10:59 [notice] 22#22: exit
+2025/07/05 09:10:59 [notice] 23#23: gracefully shutting down
+2025/07/05 09:10:59 [notice] 23#23: exiting
+2025/07/05 09:10:59 [notice] 23#23: exit
+2025/07/05 09:10:59 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 09:10:59 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 09:10:59 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 09:10:59 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 09:10:59 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 09:10:59 [notice] 1#1: exit
+2025/07/05 09:13:29 [notice] 1#1: using the "epoll" event method
+2025/07/05 09:13:29 [notice] 1#1: nginx/1.21.6
+2025/07/05 09:13:29 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 09:13:29 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 09:13:29 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 09:13:29 [notice] 1#1: start worker processes
+2025/07/05 09:13:29 [notice] 1#1: start worker process 22
+2025/07/05 09:13:29 [notice] 1#1: start worker process 23
+2025/07/05 09:31:45 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 09:31:45 [notice] 22#22: gracefully shutting down
+2025/07/05 09:31:45 [notice] 23#23: gracefully shutting down
+2025/07/05 09:31:45 [notice] 23#23: exiting
+2025/07/05 09:31:45 [notice] 23#23: exit
+2025/07/05 09:31:45 [notice] 22#22: exiting
+2025/07/05 09:31:45 [notice] 22#22: exit
+2025/07/05 09:31:45 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 09:31:45 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 09:31:45 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 09:31:45 [notice] 1#1: exit
+2025/07/05 09:32:10 [notice] 1#1: using the "epoll" event method
+2025/07/05 09:32:10 [notice] 1#1: nginx/1.21.6
+2025/07/05 09:32:10 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 09:32:10 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 09:32:10 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 09:32:10 [notice] 1#1: start worker processes
+2025/07/05 09:32:10 [notice] 1#1: start worker process 22
+2025/07/05 09:32:10 [notice] 1#1: start worker process 23
+2025/07/05 09:36:22 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 09:36:22 [notice] 22#22: gracefully shutting down
+2025/07/05 09:36:22 [notice] 23#23: gracefully shutting down
+2025/07/05 09:36:22 [notice] 22#22: exiting
+2025/07/05 09:36:22 [notice] 22#22: exit
+2025/07/05 09:36:22 [notice] 23#23: exiting
+2025/07/05 09:36:22 [notice] 23#23: exit
+2025/07/05 09:36:22 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 09:36:22 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 09:36:22 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 09:36:22 [notice] 1#1: exit
+2025/07/05 09:39:00 [notice] 1#1: using the "epoll" event method
+2025/07/05 09:39:00 [notice] 1#1: nginx/1.21.6
+2025/07/05 09:39:00 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 09:39:00 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 09:39:00 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 09:39:00 [notice] 1#1: start worker processes
+2025/07/05 09:39:00 [notice] 1#1: start worker process 22
+2025/07/05 09:39:00 [notice] 1#1: start worker process 23
+2025/07/05 10:20:00 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 10:20:00 [notice] 22#22: gracefully shutting down
+2025/07/05 10:20:00 [notice] 22#22: exiting
+2025/07/05 10:20:00 [notice] 22#22: exit
+2025/07/05 10:20:00 [notice] 23#23: gracefully shutting down
+2025/07/05 10:20:00 [notice] 23#23: exiting
+2025/07/05 10:20:00 [notice] 23#23: exit
+2025/07/05 10:20:00 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 10:20:00 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 10:20:00 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 10:20:00 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 10:20:00 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 10:20:00 [notice] 1#1: exit
+2025/07/05 10:22:36 [notice] 1#1: using the "epoll" event method
+2025/07/05 10:22:36 [notice] 1#1: nginx/1.21.6
+2025/07/05 10:22:36 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 10:22:36 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 10:22:36 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 10:22:36 [notice] 1#1: start worker processes
+2025/07/05 10:22:36 [notice] 1#1: start worker process 22
+2025/07/05 10:22:36 [notice] 1#1: start worker process 23
