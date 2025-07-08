@@ -16,6 +16,17 @@ class JobBase(BaseModel):
     retry_count: int = Field(3, description="Количество попыток")
     retry_delay: int = Field(60, description="Задержка между попытками в секундах")
 
+    # Prometheus monitoring fields
+    monitoring_device_mac: Optional[str] = Field(None, description="MAC адрес устройства для мониторинга")
+    monitoring_metric: Optional[str] = Field(None, description="Название метрики Prometheus")
+    operator: Optional[str] = Field(None, description="Оператор сравнения (>, <, =, !=, >=, <=)")
+    threshold_value: Optional[str] = Field(None, description="Пороговое значение для сравнения")
+    last_prometheus_value: Optional[str] = Field(None, description="Последнее значение из Prometheus")
+    last_check_time: Optional[datetime] = Field(None, description="Время последней проверки")
+
+    conditions: Optional[List[dict]] = Field(default_factory=list, description="Условия")
+    actions: Optional[List[dict]] = Field(default_factory=list, description="Действия")
+
 
 class JobCreate(JobBase):
     """Схема для создания задания"""
@@ -34,6 +45,14 @@ class JobUpdate(BaseModel):
     timeout: Optional[int] = Field(None, description="Таймаут в секундах")
     retry_count: Optional[int] = Field(None, description="Количество попыток")
     retry_delay: Optional[int] = Field(None, description="Задержка между попытками в секундах")
+    
+    # Prometheus monitoring fields
+    monitoring_device_mac: Optional[str] = Field(None, description="MAC адрес устройства для мониторинга")
+    monitoring_metric: Optional[str] = Field(None, description="Название метрики Prometheus")
+    operator: Optional[str] = Field(None, description="Оператор сравнения (>, <, =, !=, >=, <=)")
+    threshold_value: Optional[str] = Field(None, description="Пороговое значение для сравнения")
+    last_prometheus_value: Optional[str] = Field(None, description="Последнее значение из Prometheus")
+    last_check_time: Optional[datetime] = Field(None, description="Время последней проверки")
 
 
 class JobResponse(JobBase):
@@ -57,6 +76,12 @@ class JobExecutionBase(BaseModel):
     output: Optional[str] = Field(None, description="Вывод команды")
     error_message: Optional[str] = Field(None, description="Сообщение об ошибке")
     exit_code: Optional[int] = Field(None, description="Код завершения")
+    
+    # Prometheus monitoring fields
+    prometheus_value: Optional[str] = Field(None, description="Значение метрики из Prometheus")
+    condition_met: Optional[bool] = Field(None, description="Было ли выполнено условие")
+    monitoring_device_mac: Optional[str] = Field(None, description="MAC адрес мониторируемого устройства")
+    monitoring_metric: Optional[str] = Field(None, description="Название проверенной метрики")
 
 
 class JobExecutionCreate(JobExecutionBase):
@@ -74,6 +99,12 @@ class JobExecutionUpdate(BaseModel):
     output: Optional[str] = Field(None, description="Вывод команды")
     error_message: Optional[str] = Field(None, description="Сообщение об ошибке")
     exit_code: Optional[int] = Field(None, description="Код завершения")
+    
+    # Prometheus monitoring fields
+    prometheus_value: Optional[str] = Field(None, description="Значение метрики из Prometheus")
+    condition_met: Optional[bool] = Field(None, description="Было ли выполнено условие")
+    monitoring_device_mac: Optional[str] = Field(None, description="MAC адрес мониторируемого устройства")
+    monitoring_metric: Optional[str] = Field(None, description="Название проверенной метрики")
 
 
 class JobExecutionResponse(JobExecutionBase):

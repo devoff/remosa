@@ -15,7 +15,8 @@ import {
   Shield,
   Home,
   BarChart3,
-  AlertTriangle
+  AlertTriangle,
+  Zap
 } from 'lucide-react';
 import { useFlowStore } from '../store/flowStore';
 import { getCategoryColors } from '../components/NodeTypes';
@@ -254,6 +255,10 @@ const Sidebar: React.FC = () => {
         <Link to="/command-templates" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
           <FileText size={18} className="text-blue-400 mr-2" />
           <span className="font-medium">Шаблоны команд</span>
+        </Link>
+        <Link to="/platform-exporters" className="flex items-center py-2 px-3 text-gray-300 hover:bg-gray-700 rounded-md transition-colors mb-2">
+          <Zap size={18} className="text-green-400 mr-2" />
+          <span className="font-medium">Экспортеры</span>
         </Link>
         <SidebarSection 
           title="Журналы" 

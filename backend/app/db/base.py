@@ -10,3 +10,4 @@ from app.models.alert import Alert # noqa
 from app.models.audit_log import AuditLog # noqa
 from app.models.job import Job, JobExecution # noqa
 from app.models.notification import Notification # noqa
+from app.models.monitoring_metric import MonitoringMetric # noqa

@@ -22,6 +22,18 @@ class Job(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
+    # Prometheus monitoring fields
+    monitoring_device_mac = Column(String(17), nullable=True)  # MAC адрес устройства для мониторинга
+    monitoring_metric = Column(String(100), nullable=True)  # Название метрики Prometheus
+    operator = Column(String(10), nullable=True)  # Оператор сравнения (>, <, =, !=, >=, <=)
+    threshold_value = Column(String(100), nullable=True)  # Пороговое значение для сравнения
+    last_prometheus_value = Column(String(100), nullable=True)  # Последнее значение из Prometheus
+    last_check_time = Column(DateTime(timezone=True), nullable=True)  # Время последней проверки
+    
+    # New fields
+    conditions = Column(JSON, nullable=True, default=list)
+    actions = Column(JSON, nullable=True, default=list)
+    
     # Relationships
     platform = relationship("Platform", back_populates="jobs")
     device = relationship("Device", back_populates="jobs")
@@ -43,6 +55,12 @@ class JobExecution(Base):
     error_message = Column(Text, nullable=True)
     exit_code = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Prometheus monitoring fields
+    prometheus_value = Column(String(100), nullable=True)  # Значение метрики из Prometheus
+    condition_met = Column(Boolean, nullable=True)  # Было ли выполнено условие
+    monitoring_device_mac = Column(String(17), nullable=True)  # MAC адрес мониторируемого устройства
+    monitoring_metric = Column(String(100), nullable=True)  # Название проверенной метрики
     
     # Relationships
     job = relationship("Job", back_populates="executions") 

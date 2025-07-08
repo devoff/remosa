@@ -70,7 +70,7 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
               <p>Плеер: {alert.data.player_name || 'Неизвестный'}</p>
               <p>Платформа: {alert.data.platform || 'Неизвестная'}</p>
               {/* Добавляем остальные поля по необходимости */}
-              {Object.entries(alert.data).map(([key, value]) => (
+              {Object.entries(alert.data || {}).map(([key, value]) => (
                 key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && <p key={key}>{key}: {JSON.stringify(value)}</p>
               ))}
             </div>
@@ -197,7 +197,7 @@ const AlertsPage = () => {
             <div>Конец: {alert.data.endsAt || 'Не указано'}</div>
             <div>Плеер: {alert.data.player_name || 'Неизвестный'}</div>
             <div>Платформа: {alert.data.platform || 'Неизвестная'}</div>
-            {Object.entries(alert.data).map(([key, value]) => (
+            {Object.entries(alert.data || {}).map(([key, value]) => (
               key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && (
                 <div key={key}>{key}: {JSON.stringify(value)}</div>
               )

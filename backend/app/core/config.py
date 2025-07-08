@@ -86,6 +86,9 @@ class Settings(BaseSettings):
     # Настройки автоматизации заданий
     JOB_PROCESSOR_INTERVAL: int = 60  # секунды между циклами обработки
     
+    # Настройки Prometheus
+    PROMETHEUS_URL: str = "http://192.168.1.122:9090"
+    
     # Настройки уведомлений
     NOTIFICATION_WEBHOOK_URL: Optional[str] = None
     TELEGRAM_BOT_TOKEN: Optional[str] = None

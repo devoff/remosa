@@ -16,6 +16,7 @@ services:
     volumes:
       - ./backend/app:/app/app  # Только для разработки
       - ./backend/alembic:/app/alembic  # Для миграций
+      - ./memory-bank:/app/memory-bank:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -74,7 +75,61 @@ services:
     depends_on:
       - backend
 
+  addreality_exporter:
+    build:
+      context: ./AddRealityExporter
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - ADDREALITY_API_URL=https://api.ar.digital/public/v1/device/list
+      - REMOSA_API_URL=http://backend:8000
+      - EXPORTER_PORT=9001
+      - CACHE_DB_FILE=/app/addreality_cache.db
+      - DEBUG_MODE=0
+    ports:
+      - "9001:9001"
+    volumes:
+      - addreality_exporter_cache:/app
+    depends_on:
+      - backend
+
+  rag-service:
+    build:
+      context: ./rag_service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./rag_service/.env
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./memory-bank:/app/memory-bank:ro
+      - ./rag_service/.env:/app/.env:ro
+    depends_on:
+      - backend
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9090"]
+
+  mcp-service:
+    build:
+      context: ./rag_service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./rag_service/.env
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./memory-bank:/app/memory-bank:ro
+      - ./rag_service/.env:/app/.env:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - .:/opt/remosa:ro
+    depends_on:
+      - backend
+      - rag-service
+    command: ["python", "mcp_server_simple.py"]
+
 volumes:
   backend_code:
   frontend_node_modules:
   cubic_exporter_cache:
+  addreality_exporter_cache:

@@ -102,11 +102,22 @@ const ExporterDialog: React.FC<ExporterDialogProps> = ({
     if (!validateForm()) return;
     try {
       setLoading(true);
-      let payload = { ...formData };
+      let payload: any;
       if (formData.platform_type === 'addreality') {
-        payload.api_key = apiKey;
-        payload.tags = tags;
-        payload.mac_addresses = [];
+        payload = {
+          name: formData.name,
+          platform_type: formData.platform_type,
+          platform_id: formData.platform_id,
+          is_active: formData.is_active,
+          config: {
+            api_key: apiKey,
+            tags: tags,
+          }
+        };
+      } else {
+        payload = {
+          ...formData,
+        };
       }
       if (exporter) {
         await updateExporter(exporter.id, payload);

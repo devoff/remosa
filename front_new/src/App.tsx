@@ -20,6 +20,7 @@ import DevicesPage from './components/DevicesPage';
 import { AuditLogsPage } from './components/AuditLogsPage';
 import { CommandLogsPageContent } from './components/CommandLogsPageContent';
 import ExportersPage from './components/ExportersPage';
+import PlatformExportersPage from './components/PlatformExportersPage';
 import JobsPage from './components/JobsPage';
 import DevicesPrometheusPage from './components/DevicesPrometheusPage';
 import MonitoringPage from './pages/MonitoringPage';
@@ -65,6 +66,7 @@ function AppContent() {
             <Route path="/admin/platforms" element={<PrivateRoute><AdminPlatformsPage /></PrivateRoute>} />
             <Route path="/admin/platforms/:platformId" element={<PrivateRoute><PlatformDetailsPage /></PrivateRoute>} />
             <Route path="/exporters" element={<PrivateRoute><ExportersPage /></PrivateRoute>} />
+            <Route path="/platform-exporters" element={<PrivateRoute><PlatformExportersPage /></PrivateRoute>} />
             <Route path="/jobs" element={<PrivateRoute><JobsPage /></PrivateRoute>} />
             <Route path="/devices-prometheus" element={<PrivateRoute><DevicesPrometheusPage /></PrivateRoute>} />
             <Route path="/monitoring" element={<PrivateRoute><MonitoringPage /></PrivateRoute>} />

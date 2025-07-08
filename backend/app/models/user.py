@@ -20,5 +20,9 @@ class User(Base):
     user_limits = relationship("UserLimits", back_populates="user", uselist=False)
     platforms = relationship("PlatformUser", back_populates="user")
 
+    @property
+    def is_superadmin(self) -> bool:
+        return self.role == "superadmin"
+    
     def __repr__(self):
         return f"User(id={self.id}, email={self.email}, role={self.role})" 

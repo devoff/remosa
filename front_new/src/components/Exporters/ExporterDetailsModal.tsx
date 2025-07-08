@@ -227,18 +227,18 @@ const ExporterDetailsModal: React.FC<ExporterDetailsModalProps> = ({
                       <tbody>
                         {devices.map((device, index) => (
                           <tr key={index} className="border-b border-gray-700">
-                            <td className="py-2 font-mono text-gray-100">{device.mac_address}</td>
+                            <td className="py-2 font-mono text-gray-100">{device.mac || device.mac_address || '-'}</td>
                             <td className="py-2">
                               <span className={`px-2 py-1 rounded-full text-xs ${
-                                device.status === 'online' 
+                                device.status_text === 'online' 
                                   ? 'bg-green-900/20 text-green-400' 
                                   : 'bg-red-900/20 text-red-400'
                               }`}>
-                                {device.status === 'online' ? 'Онлайн' : 'Оффлайн'}
+                                {device.status_text === 'online' ? 'Онлайн' : 'Оффлайн'}
                               </span>
                             </td>
-                            <td className="py-2 text-gray-300">{device.ip_address || '-'}</td>
-                            <td className="py-2 text-gray-300">{formatDate(device.last_seen)}</td>
+                            <td className="py-2 text-gray-300">{device.ip || device.ip_address || '-'}</td>
+                            <td className="py-2 text-gray-300">{formatDate(device.last_seen || '')}</td>
                           </tr>
                         ))}
                       </tbody>

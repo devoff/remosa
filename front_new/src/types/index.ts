@@ -139,6 +139,19 @@ export interface CommandTemplate {
   template: string;
 }
 
+export interface MonitoringMetric {
+  id: number;
+  technical_name: string;
+  human_name: string;
+  description?: string;
+  unit?: string;
+  category: string;
+  data_type: string;
+  min_value?: string;
+  max_value?: string;
+  is_active: boolean;
+}
+
 export interface CommandParamDefinition {
   name: string;
   type: 'string' | 'number';

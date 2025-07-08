@@ -1,5 +1,6 @@
 from typing import Any, List, Optional
 from datetime import datetime
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -13,6 +14,7 @@ from app.models.user import User
 from app.core.platform_permissions import require_platform_role
 from app.core.audit import log_audit
 from app.services.exporter_service import exporter_service
+from app.services.prometheus_service import prometheus_service
 
 router = APIRouter()
 
@@ -56,6 +58,69 @@ def read_exporters(
         })
     
     return result
+
+@router.get("/devices", response_model=List[dict], summary="Получить все устройства всех экспортеров",
+            dependencies=[Depends(get_current_user)],
+            tags=["Exporters"])
+def get_all_devices(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """
+    Получить все устройства всех экспортеров с актуальными метками из Prometheus.
+    """
+    # Определяем, какие экспортеры доступны текущему пользователю
+    if current_user.is_superadmin:
+        exporters = db.query(Exporter).all()
+    else:
+        platform_ids = [role.platform_id for role in current_user.platform_roles]
+        exporters = db.query(Exporter).filter(Exporter.platform_id.in_(platform_ids)).all()
+
+    all_devices: List[dict] = []
+
+    # Собираем устройства из Prometheus по каждому экспортеру
+    for exporter in exporters:
+        try:
+            if exporter.exporter_type.value == "addreality":
+                exporter_devices = prometheus_service.get_addreality_devices(platform_id=exporter.platform_id, exporter_id=exporter.id)
+            else:
+                exporter_devices = prometheus_service.get_exporter_metrics(exporter.id)
+            # Если Prometheus ничего не вернул (например, экспортер не отправляет метрики),
+            # то добавим устройства из конфигурации, чтобы они тоже отображались.
+            if not exporter_devices:
+                config = db.query(ExporterConfiguration).filter(
+                    ExporterConfiguration.exporter_id == exporter.id
+                ).first()
+                if config and config.mac_addresses:
+                    for mac in config.mac_addresses:
+                        exporter_devices.append({
+                            "mac": mac,
+                            "exporter_id": exporter.id,
+                            "exporter_name": exporter.name,
+                            "platform_id": exporter.platform_id,
+                            "status": 0,
+                            "status_text": "offline"
+                        })
+        except Exception as e:
+            # В случае ошибки запросов к Prometheus добавляем базовые устройства, чтобы фронт всё равно что-то отобразил
+            config = db.query(ExporterConfiguration).filter(
+                ExporterConfiguration.exporter_id == exporter.id
+            ).first()
+            if config and config.mac_addresses:
+                exporter_devices = [{
+                    "mac": mac,
+                    "exporter_id": exporter.id,
+                    "exporter_name": exporter.name,
+                    "platform_id": exporter.platform_id,
+                    "status": 0,
+                    "status_text": "offline"
+                } for mac in config.mac_addresses]
+            else:
+                exporter_devices = []
+
+        all_devices.extend(exporter_devices)
+
+    return all_devices
 
 @router.get("/stats", response_model=dict, summary="Получить статистику экспортеров",
             dependencies=[Depends(get_current_user)],
@@ -237,26 +302,58 @@ def update_exporter(
         config = db.query(ExporterConfiguration).filter(
             ExporterConfiguration.exporter_id == exporter_id
         ).first()
-        
-        if config:
-            config_data = exporter_update["config"]
-            for field, value in config_data.items():
-                if hasattr(config, field):
-                    setattr(config, field, value)
+        config_data = exporter_update["config"]
+        # --- ДОБАВЛЕНО: поддержка addreality_config ---
+        exporter_type = getattr(exporter, "exporter_type", None)
+        is_addreality = False
+        if exporter_type is not None:
+            if hasattr(exporter_type, "value"):
+                is_addreality = exporter_type.value == "addreality"
+            else:
+                is_addreality = exporter_type == "addreality"
+        if is_addreality:
+            if config:
+                # Обновляем addreality_config
+                addreality_config = config.addreality_config or {}
+                if "api_key" in config_data:
+                    addreality_config["api_key"] = config_data["api_key"]
+                if "api_endpoint" in config_data:
+                    addreality_config["api_endpoint"] = config_data["api_endpoint"]
+                if "tags" in config_data:
+                    addreality_config["tags"] = config_data["tags"]
+                config.addreality_config = addreality_config
+            else:
+                # Создаём новую конфигурацию с addreality_config
+                db_config = ExporterConfiguration(
+                    exporter_id=exporter_id,
+                    addreality_config={
+                        "api_key": config_data.get("api_key"),
+                        "api_endpoint": config_data.get("api_endpoint"),
+                        "tags": config_data.get("tags", [])
+                    }
+                )
+                db.add(db_config)
         else:
-            # Создаем новую конфигурацию
-            config_data = exporter_update["config"]
-            db_config = ExporterConfiguration(
-                exporter_id=exporter_id,
-                api_endpoint=config_data.get("api_endpoint"),
-                mac_addresses=config_data.get("mac_addresses", []),
-                polling_interval=config_data.get("polling_interval", 30),
-                timeout=config_data.get("timeout", 15),
-                retry_count=config_data.get("retry_count", 3),
-                cache_enabled=config_data.get("cache_enabled", True),
-                prometheus_labels=config_data.get("prometheus_labels", {})
-            )
-            db.add(db_config)
+            # Старое поведение для других типов
+            if config:
+                for field, value in config_data.items():
+                    if hasattr(config, field):
+                        setattr(config, field, value)
+            else:
+                db_config = ExporterConfiguration(
+                    exporter_id=exporter_id,
+                    api_endpoint=config_data.get("api_endpoint"),
+                    mac_addresses=config_data.get("mac_addresses", []),
+                    polling_interval=config_data.get("polling_interval", 30),
+                    timeout=config_data.get("timeout", 15),
+                    retry_count=config_data.get("retry_count", 3),
+                    cache_enabled=config_data.get("cache_enabled", True),
+                    prometheus_labels=config_data.get("prometheus_labels", {})
+                )
+                db.add(db_config)
+        # --- Логирование для отладки ---
+        logging.warning(f"[EXPORTER UPDATE] Payload: {exporter_update}")
+        logging.warning(f"[EXPORTER UPDATE] Config after update: {config.addreality_config if config else 'no config'}")
     
     db.commit()
     db.refresh(exporter)
@@ -390,20 +487,21 @@ def get_exporter_metrics(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Экспортер не найден"
         )
-    
-    # Проверяем права доступа к платформе
     require_platform_role(current_user, exporter.platform_id, ["admin", "manager", "user", "viewer"], db)
-    
-    # TODO: Здесь будет логика получения метрик из Prometheus
-    # Пока возвращаем базовую информацию
+
+    # Получаем метрики из Prometheus
+    metrics = prometheus_service.get_exporter_metrics(exporter_id)
+    stats = prometheus_service.get_exporter_stats(exporter_id)
+
     return {
         "exporter_id": exporter.id,
         "name": exporter.name,
         "status": exporter.status.value,
-        "last_metrics_count": exporter.last_metrics_count,
+        "last_metrics_count": len(metrics),
         "last_successful_collection": exporter.last_successful_collection,
         "last_error_message": exporter.last_error_message,
-        "metrics": []  # TODO: Реальные метрики из Prometheus
+        "metrics": metrics,
+        "stats": stats
     }
 
 @router.post("/{exporter_id}/sync", summary="Синхронизировать экспортер",

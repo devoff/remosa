@@ -109,7 +109,7 @@ const ExecuteCommandModal: React.FC<ExecuteCommandModalProps> = ({ visible, onCl
     return (
       <div>
         <h4 className="mb-4">Параметры команды</h4>
-        {Object.entries(properties).map(([key, param]) => renderParamInput(key, param))}
+        {Object.entries(properties || {}).map(([key, param]) => renderParamInput(key, param))}
       </div>
     );
   };

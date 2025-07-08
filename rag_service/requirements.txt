@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+mcp-server
+httpx
+openai
+faiss-cpu==1.7.4
+numpy<2
+pydantic
+python-dotenv
+asyncpg
+requests 

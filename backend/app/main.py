@@ -2,21 +2,26 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 from app.services.sms_poller import poll_sms_gateway
+from app.services.prometheus_monitoring import prometheus_monitoring_service
 import asyncio
 import logging
 import os
 import sys
 from datetime import datetime
 from contextlib import asynccontextmanager
+from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.db.base import Base
 from app.db.session import engine
 from app.api.v1.endpoints import exporter_macs
+from app.api.v1.endpoints import auth, users, jobs
+from .models import User, Device, Job
+from . import models
 
 # Configure a logger for this module
 logger = logging.getLogger(__name__)
@@ -34,9 +39,6 @@ if not any(isinstance(handler, logging.StreamHandler) for handler in root_logger
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
 
-# Дублирующиеся определения базы данных удалены для предотвращения конфликтов
-# Используются определения из app.db.session
-
 # Фоновая задача для опроса SMS шлюза
 async def start_sms_polling_background_task():
     while True:
@@ -46,6 +48,13 @@ async def start_sms_polling_background_task():
         except Exception as e:
             logger.error(f"Ошибка в SMS polling: {e}")
             await asyncio.sleep(60)  # Ждем перед повторной попыткой
+
+# Фоновая задача для мониторинга Prometheus
+async def start_prometheus_monitoring_background_task():
+    try:
+        await prometheus_monitoring_service.start_monitoring()
+    except Exception as e:
+        logger.error(f"Ошибка запуска Prometheus мониторинга: {e}")
 
 # Определяем lifespan функцию ДО создания приложения FastAPI
 @asynccontextmanager
@@ -66,20 +75,30 @@ async def lifespan(app: FastAPI):
     logger.info("Запуск фоновой задачи опроса SMS шлюза...")
     sms_task = asyncio.create_task(start_sms_polling_background_task())
     
+    # Запуск фоновой задачи для мониторинга Prometheus
+    logger.info("Запуск фоновой задачи мониторинга Prometheus...")
+    prometheus_task = asyncio.create_task(start_prometheus_monitoring_background_task())
+    
     yield
     
     # Shutdown
     logger.info("=== ЗАВЕРШЕНИЕ ПРИЛОЖЕНИЯ ===")
     sms_task.cancel()
+    prometheus_task.cancel()
     try:
         await sms_task
     except asyncio.CancelledError:
         logger.info("SMS polling task cancelled successfully")
+    try:
+        await prometheus_task
+    except asyncio.CancelledError:
+        logger.info("Prometheus monitoring task cancelled successfully")
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    lifespan=lifespan  # Используем новый lifespan вместо on_event
+    title="REMOSA API",
+    description="API для системы мониторинга REMOSA",
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Настройка CORS (исправлено для безопасности)
@@ -97,8 +116,9 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(exporter_macs.router, prefix="/api/v1")
-
-# Дублированные определения lifespan и start_sms_polling_background_task удалены выше
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(jobs.router)
 
 @app.get("/health")
 async def health_check():

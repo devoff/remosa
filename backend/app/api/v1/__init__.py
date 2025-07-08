@@ -11,8 +11,10 @@ from .endpoints.auth import router as auth_router  # Изменено с .auth �
 from .endpoints.users import router as users_router
 from .endpoints.platforms import router as platforms_router
 from .endpoints.exporters import router as exporters_router
+from .endpoints.platform_exporters import router as platform_exporters_router
 from .endpoints.tasks import router as tasks_router
 from .endpoints.jobs import router as jobs_router
+from .monitoring_metrics import router as monitoring_metrics_router
 from .monitoring import router as monitoring_router
 from .audit_logs import router as audit_logs_router
 from .health import router as health_router
@@ -30,8 +32,11 @@ router.include_router(auth_router, prefix="/auth", tags=["auth"])
 router.include_router(users_router, prefix="/users", tags=["users"])
 router.include_router(platforms_router, prefix="/platforms", tags=["Platforms"])
 router.include_router(exporters_router, prefix="/exporters", tags=["Exporters"])
+router.include_router(platform_exporters_router, prefix="/platforms", tags=["Platform Exporters"])
+router.include_router(platform_exporters_router, tags=["Platform Exporters"])
 router.include_router(tasks_router, prefix="/tasks", tags=["Tasks"])
 router.include_router(jobs_router, prefix="/jobs", tags=["Jobs"])
+router.include_router(monitoring_metrics_router, prefix="/monitoring-metrics", tags=["Monitoring Metrics"])
 router.include_router(monitoring_router, prefix="/monitoring", tags=["Monitoring"])
 router.include_router(audit_logs_router, prefix="/audit-logs", tags=["Audit Logs"])
 router.include_router(health_router, prefix="/health", tags=["Health"]) 

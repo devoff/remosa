@@ -104,14 +104,14 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
       >
         <Form.Item label="Выберите команду" name="command_template_id" rules={[{ required: true, message: 'Пожалуйста, выберите команду!' }]}>
           <Select placeholder="Выберите команду" onChange={onCommandSelect}>
-            {Object.entries(commandTemplates.reduce((acc: Record<string, CommandTemplate[]>, template: CommandTemplate) => {
+            {Object.entries((commandTemplates || []).reduce((acc: Record<string, CommandTemplate[]>, template: CommandTemplate) => {
               const category = template.category || 'Без категории';
               if (!acc[category]) {
                 acc[category] = [];
               }
               acc[category].push(template);
               return acc;
-            }, {} as Record<string, CommandTemplate[]>)).map(([category, templates]: [string, CommandTemplate[]]) => (
+            }, {} as Record<string, CommandTemplate[]>) || {}).map(([category, templates]) => (
               <OptGroup key={category} label={category}>
                 {(templates || []).map((template: CommandTemplate) => (
                   <Option key={template.id} value={template.id}>{template.name}</Option>
@@ -121,7 +121,7 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
           </Select>
         </Form.Item>
 
-        {selectedCommand?.params_schema?.properties && Object.entries(selectedCommand.params_schema.properties).map(([paramName, param]: [string, { type: string; title?: string; pattern?: string; enum?: any[]; }]) => {
+        {selectedCommand?.params_schema?.properties && Object.entries(selectedCommand.params_schema.properties || {}).map(([paramName, param]: [string, { type: string; title?: string; pattern?: string; enum?: any[]; }]) => {
           const isRequired = selectedCommand.params_schema.required?.includes(paramName);
           
           let inputComponent;

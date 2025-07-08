@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "REMOSA_RAG": {
+      "url": "http://localhost:9091/mcp"
+    }
+  }
+} 
+claude mcp add --transport http http-server http://localhost:9091/mcp

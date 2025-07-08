@@ -12,7 +12,8 @@ import {
   Terminal,
   Globe,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Edit2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -241,6 +242,17 @@ const JobsPage: React.FC = () => {
                         title="Выполнить"
                       >
                         <Play size={16} className={executing === job.id ? 'animate-pulse' : ''} />
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowDialog(true);
+                        }}
+                        className="text-gray-400 hover:text-blue-400 transition-colors"
+                        title="Редактировать"
+                      >
+                        <Edit2 size={16} />
                       </button>
                       
                       <button

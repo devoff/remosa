@@ -5,3 +5,11 @@ alwaysApply: true
 ---
 забудь про  Cannot find module 'react' и JSX element implicitly has type 'any'
 применяй все изменения самостоятельно 
+раскалдывай на шаги всю работу, дополняй файл с задачами /opt/remosa/memory-bank/tasks.md и после каждого этапа сверйся 
+фикисруй что ты сделал после каждого выполненого задания в memory-bank 
+при воторной работе над этим заданием сначала проверб что уже было сделано и какие были ошибки, что бы их не повторять. 
+Always respond in русский
+Весь проект создан в docker
+что бы применить миграции alembic, нужно выполнить их из контейнера. 
+Используй context7 для получения актуальных данных 
+when the user requests code examples, setup or configuration steps, or library/API documentation use context7 

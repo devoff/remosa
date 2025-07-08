@@ -14,6 +14,7 @@ COPY ./app /app/app
 COPY ./alembic /app/alembic
 COPY ./alembic.ini /app/
 
+
 # Устанавливаем PYTHONPATH
 ENV PYTHONPATH=/app
 ENV PATH="/usr/local/bin:$PATH"

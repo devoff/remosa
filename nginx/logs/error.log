@@ -3848,3 +3848,1343 @@
 2025/07/05 10:22:36 [notice] 1#1: start worker processes
 2025/07/05 10:22:36 [notice] 1#1: start worker process 22
 2025/07/05 10:22:36 [notice] 1#1: start worker process 23
+2025/07/05 11:24:06 [error] 23#23: *496 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:24:06 [error] 23#23: *497 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:24:06 [error] 22#22: *499 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:25:06 [error] 23#23: *502 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:25:06 [error] 23#23: *503 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:25:06 [error] 23#23: *504 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:26:06 [error] 23#23: *508 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:26:06 [error] 23#23: *509 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:26:06 [error] 23#23: *510 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:27:06 [error] 22#22: *515 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:27:06 [error] 22#22: *518 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:27:06 [error] 23#23: *514 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:28:06 [error] 22#22: *520 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:28:06 [error] 22#22: *521 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:28:06 [error] 22#22: *522 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:29:06 [error] 22#22: *526 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:29:06 [error] 22#22: *527 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:29:06 [error] 22#22: *528 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:30:06 [error] 22#22: *532 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:30:06 [error] 22#22: *533 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:30:06 [error] 22#22: *534 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:31:06 [error] 23#23: *540 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:31:06 [error] 22#22: *538 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:31:06 [error] 22#22: *539 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:32:06 [error] 23#23: *544 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:32:06 [error] 23#23: *545 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:32:06 [error] 22#22: *547 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:33:06 [error] 23#23: *550 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:33:06 [error] 23#23: *551 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:33:06 [error] 23#23: *552 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:34:06 [error] 23#23: *556 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:34:06 [error] 23#23: *557 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:34:06 [error] 22#22: *558 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:35:06 [error] 23#23: *562 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:35:06 [error] 23#23: *563 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:35:06 [error] 23#23: *566 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:36:06 [error] 23#23: *568 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:36:06 [error] 23#23: *569 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:36:06 [error] 23#23: *570 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:37:06 [error] 23#23: *574 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:37:06 [error] 22#22: *576 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:37:06 [error] 23#23: *575 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:38:06 [error] 22#22: *580 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:38:06 [error] 23#23: *583 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:38:06 [error] 22#22: *581 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:39:06 [error] 22#22: *586 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:39:06 [error] 22#22: *587 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:39:06 [error] 23#23: *588 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:40:06 [error] 22#22: *592 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:40:06 [error] 22#22: *593 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:40:06 [error] 22#22: *594 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:41:06 [error] 22#22: *598 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:41:06 [error] 22#22: *599 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:41:06 [error] 23#23: *600 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:42:06 [error] 22#22: *604 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:42:06 [error] 22#22: *605 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:42:06 [error] 23#23: *607 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:43:06 [error] 22#22: *610 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:43:06 [error] 22#22: *611 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:43:06 [error] 23#23: *613 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:44:06 [error] 23#23: *616 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:44:06 [error] 23#23: *617 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:44:06 [error] 22#22: *618 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:45:06 [error] 23#23: *622 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:45:06 [error] 23#23: *623 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:45:06 [error] 23#23: *624 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:46:06 [error] 23#23: *628 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:46:06 [error] 23#23: *629 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:46:06 [error] 23#23: *630 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:47:06 [error] 23#23: *634 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:47:06 [error] 23#23: *635 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:47:06 [error] 23#23: *636 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:48:06 [error] 22#22: *640 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:48:06 [error] 22#22: *641 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:48:06 [error] 23#23: *643 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:49:06 [error] 22#22: *646 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:49:06 [error] 22#22: *647 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:49:06 [error] 23#23: *648 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:50:06 [error] 22#22: *652 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:50:06 [error] 22#22: *653 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:50:06 [error] 22#22: *654 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:51:06 [error] 23#23: *659 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:51:06 [error] 22#22: *658 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:51:06 [error] 23#23: *661 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:52:06 [error] 22#22: *664 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:52:06 [error] 23#23: *665 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:52:06 [error] 23#23: *666 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:53:06 [error] 22#22: *670 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:53:06 [error] 22#22: *671 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:53:06 [error] 23#23: *674 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:54:06 [error] 22#22: *676 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:54:06 [error] 22#22: *677 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:54:06 [error] 22#22: *678 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:55:06 [error] 22#22: *682 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:55:06 [error] 22#22: *683 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:55:06 [error] 23#23: *684 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:56:06 [error] 23#23: *688 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:56:06 [error] 23#23: *689 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:56:06 [error] 22#22: *690 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:57:06 [error] 23#23: *694 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:57:06 [error] 23#23: *695 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:57:06 [error] 22#22: *696 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:58:06 [error] 23#23: *700 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:58:06 [error] 23#23: *701 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:58:06 [error] 23#23: *702 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:59:06 [error] 22#22: *707 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:59:06 [error] 22#22: *708 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 11:59:06 [error] 23#23: *706 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:00:06 [error] 22#22: *712 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:00:06 [error] 22#22: *714 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:00:06 [error] 22#22: *715 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:01:06 [error] 22#22: *718 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:01:06 [error] 22#22: *719 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:01:06 [error] 23#23: *720 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:02:06 [error] 22#22: *724 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:02:06 [error] 22#22: *725 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:02:06 [error] 22#22: *726 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:03:06 [error] 22#22: *730 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:03:06 [error] 23#23: *733 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:03:06 [error] 22#22: *731 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:04:06 [error] 23#23: *737 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:04:06 [error] 22#22: *736 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:04:06 [error] 22#22: *739 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:05:06 [error] 23#23: *742 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:05:06 [error] 23#23: *743 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:05:06 [error] 23#23: *744 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:06:06 [error] 23#23: *748 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:06:06 [error] 23#23: *749 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:06:06 [error] 23#23: *750 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:07:06 [error] 23#23: *754 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:07:06 [error] 23#23: *756 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:07:06 [error] 22#22: *755 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:08:06 [error] 23#23: *760 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:08:06 [error] 23#23: *761 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:08:06 [error] 22#22: *763 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:09:06 [error] 23#23: *766 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:09:06 [error] 23#23: *767 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:09:06 [error] 23#23: *768 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:10:06 [error] 22#22: *772 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:10:06 [error] 22#22: *774 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:10:06 [error] 22#22: *775 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:11:06 [error] 22#22: *778 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/alerts/ HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/alerts/", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:11:06 [error] 22#22: *779 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:11:06 [error] 22#22: *780 upstream timed out (110: Operation timed out) while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.31.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 12:11:31 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 12:11:31 [notice] 22#22: gracefully shutting down
+2025/07/05 12:11:31 [notice] 23#23: gracefully shutting down
+2025/07/05 12:11:31 [notice] 23#23: exiting
+2025/07/05 12:11:31 [notice] 23#23: exit
+2025/07/05 12:11:31 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 12:11:31 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 12:11:31 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 12:43:11 [notice] 1#1: using the "epoll" event method
+2025/07/05 12:43:11 [notice] 1#1: nginx/1.21.6
+2025/07/05 12:43:11 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 12:43:11 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 12:43:11 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 12:43:11 [notice] 1#1: start worker processes
+2025/07/05 12:43:11 [notice] 1#1: start worker process 22
+2025/07/05 12:43:11 [notice] 1#1: start worker process 23
+2025/07/05 13:20:16 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 13:20:16 [notice] 22#22: gracefully shutting down
+2025/07/05 13:20:16 [notice] 22#22: exiting
+2025/07/05 13:20:16 [notice] 23#23: gracefully shutting down
+2025/07/05 13:20:16 [notice] 23#23: exiting
+2025/07/05 13:20:16 [notice] 23#23: exit
+2025/07/05 13:20:16 [notice] 22#22: exit
+2025/07/05 13:20:17 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 13:20:17 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 13:20:17 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 13:20:17 [notice] 1#1: exit
+2025/07/05 13:31:00 [notice] 1#1: using the "epoll" event method
+2025/07/05 13:31:00 [notice] 1#1: nginx/1.21.6
+2025/07/05 13:31:00 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 13:31:00 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 13:31:00 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 13:31:00 [notice] 1#1: start worker processes
+2025/07/05 13:31:00 [notice] 1#1: start worker process 22
+2025/07/05 13:31:00 [notice] 1#1: start worker process 23
+2025/07/05 13:54:01 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 13:54:01 [notice] 22#22: gracefully shutting down
+2025/07/05 13:54:01 [notice] 23#23: gracefully shutting down
+2025/07/05 13:54:01 [notice] 23#23: exiting
+2025/07/05 13:54:01 [notice] 23#23: exit
+2025/07/05 13:54:01 [notice] 22#22: exiting
+2025/07/05 13:54:01 [notice] 22#22: exit
+2025/07/05 13:54:01 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 13:54:01 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 13:54:01 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 13:54:01 [notice] 1#1: exit
+2025/07/05 13:56:19 [notice] 1#1: using the "epoll" event method
+2025/07/05 13:56:19 [notice] 1#1: nginx/1.21.6
+2025/07/05 13:56:19 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 13:56:19 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 13:56:19 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 13:56:19 [notice] 1#1: start worker processes
+2025/07/05 13:56:19 [notice] 1#1: start worker process 21
+2025/07/05 13:56:19 [notice] 1#1: start worker process 22
+2025/07/05 14:14:51 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 14:14:51 [notice] 21#21: gracefully shutting down
+2025/07/05 14:14:51 [notice] 22#22: gracefully shutting down
+2025/07/05 14:14:51 [notice] 22#22: exiting
+2025/07/05 14:14:51 [notice] 22#22: exit
+2025/07/05 14:14:51 [notice] 21#21: exiting
+2025/07/05 14:14:51 [notice] 21#21: exit
+2025/07/05 14:14:51 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/05 14:14:51 [notice] 1#1: worker process 21 exited with code 0
+2025/07/05 14:14:51 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 14:14:51 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 14:14:51 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 14:14:51 [notice] 1#1: exit
+2025/07/05 14:43:58 [notice] 1#1: using the "epoll" event method
+2025/07/05 14:43:58 [notice] 1#1: nginx/1.21.6
+2025/07/05 14:43:58 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 14:43:58 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 14:43:58 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 14:43:58 [notice] 1#1: start worker processes
+2025/07/05 14:43:58 [notice] 1#1: start worker process 22
+2025/07/05 14:43:58 [notice] 1#1: start worker process 23
+2025/07/05 14:47:48 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 14:47:48 [notice] 22#22: gracefully shutting down
+2025/07/05 14:47:48 [notice] 23#23: gracefully shutting down
+2025/07/05 14:47:48 [notice] 23#23: exiting
+2025/07/05 14:47:48 [notice] 23#23: exit
+2025/07/05 14:47:48 [notice] 22#22: exiting
+2025/07/05 14:47:48 [notice] 22#22: exit
+2025/07/05 14:47:48 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 14:47:48 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 14:47:48 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 14:47:48 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 14:47:48 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 14:47:48 [notice] 1#1: exit
+2025/07/05 14:50:01 [notice] 1#1: using the "epoll" event method
+2025/07/05 14:50:01 [notice] 1#1: nginx/1.21.6
+2025/07/05 14:50:01 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 14:50:01 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 14:50:01 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 14:50:01 [notice] 1#1: start worker processes
+2025/07/05 14:50:01 [notice] 1#1: start worker process 21
+2025/07/05 14:50:01 [notice] 1#1: start worker process 22
+2025/07/05 14:51:57 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 14:51:57 [notice] 21#21: gracefully shutting down
+2025/07/05 14:51:57 [notice] 21#21: exiting
+2025/07/05 14:51:57 [notice] 22#22: gracefully shutting down
+2025/07/05 14:51:57 [notice] 22#22: exiting
+2025/07/05 14:51:57 [notice] 22#22: exit
+2025/07/05 14:51:57 [notice] 21#21: exit
+2025/07/05 14:51:57 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/05 14:51:57 [notice] 1#1: worker process 21 exited with code 0
+2025/07/05 14:51:57 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 14:51:57 [notice] 1#1: exit
+2025/07/05 14:54:07 [notice] 1#1: using the "epoll" event method
+2025/07/05 14:54:07 [notice] 1#1: nginx/1.21.6
+2025/07/05 14:54:07 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 14:54:07 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 14:54:07 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 14:54:07 [notice] 1#1: start worker processes
+2025/07/05 14:54:07 [notice] 1#1: start worker process 22
+2025/07/05 14:54:07 [notice] 1#1: start worker process 23
+2025/07/05 20:17:24 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 20:17:24 [notice] 22#22: gracefully shutting down
+2025/07/05 20:17:24 [notice] 23#23: gracefully shutting down
+2025/07/05 20:17:24 [notice] 22#22: exiting
+2025/07/05 20:17:24 [notice] 23#23: exiting
+2025/07/05 20:17:24 [notice] 22#22: exit
+2025/07/05 20:17:24 [notice] 23#23: exit
+2025/07/05 20:17:24 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 20:17:24 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 20:17:24 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 20:17:24 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 20:17:24 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 20:17:24 [notice] 1#1: exit
+2025/07/05 20:19:37 [notice] 1#1: using the "epoll" event method
+2025/07/05 20:19:37 [notice] 1#1: nginx/1.21.6
+2025/07/05 20:19:37 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 20:19:37 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 20:19:37 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 20:19:37 [notice] 1#1: start worker processes
+2025/07/05 20:19:37 [notice] 1#1: start worker process 22
+2025/07/05 20:19:37 [notice] 1#1: start worker process 23
+2025/07/05 20:20:28 [warn] 23#23: *7 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-CRXKWWwo.js HTTP/1.1", upstream: "http://192.168.128.4:3000/assets/index-CRXKWWwo.js", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/05 20:26:40 [warn] 22#22: *118 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/2/00/0000000002 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-CRXKWWwo.js HTTP/1.1", upstream: "http://192.168.128.4:3000/assets/index-CRXKWWwo.js", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/05 20:35:45 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 20:35:45 [notice] 23#23: gracefully shutting down
+2025/07/05 20:35:45 [notice] 23#23: exiting
+2025/07/05 20:35:45 [notice] 22#22: gracefully shutting down
+2025/07/05 20:35:45 [notice] 22#22: exiting
+2025/07/05 20:35:45 [notice] 22#22: exit
+2025/07/05 20:35:45 [notice] 23#23: exit
+2025/07/05 20:35:45 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 20:35:45 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 20:35:45 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 20:35:45 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 20:35:45 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 20:35:45 [notice] 1#1: exit
+2025/07/05 20:38:05 [notice] 1#1: using the "epoll" event method
+2025/07/05 20:38:05 [notice] 1#1: nginx/1.21.6
+2025/07/05 20:38:05 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 20:38:05 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 20:38:05 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 20:38:05 [notice] 1#1: start worker processes
+2025/07/05 20:38:05 [notice] 1#1: start worker process 22
+2025/07/05 20:38:05 [notice] 1#1: start worker process 23
+2025/07/05 20:45:41 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/05 20:45:41 [notice] 22#22: gracefully shutting down
+2025/07/05 20:45:41 [notice] 22#22: exiting
+2025/07/05 20:45:41 [notice] 22#22: exit
+2025/07/05 20:45:41 [notice] 23#23: gracefully shutting down
+2025/07/05 20:45:41 [notice] 23#23: exiting
+2025/07/05 20:45:41 [notice] 23#23: exit
+2025/07/05 20:45:41 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/05 20:45:41 [notice] 1#1: worker process 22 exited with code 0
+2025/07/05 20:45:41 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/05 20:45:41 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/05 20:45:41 [notice] 1#1: worker process 23 exited with code 0
+2025/07/05 20:45:41 [notice] 1#1: exit
+2025/07/05 20:48:06 [notice] 1#1: using the "epoll" event method
+2025/07/05 20:48:06 [notice] 1#1: nginx/1.21.6
+2025/07/05 20:48:06 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/05 20:48:06 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/05 20:48:06 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/05 20:48:06 [notice] 1#1: start worker processes
+2025/07/05 20:48:06 [notice] 1#1: start worker process 22
+2025/07/05 20:48:06 [notice] 1#1: start worker process 23
+2025/07/06 06:56:42 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 06:56:42 [notice] 22#22: gracefully shutting down
+2025/07/06 06:56:42 [notice] 22#22: exiting
+2025/07/06 06:56:42 [notice] 22#22: exit
+2025/07/06 06:56:42 [notice] 23#23: gracefully shutting down
+2025/07/06 06:56:42 [notice] 23#23: exiting
+2025/07/06 06:56:42 [notice] 23#23: exit
+2025/07/06 06:56:42 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 06:56:42 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 06:56:42 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 06:56:42 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 06:56:42 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 06:56:42 [notice] 1#1: exit
+2025/07/06 06:59:04 [notice] 1#1: using the "epoll" event method
+2025/07/06 06:59:04 [notice] 1#1: nginx/1.21.6
+2025/07/06 06:59:04 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 06:59:04 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 06:59:04 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 06:59:04 [notice] 1#1: start worker processes
+2025/07/06 06:59:04 [notice] 1#1: start worker process 22
+2025/07/06 06:59:04 [notice] 1#1: start worker process 23
+2025/07/06 08:47:50 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 08:47:50 [notice] 22#22: gracefully shutting down
+2025/07/06 08:47:50 [notice] 22#22: exiting
+2025/07/06 08:47:50 [notice] 22#22: exit
+2025/07/06 08:47:50 [notice] 23#23: gracefully shutting down
+2025/07/06 08:47:50 [notice] 23#23: exiting
+2025/07/06 08:47:50 [notice] 23#23: exit
+2025/07/06 08:47:50 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 08:47:50 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 08:47:50 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 08:47:50 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 08:47:50 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 08:47:50 [notice] 1#1: exit
+2025/07/06 08:50:10 [notice] 1#1: using the "epoll" event method
+2025/07/06 08:50:10 [notice] 1#1: nginx/1.21.6
+2025/07/06 08:50:10 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 08:50:10 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 08:50:10 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 08:50:10 [notice] 1#1: start worker processes
+2025/07/06 08:50:10 [notice] 1#1: start worker process 22
+2025/07/06 08:50:10 [notice] 1#1: start worker process 23
+2025/07/06 09:01:12 [error] 23#23: *125 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/5/macs HTTP/1.1", upstream: "http://192.168.192.2:8000/api/v1/exporters/5/macs", host: "192.168.1.122", referrer: "http://192.168.1.122/exporters"
+2025/07/06 09:11:24 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 09:11:24 [notice] 22#22: gracefully shutting down
+2025/07/06 09:11:24 [notice] 22#22: exiting
+2025/07/06 09:11:24 [notice] 22#22: exit
+2025/07/06 09:11:24 [notice] 23#23: gracefully shutting down
+2025/07/06 09:11:24 [notice] 23#23: exiting
+2025/07/06 09:11:24 [notice] 23#23: exit
+2025/07/06 09:11:24 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 09:11:24 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 09:11:24 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 09:11:24 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 09:11:24 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 09:11:24 [notice] 1#1: exit
+2025/07/06 09:19:59 [notice] 1#1: using the "epoll" event method
+2025/07/06 09:19:59 [notice] 1#1: nginx/1.21.6
+2025/07/06 09:19:59 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 09:19:59 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 09:19:59 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 09:19:59 [notice] 1#1: start worker processes
+2025/07/06 09:19:59 [notice] 1#1: start worker process 21
+2025/07/06 09:19:59 [notice] 1#1: start worker process 22
+2025/07/06 09:31:14 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 09:31:14 [notice] 21#21: gracefully shutting down
+2025/07/06 09:31:14 [notice] 21#21: exiting
+2025/07/06 09:31:14 [notice] 22#22: gracefully shutting down
+2025/07/06 09:31:14 [notice] 22#22: exiting
+2025/07/06 09:31:14 [notice] 22#22: exit
+2025/07/06 09:31:14 [notice] 21#21: exit
+2025/07/06 09:31:14 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 09:31:14 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 09:31:14 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 09:31:14 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/06 09:31:14 [notice] 1#1: worker process 21 exited with code 0
+2025/07/06 09:31:14 [notice] 1#1: exit
+2025/07/06 09:31:55 [notice] 1#1: using the "epoll" event method
+2025/07/06 09:31:55 [notice] 1#1: nginx/1.21.6
+2025/07/06 09:31:55 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 09:31:55 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 09:31:55 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 09:31:55 [notice] 1#1: start worker processes
+2025/07/06 09:31:55 [notice] 1#1: start worker process 22
+2025/07/06 09:31:55 [notice] 1#1: start worker process 23
+2025/07/06 10:35:37 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 10:35:37 [notice] 22#22: gracefully shutting down
+2025/07/06 10:35:37 [notice] 22#22: exiting
+2025/07/06 10:35:37 [notice] 23#23: gracefully shutting down
+2025/07/06 10:35:37 [notice] 23#23: exiting
+2025/07/06 10:35:37 [notice] 22#22: exit
+2025/07/06 10:35:37 [notice] 23#23: exit
+2025/07/06 10:35:37 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 10:35:37 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 10:35:37 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 10:35:37 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 10:35:37 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 10:35:37 [notice] 1#1: exit
+2025/07/06 10:38:01 [notice] 1#1: using the "epoll" event method
+2025/07/06 10:38:01 [notice] 1#1: nginx/1.21.6
+2025/07/06 10:38:01 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 10:38:01 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 10:38:01 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 10:38:01 [notice] 1#1: start worker processes
+2025/07/06 10:38:01 [notice] 1#1: start worker process 22
+2025/07/06 10:38:01 [notice] 1#1: start worker process 23
+2025/07/06 10:47:09 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 10:47:09 [notice] 22#22: gracefully shutting down
+2025/07/06 10:47:09 [notice] 22#22: exiting
+2025/07/06 10:47:09 [notice] 23#23: gracefully shutting down
+2025/07/06 10:47:09 [notice] 23#23: exiting
+2025/07/06 10:47:09 [notice] 22#22: exit
+2025/07/06 10:47:09 [notice] 23#23: exit
+2025/07/06 10:47:09 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 10:47:09 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 10:47:09 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 10:47:09 [notice] 1#1: exit
+2025/07/06 10:55:18 [notice] 1#1: using the "epoll" event method
+2025/07/06 10:55:18 [notice] 1#1: nginx/1.21.6
+2025/07/06 10:55:18 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 10:55:18 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 10:55:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 10:55:18 [notice] 1#1: start worker processes
+2025/07/06 10:55:18 [notice] 1#1: start worker process 22
+2025/07/06 10:55:18 [notice] 1#1: start worker process 23
+2025/07/06 11:07:16 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 11:07:16 [notice] 22#22: gracefully shutting down
+2025/07/06 11:07:16 [notice] 22#22: exiting
+2025/07/06 11:07:16 [notice] 23#23: gracefully shutting down
+2025/07/06 11:07:16 [notice] 23#23: exiting
+2025/07/06 11:07:16 [notice] 22#22: exit
+2025/07/06 11:07:16 [notice] 23#23: exit
+2025/07/06 11:07:16 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 11:07:16 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 11:07:16 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 11:07:16 [notice] 1#1: exit
+2025/07/06 11:26:41 [notice] 1#1: using the "epoll" event method
+2025/07/06 11:26:41 [notice] 1#1: nginx/1.21.6
+2025/07/06 11:26:41 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 11:26:41 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 11:26:41 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 11:26:41 [notice] 1#1: start worker processes
+2025/07/06 11:26:41 [notice] 1#1: start worker process 22
+2025/07/06 11:26:41 [notice] 1#1: start worker process 23
+2025/07/06 11:33:21 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 11:33:21 [notice] 23#23: gracefully shutting down
+2025/07/06 11:33:21 [notice] 22#22: gracefully shutting down
+2025/07/06 11:33:21 [notice] 23#23: exiting
+2025/07/06 11:33:21 [notice] 22#22: exiting
+2025/07/06 11:33:21 [notice] 23#23: exit
+2025/07/06 11:33:21 [notice] 22#22: exit
+2025/07/06 11:33:21 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 11:33:21 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 11:33:21 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 11:33:21 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 11:33:21 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 11:33:21 [notice] 1#1: exit
+2025/07/06 11:35:45 [notice] 1#1: using the "epoll" event method
+2025/07/06 11:35:45 [notice] 1#1: nginx/1.21.6
+2025/07/06 11:35:45 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 11:35:45 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 11:35:45 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 11:35:45 [notice] 1#1: start worker processes
+2025/07/06 11:35:45 [notice] 1#1: start worker process 22
+2025/07/06 11:35:45 [notice] 1#1: start worker process 23
+2025/07/06 11:37:27 [warn] 22#22: *27 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /assets/index-i7LHWLF8.js HTTP/1.1", upstream: "http://172.20.0.4:3000/assets/index-i7LHWLF8.js", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 12:10:24 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 12:10:24 [notice] 22#22: gracefully shutting down
+2025/07/06 12:10:24 [notice] 22#22: exiting
+2025/07/06 12:10:24 [notice] 22#22: exit
+2025/07/06 12:10:24 [notice] 23#23: gracefully shutting down
+2025/07/06 12:10:24 [notice] 23#23: exiting
+2025/07/06 12:10:24 [notice] 23#23: exit
+2025/07/06 12:10:24 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 12:10:24 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 12:10:24 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 12:10:24 [notice] 1#1: exit
+2025/07/06 12:12:42 [notice] 1#1: using the "epoll" event method
+2025/07/06 12:12:42 [notice] 1#1: nginx/1.21.6
+2025/07/06 12:12:42 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 12:12:42 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 12:12:42 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 12:12:42 [notice] 1#1: start worker processes
+2025/07/06 12:12:42 [notice] 1#1: start worker process 22
+2025/07/06 12:12:42 [notice] 1#1: start worker process 23
+2025/07/06 13:43:28 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 13:43:28 [notice] 22#22: gracefully shutting down
+2025/07/06 13:43:28 [notice] 22#22: exiting
+2025/07/06 13:43:28 [notice] 22#22: exit
+2025/07/06 13:43:28 [notice] 23#23: gracefully shutting down
+2025/07/06 13:43:28 [notice] 23#23: exiting
+2025/07/06 13:43:28 [notice] 23#23: exit
+2025/07/06 13:43:28 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 13:43:28 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 13:43:28 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 13:43:28 [notice] 1#1: exit
+2025/07/06 13:45:51 [notice] 1#1: using the "epoll" event method
+2025/07/06 13:45:51 [notice] 1#1: nginx/1.21.6
+2025/07/06 13:45:51 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 13:45:51 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 13:45:51 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 13:45:51 [notice] 1#1: start worker processes
+2025/07/06 13:45:51 [notice] 1#1: start worker process 22
+2025/07/06 13:45:51 [notice] 1#1: start worker process 23
+2025/07/06 13:53:23 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 13:53:23 [notice] 22#22: gracefully shutting down
+2025/07/06 13:53:23 [notice] 22#22: exiting
+2025/07/06 13:53:23 [notice] 22#22: exit
+2025/07/06 13:53:23 [notice] 23#23: gracefully shutting down
+2025/07/06 13:53:23 [notice] 23#23: exiting
+2025/07/06 13:53:23 [notice] 23#23: exit
+2025/07/06 13:53:23 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 13:53:23 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 13:53:23 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 13:53:23 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 13:53:23 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 13:53:23 [notice] 1#1: exit
+2025/07/06 13:55:44 [notice] 1#1: using the "epoll" event method
+2025/07/06 13:55:44 [notice] 1#1: nginx/1.21.6
+2025/07/06 13:55:44 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 13:55:44 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 13:55:44 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 13:55:44 [notice] 1#1: start worker processes
+2025/07/06 13:55:44 [notice] 1#1: start worker process 22
+2025/07/06 13:55:44 [notice] 1#1: start worker process 23
+2025/07/06 14:04:06 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 14:04:06 [notice] 22#22: gracefully shutting down
+2025/07/06 14:04:06 [notice] 22#22: exiting
+2025/07/06 14:04:06 [notice] 23#23: gracefully shutting down
+2025/07/06 14:04:06 [notice] 23#23: exiting
+2025/07/06 14:04:06 [notice] 22#22: exit
+2025/07/06 14:04:06 [notice] 23#23: exit
+2025/07/06 14:04:06 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 14:04:06 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 14:04:06 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 14:04:06 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 14:04:06 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 14:04:06 [notice] 1#1: exit
+2025/07/06 14:06:22 [notice] 1#1: using the "epoll" event method
+2025/07/06 14:06:22 [notice] 1#1: nginx/1.21.6
+2025/07/06 14:06:22 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 14:06:22 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 14:06:22 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 14:06:22 [notice] 1#1: start worker processes
+2025/07/06 14:06:22 [notice] 1#1: start worker process 22
+2025/07/06 14:06:22 [notice] 1#1: start worker process 23
+2025/07/06 14:42:05 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 14:42:05 [notice] 22#22: gracefully shutting down
+2025/07/06 14:42:05 [notice] 22#22: exiting
+2025/07/06 14:42:05 [notice] 22#22: exit
+2025/07/06 14:42:05 [notice] 23#23: gracefully shutting down
+2025/07/06 14:42:05 [notice] 23#23: exiting
+2025/07/06 14:42:05 [notice] 23#23: exit
+2025/07/06 14:42:05 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 14:42:05 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 14:42:05 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 14:42:05 [notice] 1#1: exit
+2025/07/06 14:44:20 [notice] 1#1: using the "epoll" event method
+2025/07/06 14:44:20 [notice] 1#1: nginx/1.21.6
+2025/07/06 14:44:20 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 14:44:20 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 14:44:20 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 14:44:20 [notice] 1#1: start worker processes
+2025/07/06 14:44:20 [notice] 1#1: start worker process 22
+2025/07/06 14:44:20 [notice] 1#1: start worker process 23
+2025/07/06 17:04:27 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 17:04:27 [notice] 22#22: gracefully shutting down
+2025/07/06 17:04:27 [notice] 22#22: exiting
+2025/07/06 17:04:27 [notice] 22#22: exit
+2025/07/06 17:04:27 [notice] 23#23: gracefully shutting down
+2025/07/06 17:04:27 [notice] 23#23: exiting
+2025/07/06 17:04:27 [notice] 23#23: exit
+2025/07/06 17:04:27 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 17:04:27 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 17:04:27 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 17:04:27 [notice] 1#1: exit
+2025/07/06 17:07:20 [notice] 1#1: using the "epoll" event method
+2025/07/06 17:07:20 [notice] 1#1: nginx/1.21.6
+2025/07/06 17:07:20 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 17:07:20 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 17:07:20 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 17:07:20 [notice] 1#1: start worker processes
+2025/07/06 17:07:20 [notice] 1#1: start worker process 22
+2025/07/06 17:07:20 [notice] 1#1: start worker process 23
+2025/07/06 17:07:45 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 17:07:45 [notice] 22#22: gracefully shutting down
+2025/07/06 17:07:45 [notice] 22#22: exiting
+2025/07/06 17:07:45 [notice] 22#22: exit
+2025/07/06 17:07:45 [notice] 23#23: gracefully shutting down
+2025/07/06 17:07:45 [notice] 23#23: exiting
+2025/07/06 17:07:45 [notice] 23#23: exit
+2025/07/06 17:07:45 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 17:07:45 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 17:07:45 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 17:07:45 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 17:07:45 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 17:07:45 [notice] 1#1: exit
+2025/07/06 17:08:01 [notice] 1#1: using the "epoll" event method
+2025/07/06 17:08:01 [notice] 1#1: nginx/1.21.6
+2025/07/06 17:08:01 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 17:08:01 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 17:08:01 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 17:08:01 [notice] 1#1: start worker processes
+2025/07/06 17:08:01 [notice] 1#1: start worker process 22
+2025/07/06 17:08:01 [notice] 1#1: start worker process 23
+2025/07/06 17:11:40 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 17:11:40 [notice] 22#22: gracefully shutting down
+2025/07/06 17:11:40 [notice] 23#23: gracefully shutting down
+2025/07/06 17:11:40 [notice] 23#23: exiting
+2025/07/06 17:11:40 [notice] 23#23: exit
+2025/07/06 17:11:40 [notice] 22#22: exiting
+2025/07/06 17:11:40 [notice] 22#22: exit
+2025/07/06 17:11:40 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 17:11:40 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 17:11:40 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 17:11:40 [notice] 1#1: exit
+2025/07/06 17:11:53 [notice] 1#1: using the "epoll" event method
+2025/07/06 17:11:53 [notice] 1#1: nginx/1.21.6
+2025/07/06 17:11:53 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 17:11:53 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 17:11:53 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 17:11:53 [notice] 1#1: start worker processes
+2025/07/06 17:11:53 [notice] 1#1: start worker process 22
+2025/07/06 17:11:53 [notice] 1#1: start worker process 23
+2025/07/06 17:21:55 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 17:21:55 [notice] 22#22: gracefully shutting down
+2025/07/06 17:21:55 [notice] 22#22: exiting
+2025/07/06 17:21:55 [notice] 22#22: exit
+2025/07/06 17:21:55 [notice] 23#23: gracefully shutting down
+2025/07/06 17:21:55 [notice] 23#23: exiting
+2025/07/06 17:21:55 [notice] 23#23: exit
+2025/07/06 17:21:55 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 17:21:55 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 17:21:55 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 17:21:55 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 17:21:55 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 17:21:55 [notice] 1#1: exit
+2025/07/06 17:22:16 [notice] 1#1: using the "epoll" event method
+2025/07/06 17:22:16 [notice] 1#1: nginx/1.21.6
+2025/07/06 17:22:16 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 17:22:16 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 17:22:16 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 17:22:16 [notice] 1#1: start worker processes
+2025/07/06 17:22:16 [notice] 1#1: start worker process 22
+2025/07/06 17:22:16 [notice] 1#1: start worker process 23
+2025/07/06 17:49:19 [error] 22#22: *292 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.29.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 17:49:19 [error] 22#22: *293 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.29.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 17:49:19 [error] 22#22: *302 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.29.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 17:50:20 [error] 23#23: *330 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.29.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 17:50:20 [error] 22#22: *329 upstream prematurely closed connection while reading response header from upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/stats/dashboard HTTP/1.1", upstream: "http://172.29.0.2:8000/api/v1/stats/dashboard", host: "192.168.1.122", referrer: "http://192.168.1.122/jobs"
+2025/07/06 18:00:46 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 18:00:46 [notice] 22#22: gracefully shutting down
+2025/07/06 18:00:46 [notice] 22#22: exiting
+2025/07/06 18:00:46 [notice] 22#22: exit
+2025/07/06 18:00:46 [notice] 23#23: gracefully shutting down
+2025/07/06 18:00:46 [notice] 23#23: exiting
+2025/07/06 18:00:46 [notice] 23#23: exit
+2025/07/06 18:00:46 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 18:00:46 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 18:00:46 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 18:00:46 [notice] 1#1: exit
+2025/07/06 18:03:12 [notice] 1#1: using the "epoll" event method
+2025/07/06 18:03:12 [notice] 1#1: nginx/1.21.6
+2025/07/06 18:03:12 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 18:03:12 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 18:03:12 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 18:03:12 [notice] 1#1: start worker processes
+2025/07/06 18:03:12 [notice] 1#1: start worker process 22
+2025/07/06 18:03:12 [notice] 1#1: start worker process 23
+2025/07/06 18:22:52 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 18:22:52 [notice] 22#22: gracefully shutting down
+2025/07/06 18:22:52 [notice] 22#22: exiting
+2025/07/06 18:22:52 [notice] 22#22: exit
+2025/07/06 18:22:52 [notice] 23#23: gracefully shutting down
+2025/07/06 18:22:52 [notice] 23#23: exiting
+2025/07/06 18:22:52 [notice] 23#23: exit
+2025/07/06 18:22:52 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 18:22:52 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 18:22:52 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 18:22:52 [notice] 1#1: exit
+2025/07/06 18:37:03 [notice] 1#1: using the "epoll" event method
+2025/07/06 18:37:03 [notice] 1#1: nginx/1.21.6
+2025/07/06 18:37:03 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 18:37:03 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 18:37:03 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 18:37:03 [notice] 1#1: start worker processes
+2025/07/06 18:37:03 [notice] 1#1: start worker process 22
+2025/07/06 18:37:03 [notice] 1#1: start worker process 23
+2025/07/06 19:02:40 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 19:02:40 [notice] 22#22: gracefully shutting down
+2025/07/06 19:02:40 [notice] 22#22: exiting
+2025/07/06 19:02:40 [notice] 22#22: exit
+2025/07/06 19:02:40 [notice] 23#23: gracefully shutting down
+2025/07/06 19:02:40 [notice] 23#23: exiting
+2025/07/06 19:02:40 [notice] 23#23: exit
+2025/07/06 19:02:40 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 19:02:40 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 19:02:40 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 19:02:40 [notice] 1#1: exit
+2025/07/06 19:22:56 [notice] 1#1: using the "epoll" event method
+2025/07/06 19:22:56 [notice] 1#1: nginx/1.21.6
+2025/07/06 19:22:56 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 19:22:56 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 19:22:56 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 19:22:56 [notice] 1#1: start worker processes
+2025/07/06 19:22:56 [notice] 1#1: start worker process 22
+2025/07/06 19:22:56 [notice] 1#1: start worker process 23
+2025/07/06 21:01:56 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 21:01:56 [notice] 22#22: gracefully shutting down
+2025/07/06 21:01:56 [notice] 22#22: exiting
+2025/07/06 21:01:56 [notice] 22#22: exit
+2025/07/06 21:01:56 [notice] 23#23: gracefully shutting down
+2025/07/06 21:01:56 [notice] 23#23: exiting
+2025/07/06 21:01:56 [notice] 23#23: exit
+2025/07/06 21:01:56 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 21:01:56 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 21:01:56 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 21:01:56 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 21:01:56 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 21:01:56 [notice] 1#1: exit
+2025/07/06 21:17:46 [notice] 1#1: using the "epoll" event method
+2025/07/06 21:17:46 [notice] 1#1: nginx/1.21.6
+2025/07/06 21:17:46 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 21:17:46 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 21:17:46 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 21:17:46 [notice] 1#1: start worker processes
+2025/07/06 21:17:46 [notice] 1#1: start worker process 22
+2025/07/06 21:17:46 [notice] 1#1: start worker process 23
+2025/07/06 21:28:03 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 21:28:03 [notice] 22#22: gracefully shutting down
+2025/07/06 21:28:03 [notice] 22#22: exiting
+2025/07/06 21:28:03 [notice] 22#22: exit
+2025/07/06 21:28:03 [notice] 23#23: gracefully shutting down
+2025/07/06 21:28:03 [notice] 23#23: exiting
+2025/07/06 21:28:03 [notice] 23#23: exit
+2025/07/06 21:28:03 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 21:28:03 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 21:28:03 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 21:28:03 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 21:28:03 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 21:28:03 [notice] 1#1: exit
+2025/07/06 21:30:40 [notice] 1#1: using the "epoll" event method
+2025/07/06 21:30:40 [notice] 1#1: nginx/1.21.6
+2025/07/06 21:30:40 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 21:30:40 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 21:30:40 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 21:30:40 [notice] 1#1: start worker processes
+2025/07/06 21:30:40 [notice] 1#1: start worker process 22
+2025/07/06 21:30:40 [notice] 1#1: start worker process 23
+2025/07/06 21:45:25 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 21:45:25 [notice] 23#23: gracefully shutting down
+2025/07/06 21:45:25 [notice] 23#23: exiting
+2025/07/06 21:45:25 [notice] 23#23: exit
+2025/07/06 21:45:25 [notice] 22#22: gracefully shutting down
+2025/07/06 21:45:25 [notice] 22#22: exiting
+2025/07/06 21:45:25 [notice] 22#22: exit
+2025/07/06 21:45:25 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 21:45:25 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 21:45:25 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 21:45:25 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 21:45:25 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 21:45:25 [notice] 1#1: exit
+2025/07/06 21:47:52 [notice] 1#1: using the "epoll" event method
+2025/07/06 21:47:52 [notice] 1#1: nginx/1.21.6
+2025/07/06 21:47:52 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 21:47:52 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 21:47:52 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 21:47:52 [notice] 1#1: start worker processes
+2025/07/06 21:47:52 [notice] 1#1: start worker process 22
+2025/07/06 21:47:52 [notice] 1#1: start worker process 23
+2025/07/06 22:01:50 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 22:01:50 [notice] 22#22: gracefully shutting down
+2025/07/06 22:01:50 [notice] 22#22: exiting
+2025/07/06 22:01:50 [notice] 23#23: gracefully shutting down
+2025/07/06 22:01:50 [notice] 22#22: exit
+2025/07/06 22:01:50 [notice] 23#23: exiting
+2025/07/06 22:01:50 [notice] 23#23: exit
+2025/07/06 22:01:50 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 22:01:50 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 22:01:50 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 22:01:50 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 22:01:50 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 22:01:50 [notice] 1#1: exit
+2025/07/06 22:04:20 [notice] 1#1: using the "epoll" event method
+2025/07/06 22:04:20 [notice] 1#1: nginx/1.21.6
+2025/07/06 22:04:20 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 22:04:20 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 22:04:20 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 22:04:20 [notice] 1#1: start worker processes
+2025/07/06 22:04:20 [notice] 1#1: start worker process 22
+2025/07/06 22:04:20 [notice] 1#1: start worker process 23
+2025/07/06 22:13:49 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 22:13:49 [notice] 22#22: gracefully shutting down
+2025/07/06 22:13:49 [notice] 22#22: exiting
+2025/07/06 22:13:49 [notice] 22#22: exit
+2025/07/06 22:13:49 [notice] 23#23: gracefully shutting down
+2025/07/06 22:13:49 [notice] 23#23: exiting
+2025/07/06 22:13:49 [notice] 23#23: exit
+2025/07/06 22:13:49 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 22:13:49 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 22:13:49 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 22:13:49 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/06 22:13:49 [notice] 1#1: worker process 23 exited with code 0
+2025/07/06 22:13:49 [notice] 1#1: exit
+2025/07/06 22:16:15 [notice] 1#1: using the "epoll" event method
+2025/07/06 22:16:15 [notice] 1#1: nginx/1.21.6
+2025/07/06 22:16:15 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 22:16:15 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 22:16:15 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 22:16:15 [notice] 1#1: start worker processes
+2025/07/06 22:16:15 [notice] 1#1: start worker process 21
+2025/07/06 22:16:15 [notice] 1#1: start worker process 22
+2025/07/06 22:23:26 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/06 22:23:26 [notice] 21#21: gracefully shutting down
+2025/07/06 22:23:26 [notice] 21#21: exiting
+2025/07/06 22:23:26 [notice] 22#22: gracefully shutting down
+2025/07/06 22:23:26 [notice] 21#21: exit
+2025/07/06 22:23:26 [notice] 22#22: exiting
+2025/07/06 22:23:26 [notice] 22#22: exit
+2025/07/06 22:23:26 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/06 22:23:26 [notice] 1#1: worker process 21 exited with code 0
+2025/07/06 22:23:26 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/06 22:23:26 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/06 22:23:26 [notice] 1#1: worker process 22 exited with code 0
+2025/07/06 22:23:26 [notice] 1#1: exit
+2025/07/06 22:23:51 [notice] 1#1: using the "epoll" event method
+2025/07/06 22:23:51 [notice] 1#1: nginx/1.21.6
+2025/07/06 22:23:51 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/06 22:23:51 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/06 22:23:51 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/06 22:23:51 [notice] 1#1: start worker processes
+2025/07/06 22:23:51 [notice] 1#1: start worker process 22
+2025/07/06 22:23:51 [notice] 1#1: start worker process 23
+2025/07/07 08:41:12 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 08:41:12 [notice] 23#23: gracefully shutting down
+2025/07/07 08:41:12 [notice] 23#23: exiting
+2025/07/07 08:41:12 [notice] 22#22: gracefully shutting down
+2025/07/07 08:41:12 [notice] 22#22: exiting
+2025/07/07 08:41:12 [notice] 23#23: exit
+2025/07/07 08:41:12 [notice] 22#22: exit
+2025/07/07 08:41:12 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 08:41:12 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 08:41:12 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 08:41:12 [notice] 1#1: exit
+2025/07/07 08:41:36 [notice] 1#1: using the "epoll" event method
+2025/07/07 08:41:36 [notice] 1#1: nginx/1.21.6
+2025/07/07 08:41:36 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 08:41:36 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 08:41:36 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 08:41:36 [notice] 1#1: start worker processes
+2025/07/07 08:41:36 [notice] 1#1: start worker process 22
+2025/07/07 08:41:36 [notice] 1#1: start worker process 23
+2025/07/07 08:41:36 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 08:41:36 [notice] 22#22: gracefully shutting down
+2025/07/07 08:41:36 [notice] 23#23: gracefully shutting down
+2025/07/07 08:41:36 [notice] 23#23: exiting
+2025/07/07 08:41:36 [notice] 22#22: exiting
+2025/07/07 08:41:36 [notice] 22#22: exit
+2025/07/07 08:41:36 [notice] 23#23: exit
+2025/07/07 08:41:36 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 08:41:36 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 08:41:36 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 08:41:36 [notice] 1#1: exit
+2025/07/07 08:41:57 [notice] 1#1: using the "epoll" event method
+2025/07/07 08:41:57 [notice] 1#1: nginx/1.21.6
+2025/07/07 08:41:57 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 08:41:57 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 08:41:57 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 08:41:57 [notice] 1#1: start worker processes
+2025/07/07 08:41:57 [notice] 1#1: start worker process 22
+2025/07/07 08:41:57 [notice] 1#1: start worker process 23
+2025/07/07 08:42:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 08:42:04 [notice] 22#22: gracefully shutting down
+2025/07/07 08:42:04 [notice] 22#22: exiting
+2025/07/07 08:42:04 [notice] 22#22: exit
+2025/07/07 08:42:04 [notice] 23#23: gracefully shutting down
+2025/07/07 08:42:04 [notice] 23#23: exiting
+2025/07/07 08:42:04 [notice] 23#23: exit
+2025/07/07 08:42:04 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 08:42:04 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 08:42:04 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 08:42:04 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 08:42:04 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 08:42:04 [notice] 1#1: exit
+2025/07/07 08:53:36 [notice] 1#1: using the "epoll" event method
+2025/07/07 08:53:36 [notice] 1#1: nginx/1.21.6
+2025/07/07 08:53:36 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 08:53:36 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 08:53:36 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 08:53:36 [notice] 1#1: start worker processes
+2025/07/07 08:53:36 [notice] 1#1: start worker process 21
+2025/07/07 08:53:36 [notice] 1#1: start worker process 22
+2025/07/07 11:24:34 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 11:24:34 [notice] 21#21: gracefully shutting down
+2025/07/07 11:24:34 [notice] 21#21: exiting
+2025/07/07 11:24:34 [notice] 21#21: exit
+2025/07/07 11:24:34 [notice] 22#22: gracefully shutting down
+2025/07/07 11:24:34 [notice] 22#22: exiting
+2025/07/07 11:24:34 [notice] 22#22: exit
+2025/07/07 11:24:34 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 11:24:34 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 11:24:34 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 11:24:34 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/07 11:24:34 [notice] 1#1: worker process 21 exited with code 0
+2025/07/07 11:24:34 [notice] 1#1: exit
+2025/07/07 11:27:22 [notice] 1#1: using the "epoll" event method
+2025/07/07 11:27:22 [notice] 1#1: nginx/1.21.6
+2025/07/07 11:27:22 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 11:27:22 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 11:27:22 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 11:27:22 [notice] 1#1: start worker processes
+2025/07/07 11:27:22 [notice] 1#1: start worker process 22
+2025/07/07 11:27:22 [notice] 1#1: start worker process 23
+2025/07/07 11:50:59 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 11:50:59 [notice] 22#22: gracefully shutting down
+2025/07/07 11:50:59 [notice] 22#22: exiting
+2025/07/07 11:50:59 [notice] 23#23: gracefully shutting down
+2025/07/07 11:50:59 [notice] 22#22: exit
+2025/07/07 11:50:59 [notice] 23#23: exiting
+2025/07/07 11:50:59 [notice] 23#23: exit
+2025/07/07 11:50:59 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 11:50:59 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 11:50:59 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 11:50:59 [notice] 1#1: exit
+2025/07/07 11:53:24 [notice] 1#1: using the "epoll" event method
+2025/07/07 11:53:24 [notice] 1#1: nginx/1.21.6
+2025/07/07 11:53:24 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 11:53:24 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 11:53:24 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 11:53:24 [notice] 1#1: start worker processes
+2025/07/07 11:53:24 [notice] 1#1: start worker process 22
+2025/07/07 11:53:24 [notice] 1#1: start worker process 23
+2025/07/07 12:17:41 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 12:17:41 [notice] 22#22: gracefully shutting down
+2025/07/07 12:17:41 [notice] 23#23: gracefully shutting down
+2025/07/07 12:17:41 [notice] 23#23: exiting
+2025/07/07 12:17:41 [notice] 22#22: exiting
+2025/07/07 12:17:41 [notice] 22#22: exit
+2025/07/07 12:17:41 [notice] 23#23: exit
+2025/07/07 12:17:41 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 12:17:41 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 12:17:41 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 12:17:41 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 12:17:41 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 12:17:41 [notice] 1#1: exit
+2025/07/07 12:20:03 [notice] 1#1: using the "epoll" event method
+2025/07/07 12:20:03 [notice] 1#1: nginx/1.21.6
+2025/07/07 12:20:03 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 12:20:03 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 12:20:03 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 12:20:03 [notice] 1#1: start worker processes
+2025/07/07 12:20:03 [notice] 1#1: start worker process 21
+2025/07/07 12:20:03 [notice] 1#1: start worker process 22
+2025/07/07 12:52:29 [warn] 22#22: *154 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/exporters/devices HTTP/1.1", upstream: "http://192.168.224.2:8000/api/v1/exporters/devices", host: "192.168.1.122", referrer: "http://192.168.1.122/devices-prometheus"
+2025/07/07 14:39:27 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 14:39:27 [notice] 21#21: gracefully shutting down
+2025/07/07 14:39:27 [notice] 21#21: exiting
+2025/07/07 14:39:27 [notice] 22#22: gracefully shutting down
+2025/07/07 14:39:27 [notice] 22#22: exiting
+2025/07/07 14:39:27 [notice] 22#22: exit
+2025/07/07 14:39:27 [notice] 21#21: exit
+2025/07/07 14:39:27 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 14:39:27 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 14:39:27 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 14:39:27 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/07 14:39:27 [notice] 1#1: worker process 21 exited with code 0
+2025/07/07 14:39:27 [notice] 1#1: exit
+2025/07/07 14:45:24 [notice] 1#1: using the "epoll" event method
+2025/07/07 14:45:24 [notice] 1#1: nginx/1.21.6
+2025/07/07 14:45:24 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 14:45:24 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 14:45:24 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 14:45:24 [notice] 1#1: start worker processes
+2025/07/07 14:45:24 [notice] 1#1: start worker process 22
+2025/07/07 14:45:24 [notice] 1#1: start worker process 23
+2025/07/07 14:52:58 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 14:52:58 [notice] 23#23: gracefully shutting down
+2025/07/07 14:52:58 [notice] 23#23: exiting
+2025/07/07 14:52:58 [notice] 23#23: exit
+2025/07/07 14:52:58 [notice] 22#22: gracefully shutting down
+2025/07/07 14:52:58 [notice] 22#22: exiting
+2025/07/07 14:52:58 [notice] 22#22: exit
+2025/07/07 14:52:58 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 14:52:58 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 14:52:58 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 14:52:58 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 14:52:58 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 14:52:58 [notice] 1#1: exit
+2025/07/07 14:55:05 [notice] 1#1: using the "epoll" event method
+2025/07/07 14:55:05 [notice] 1#1: nginx/1.21.6
+2025/07/07 14:55:05 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 14:55:05 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 14:55:05 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 14:55:05 [notice] 1#1: start worker processes
+2025/07/07 14:55:05 [notice] 1#1: start worker process 22
+2025/07/07 14:55:05 [notice] 1#1: start worker process 23
+2025/07/07 14:59:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 14:59:04 [notice] 22#22: gracefully shutting down
+2025/07/07 14:59:04 [notice] 23#23: gracefully shutting down
+2025/07/07 14:59:04 [notice] 23#23: exiting
+2025/07/07 14:59:04 [notice] 23#23: exit
+2025/07/07 14:59:04 [notice] 22#22: exiting
+2025/07/07 14:59:04 [notice] 22#22: exit
+2025/07/07 14:59:04 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 14:59:04 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 14:59:04 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 14:59:04 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 14:59:04 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 14:59:04 [notice] 1#1: exit
+2025/07/07 15:05:34 [notice] 1#1: using the "epoll" event method
+2025/07/07 15:05:34 [notice] 1#1: nginx/1.21.6
+2025/07/07 15:05:34 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 15:05:34 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 15:05:34 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 15:05:34 [notice] 1#1: start worker processes
+2025/07/07 15:05:34 [notice] 1#1: start worker process 22
+2025/07/07 15:05:34 [notice] 1#1: start worker process 23
+2025/07/07 15:16:21 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 15:16:21 [notice] 22#22: gracefully shutting down
+2025/07/07 15:16:21 [notice] 23#23: gracefully shutting down
+2025/07/07 15:16:21 [notice] 23#23: exiting
+2025/07/07 15:16:21 [notice] 23#23: exit
+2025/07/07 15:16:21 [notice] 22#22: exiting
+2025/07/07 15:16:21 [notice] 22#22: exit
+2025/07/07 15:16:21 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 15:16:21 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 15:16:21 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 15:16:21 [notice] 1#1: exit
+2025/07/07 15:19:15 [notice] 1#1: using the "epoll" event method
+2025/07/07 15:19:15 [notice] 1#1: nginx/1.21.6
+2025/07/07 15:19:15 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 15:19:15 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 15:19:15 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 15:19:15 [notice] 1#1: start worker processes
+2025/07/07 15:19:15 [notice] 1#1: start worker process 22
+2025/07/07 15:19:15 [notice] 1#1: start worker process 23
+2025/07/07 15:19:21 [error] 22#22: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/rag/search HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/rag/search", host: "192.168.1.122"
+2025/07/07 15:19:24 [error] 22#22: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.174, server: 192.168.1.122, request: "GET /api/v1/rag/search HTTP/1.1", upstream: "http://172.20.0.2:8000/api/v1/rag/search", host: "192.168.1.122"
+2025/07/07 15:21:43 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 15:21:43 [notice] 22#22: gracefully shutting down
+2025/07/07 15:21:43 [notice] 22#22: exiting
+2025/07/07 15:21:43 [notice] 22#22: exit
+2025/07/07 15:21:43 [notice] 23#23: gracefully shutting down
+2025/07/07 15:21:43 [notice] 23#23: exiting
+2025/07/07 15:21:43 [notice] 23#23: exit
+2025/07/07 15:21:43 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 15:21:43 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 15:21:43 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 15:21:43 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 15:21:43 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 15:21:43 [notice] 1#1: exit
+2025/07/07 15:22:46 [notice] 1#1: using the "epoll" event method
+2025/07/07 15:22:46 [notice] 1#1: nginx/1.21.6
+2025/07/07 15:22:46 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 15:22:46 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 15:22:46 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 15:22:46 [notice] 1#1: start worker processes
+2025/07/07 15:22:46 [notice] 1#1: start worker process 22
+2025/07/07 15:22:46 [notice] 1#1: start worker process 23
+2025/07/07 15:24:18 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 15:24:18 [notice] 23#23: gracefully shutting down
+2025/07/07 15:24:18 [notice] 22#22: gracefully shutting down
+2025/07/07 15:24:18 [notice] 22#22: exiting
+2025/07/07 15:24:18 [notice] 22#22: exit
+2025/07/07 15:24:18 [notice] 23#23: exiting
+2025/07/07 15:24:18 [notice] 23#23: exit
+2025/07/07 15:24:18 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 15:24:18 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 15:24:18 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 15:24:18 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 15:24:18 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 15:24:18 [notice] 1#1: exit
+2025/07/07 15:25:14 [notice] 1#1: using the "epoll" event method
+2025/07/07 15:25:14 [notice] 1#1: nginx/1.21.6
+2025/07/07 15:25:14 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 15:25:14 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 15:25:14 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 15:25:14 [notice] 1#1: start worker processes
+2025/07/07 15:25:14 [notice] 1#1: start worker process 22
+2025/07/07 15:25:14 [notice] 1#1: start worker process 23
+2025/07/07 15:50:11 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 15:50:11 [notice] 23#23: gracefully shutting down
+2025/07/07 15:50:11 [notice] 23#23: exiting
+2025/07/07 15:50:11 [notice] 22#22: gracefully shutting down
+2025/07/07 15:50:11 [notice] 22#22: exiting
+2025/07/07 15:50:11 [notice] 23#23: exit
+2025/07/07 15:50:11 [notice] 22#22: exit
+2025/07/07 15:50:11 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 15:50:11 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 15:50:11 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 15:50:11 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 15:50:11 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 15:50:11 [notice] 1#1: exit
+2025/07/07 15:52:32 [notice] 1#1: using the "epoll" event method
+2025/07/07 15:52:32 [notice] 1#1: nginx/1.21.6
+2025/07/07 15:52:32 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 15:52:32 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 15:52:32 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 15:52:32 [notice] 1#1: start worker processes
+2025/07/07 15:52:32 [notice] 1#1: start worker process 22
+2025/07/07 15:52:32 [notice] 1#1: start worker process 23
+2025/07/07 19:21:09 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 19:21:09 [notice] 22#22: gracefully shutting down
+2025/07/07 19:21:09 [notice] 22#22: exiting
+2025/07/07 19:21:09 [notice] 22#22: exit
+2025/07/07 19:21:09 [notice] 23#23: gracefully shutting down
+2025/07/07 19:21:09 [notice] 23#23: exiting
+2025/07/07 19:21:09 [notice] 23#23: exit
+2025/07/07 19:21:09 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 19:21:09 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 19:21:09 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 19:21:09 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 19:21:09 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 19:21:09 [notice] 1#1: exit
+2025/07/07 19:46:05 [notice] 1#1: using the "epoll" event method
+2025/07/07 19:46:05 [notice] 1#1: nginx/1.21.6
+2025/07/07 19:46:05 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 19:46:05 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 19:46:05 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 19:46:05 [notice] 1#1: start worker processes
+2025/07/07 19:46:05 [notice] 1#1: start worker process 21
+2025/07/07 19:46:05 [notice] 1#1: start worker process 22
+2025/07/07 19:46:27 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 19:46:27 [notice] 21#21: gracefully shutting down
+2025/07/07 19:46:27 [notice] 21#21: exiting
+2025/07/07 19:46:27 [notice] 21#21: exit
+2025/07/07 19:46:27 [notice] 22#22: gracefully shutting down
+2025/07/07 19:46:27 [notice] 22#22: exiting
+2025/07/07 19:46:27 [notice] 22#22: exit
+2025/07/07 19:46:27 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/07 19:46:27 [notice] 1#1: worker process 21 exited with code 0
+2025/07/07 19:46:27 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 19:46:27 [notice] 1#1: exit
+2025/07/07 20:12:11 [notice] 1#1: using the "epoll" event method
+2025/07/07 20:12:11 [notice] 1#1: nginx/1.21.6
+2025/07/07 20:12:11 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 20:12:11 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 20:12:11 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 20:12:11 [notice] 1#1: start worker processes
+2025/07/07 20:12:11 [notice] 1#1: start worker process 22
+2025/07/07 20:12:11 [notice] 1#1: start worker process 23
+2025/07/07 20:29:38 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 20:29:38 [notice] 22#22: gracefully shutting down
+2025/07/07 20:29:38 [notice] 23#23: gracefully shutting down
+2025/07/07 20:29:38 [notice] 23#23: exiting
+2025/07/07 20:29:38 [notice] 23#23: exit
+2025/07/07 20:29:38 [notice] 22#22: exiting
+2025/07/07 20:29:38 [notice] 22#22: exit
+2025/07/07 20:29:38 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/07 20:29:38 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 20:29:38 [notice] 1#1: worker process 23 exited with code 0
+2025/07/07 20:29:38 [notice] 1#1: exit
+2025/07/07 20:30:11 [notice] 1#1: using the "epoll" event method
+2025/07/07 20:30:11 [notice] 1#1: nginx/1.21.6
+2025/07/07 20:30:11 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 20:30:11 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 20:30:11 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 20:30:11 [notice] 1#1: start worker processes
+2025/07/07 20:30:11 [notice] 1#1: start worker process 21
+2025/07/07 20:30:11 [notice] 1#1: start worker process 22
+2025/07/07 21:50:23 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 21:50:23 [notice] 22#22: gracefully shutting down
+2025/07/07 21:50:23 [notice] 22#22: exiting
+2025/07/07 21:50:23 [notice] 22#22: exit
+2025/07/07 21:50:23 [notice] 21#21: gracefully shutting down
+2025/07/07 21:50:23 [notice] 21#21: exiting
+2025/07/07 21:50:23 [notice] 21#21: exit
+2025/07/07 21:50:23 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 21:50:23 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 21:50:23 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 21:50:23 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/07 21:50:23 [notice] 1#1: worker process 21 exited with code 0
+2025/07/07 21:50:23 [notice] 1#1: exit
+2025/07/07 23:37:41 [notice] 1#1: using the "epoll" event method
+2025/07/07 23:37:41 [notice] 1#1: nginx/1.21.6
+2025/07/07 23:37:41 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/07 23:37:41 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/07 23:37:41 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/07 23:37:41 [notice] 1#1: start worker processes
+2025/07/07 23:37:41 [notice] 1#1: start worker process 21
+2025/07/07 23:37:41 [notice] 1#1: start worker process 22
+2025/07/07 23:42:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/07 23:42:04 [notice] 22#22: gracefully shutting down
+2025/07/07 23:42:04 [notice] 22#22: exiting
+2025/07/07 23:42:04 [notice] 22#22: exit
+2025/07/07 23:42:04 [notice] 21#21: gracefully shutting down
+2025/07/07 23:42:04 [notice] 21#21: exiting
+2025/07/07 23:42:04 [notice] 21#21: exit
+2025/07/07 23:42:04 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/07 23:42:04 [notice] 1#1: worker process 22 exited with code 0
+2025/07/07 23:42:04 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/07 23:42:04 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/07/07 23:42:04 [notice] 1#1: worker process 21 exited with code 0
+2025/07/07 23:42:04 [notice] 1#1: exit
+2025/07/08 08:40:24 [notice] 1#1: using the "epoll" event method
+2025/07/08 08:40:24 [notice] 1#1: nginx/1.21.6
+2025/07/08 08:40:24 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 08:40:24 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 08:40:24 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 08:40:24 [notice] 1#1: start worker processes
+2025/07/08 08:40:24 [notice] 1#1: start worker process 22
+2025/07/08 08:40:24 [notice] 1#1: start worker process 23
+2025/07/08 14:04:03 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:04:03 [notice] 22#22: gracefully shutting down
+2025/07/08 14:04:03 [notice] 22#22: exiting
+2025/07/08 14:04:03 [notice] 22#22: exit
+2025/07/08 14:04:03 [notice] 23#23: gracefully shutting down
+2025/07/08 14:04:03 [notice] 23#23: exiting
+2025/07/08 14:04:03 [notice] 23#23: exit
+2025/07/08 14:04:03 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/08 14:04:03 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:04:03 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/08 14:04:03 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/08 14:04:03 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:04:03 [notice] 1#1: exit
+2025/07/08 14:31:38 [notice] 1#1: using the "epoll" event method
+2025/07/08 14:31:38 [notice] 1#1: nginx/1.21.6
+2025/07/08 14:31:38 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 14:31:38 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 14:31:38 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 14:31:38 [notice] 1#1: start worker processes
+2025/07/08 14:31:38 [notice] 1#1: start worker process 22
+2025/07/08 14:31:38 [notice] 1#1: start worker process 23
+2025/07/08 14:34:58 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:34:58 [notice] 22#22: gracefully shutting down
+2025/07/08 14:34:58 [notice] 22#22: exiting
+2025/07/08 14:34:58 [notice] 23#23: gracefully shutting down
+2025/07/08 14:34:58 [notice] 23#23: exiting
+2025/07/08 14:34:58 [notice] 22#22: exit
+2025/07/08 14:34:58 [notice] 23#23: exit
+2025/07/08 14:34:58 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/08 14:34:58 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:34:58 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:34:58 [notice] 1#1: exit
+2025/07/08 14:39:01 [notice] 1#1: using the "epoll" event method
+2025/07/08 14:39:01 [notice] 1#1: nginx/1.21.6
+2025/07/08 14:39:01 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 14:39:01 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 14:39:01 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 14:39:01 [notice] 1#1: start worker processes
+2025/07/08 14:39:01 [notice] 1#1: start worker process 22
+2025/07/08 14:39:01 [notice] 1#1: start worker process 23
+2025/07/08 14:41:36 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:41:36 [notice] 22#22: gracefully shutting down
+2025/07/08 14:41:36 [notice] 22#22: exiting
+2025/07/08 14:41:36 [notice] 22#22: exit
+2025/07/08 14:41:36 [notice] 23#23: gracefully shutting down
+2025/07/08 14:41:36 [notice] 23#23: exiting
+2025/07/08 14:41:36 [notice] 23#23: exit
+2025/07/08 14:41:36 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/08 14:41:36 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:41:36 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/08 14:41:36 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/08 14:41:36 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:41:36 [notice] 1#1: exit
+2025/07/08 14:42:10 [notice] 1#1: using the "epoll" event method
+2025/07/08 14:42:10 [notice] 1#1: nginx/1.21.6
+2025/07/08 14:42:10 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 14:42:10 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 14:42:10 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 14:42:10 [notice] 1#1: start worker processes
+2025/07/08 14:42:10 [notice] 1#1: start worker process 22
+2025/07/08 14:42:10 [notice] 1#1: start worker process 23
+2025/07/08 14:44:09 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:44:09 [notice] 23#23: gracefully shutting down
+2025/07/08 14:44:09 [notice] 23#23: exiting
+2025/07/08 14:44:09 [notice] 23#23: exit
+2025/07/08 14:44:09 [notice] 22#22: gracefully shutting down
+2025/07/08 14:44:09 [notice] 22#22: exiting
+2025/07/08 14:44:09 [notice] 22#22: exit
+2025/07/08 14:44:09 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/08 14:44:09 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:44:09 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:44:09 [notice] 1#1: exit
+2025/07/08 14:45:03 [notice] 1#1: using the "epoll" event method
+2025/07/08 14:45:03 [notice] 1#1: nginx/1.21.6
+2025/07/08 14:45:03 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 14:45:03 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 14:45:03 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 14:45:03 [notice] 1#1: start worker processes
+2025/07/08 14:45:03 [notice] 1#1: start worker process 22
+2025/07/08 14:45:03 [notice] 1#1: start worker process 23
+2025/07/08 14:46:45 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:46:45 [notice] 22#22: gracefully shutting down
+2025/07/08 14:46:45 [notice] 22#22: exiting
+2025/07/08 14:46:45 [notice] 22#22: exit
+2025/07/08 14:46:45 [notice] 23#23: gracefully shutting down
+2025/07/08 14:46:45 [notice] 23#23: exiting
+2025/07/08 14:46:45 [notice] 23#23: exit
+2025/07/08 14:46:45 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/08 14:46:45 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:46:45 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/08 14:46:45 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/08 14:46:45 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:46:45 [notice] 1#1: exit
+2025/07/08 14:47:18 [notice] 1#1: using the "epoll" event method
+2025/07/08 14:47:18 [notice] 1#1: nginx/1.21.6
+2025/07/08 14:47:18 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027) 
+2025/07/08 14:47:18 [notice] 1#1: OS: Linux 6.8.12-5-pve
+2025/07/08 14:47:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/07/08 14:47:18 [notice] 1#1: start worker processes
+2025/07/08 14:47:18 [notice] 1#1: start worker process 22
+2025/07/08 14:47:18 [notice] 1#1: start worker process 23
+2025/07/08 14:53:52 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/07/08 14:53:52 [notice] 22#22: gracefully shutting down
+2025/07/08 14:53:52 [notice] 22#22: exiting
+2025/07/08 14:53:52 [notice] 22#22: exit
+2025/07/08 14:53:52 [notice] 23#23: gracefully shutting down
+2025/07/08 14:53:52 [notice] 23#23: exiting
+2025/07/08 14:53:52 [notice] 23#23: exit
+2025/07/08 14:53:52 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/07/08 14:53:52 [notice] 1#1: worker process 22 exited with code 0
+2025/07/08 14:53:52 [notice] 1#1: signal 29 (SIGIO) received
+2025/07/08 14:53:52 [notice] 1#1: signal 17 (SIGCHLD) received from 23
+2025/07/08 14:53:52 [notice] 1#1: worker process 23 exited with code 0
+2025/07/08 14:53:52 [notice] 1#1: exit
