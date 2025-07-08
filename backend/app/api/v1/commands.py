@@ -99,6 +99,17 @@ async def execute_command(
             log_status = "sent"
             log_level = "SMS_OUT"
             log_response = sms_response or "OK"
+            
+            # Логируем успешную отправку SMS в audit log
+            from app.core.audit import log_audit
+            log_audit(
+                db=db,
+                action="sms_command_sent",
+                user_id=current_user.id,
+                platform_id=device.platform_id,
+                device_id=device_id,
+                details=f"SMS command '{command_data['command']}' sent to device {device.name} ({device.phone})"
+            )
         except Exception as e:
             log_status = "failed"
             log_level = "ERROR"
@@ -106,6 +117,17 @@ async def execute_command(
             # Логируем ошибку для детального анализа
             logger = logging.getLogger(__name__)
             logger.error(f"Ошибка при отправке SMS для устройства {device_id}: {e}", exc_info=True)
+            
+            # Логируем ошибку SMS Gateway в audit log для мониторинга платформы
+            from app.core.audit import log_audit
+            log_audit(
+                db=db,
+                action="sms_gateway_error",
+                user_id=current_user.id,
+                platform_id=device.platform_id,
+                device_id=device_id,
+                details=f"SMS Gateway error for device {device.name} ({device.phone}): {str(e)[:200]}"
+            )
     else:
         log_status = "skipped"
         log_level = "info"
