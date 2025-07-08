@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.env*
+
+# Node
+node_modules/
+/frontend/build
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+*.log*
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Database
+*.sqlite3
+*.db 
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Archives and backups
+*.tar*
+*.zip
+*.backup
+remosa_backend.tar
+remosa_frontend.tar
+
+# Logs
+*access.log
+*error.log
+*.log
+
+# IDE specific files
+.cursor/
+.bolt/
+
+# Internal documentation and development files
+memory-bank/
+**/memory-bank/
+
+# Temporary files
+FETCH_HEAD
+*.tmp
+*.temp
+
+# Documentation files that shouldn't be in repo
+FRONTEND_ENV_FIX.md
+PRODUCTION_FIX_COMMANDS.md
+fix_production_env.sh
+reflection-*.md
+*mindmap.xml

@@ -1,0 +1,179 @@
+.devices-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .devices-header {
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  
+  .devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  
+  .device-card {
+    background: var(--background-secondary);
+    border-radius: 8px;
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .device-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .device-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .device-info h3 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+  }
+  
+  .device-info p {
+    margin: 4px 0;
+    color: var(--text-secondary);
+  }
+  
+  .device-updated {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
+  
+  .loading, .error {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+  }
+
+  /* Стили для таблицы */
+  table {
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+  }
+  
+  thead {
+    background-color: var(--background-secondary) !important;
+  }
+  
+  th, td {
+    color: var(--text-primary) !important;
+  }
+  
+  tr:hover {
+    background-color: var(--background-hover) !important;
+  }
+
+  /* Темная тема */
+  @media (prefers-color-scheme: dark) {
+    .device-card {
+      background-color: #1e293b;
+      color: white;
+    }
+    
+    .device-card:hover {
+      background-color: #334155;
+    }
+
+    table {
+      background-color: #1e293b;
+    }
+
+    thead {
+      background-color: #334155 !important;
+    }
+
+    th, td {
+      color: white !important;
+    }
+
+    tr:hover {
+      background-color: #475569 !important;
+    }
+  }
+
+  /* Кнопки действий */
+  .device-action-btn {
+    @apply p-2 bg-blue-500 text-white rounded hover:bg-blue-600;
+  }
+
+  /* Модальные окна */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: var(--background-primary);
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--background-secondary);
+    color: var(--text-primary);
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  input[type="tel"] {
+    font-family: monospace; /* Для лучшего отображения цифр */
+  }
+
+  /* Можно добавить в существующий DevicesList.css */
+  .device-commands-panel {
+    @apply p-4 border border-gray-200 rounded-lg mb-4;
+  }
+
+  .command-selector {
+    @apply mb-4;
+  }
+
+  .command-params {
+    @apply space-y-2 mb-4;
+  }
+
+  .param-field {
+    @apply flex flex-col space-y-1;
+  }
+
+  .param-field label {
+    @apply text-sm font-medium text-gray-700;
+  }
