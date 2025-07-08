@@ -19,6 +19,13 @@ class DeviceCreate(DeviceBase):
 class DeviceUpdate(DeviceBase):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
     status: Optional[DeviceStatus] = None
+    phone: Optional[str] = Field(None, pattern=r"^\+?[0-9\s\-\(\)]+$")
+    description: Optional[str] = None
+    model: Optional[str] = Field(None, max_length=50)
+    grafana_uid: Optional[str] = Field(None, max_length=100)
+    alert_sms_template_id: Optional[int] = None
+    send_alert_sms: Optional[bool] = None
+    alert_sms_template_params: Optional[dict] = None
 
 class DeviceInDB(DeviceBase):
     id: int

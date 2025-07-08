@@ -229,6 +229,8 @@ async def grafana_webhook(payload: GrafanaWebhookPayload, db: Session = Depends(
                     db.commit()
                     db.refresh(db_alert)
                     logger.error(f"Ошибка отправки SMS для алерта ID {db_alert.id}: {sms_e}", exc_info=True)
+                    # Критический лог для superadmin
+                    logger.critical(f"[SUPERADMIN] Не удалось отправить SMS для устройства {device.phone} (алерт ID {db_alert.id}): {sms_e}")
 
         except ValidationError as e:
             logger.error(f"Ошибка валидации Pydantic при создании/обновлении алерта: {e.errors()}")

@@ -40,7 +40,13 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
 
   useEffect(() => {
     if (device) {
-        setFormData(device);
+        setFormData({
+          ...device,
+          platform_id: typeof device.platform_id === 'number'
+            ? device.platform_id
+            : (isSuperAdmin ? undefined : currentPlatform?.id),
+          phone: device.phone || '',
+        });
     } else {
         setFormData({
             name: '',
@@ -51,7 +57,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             alert_sms_template_id: undefined,
             send_alert_sms: false,
             alert_sms_template_params: {},
-            platform_id: isSuperAdmin ? undefined : currentPlatform?.id
+            platform_id: isSuperAdmin ? undefined : currentPlatform?.id,
         });
     }
   }, [device, isSuperAdmin, currentPlatform]);

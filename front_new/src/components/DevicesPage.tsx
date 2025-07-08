@@ -42,28 +42,46 @@ const DevicesPage: React.FC = () => {
     const [availableModels, setAvailableModels] = useState<string[]>([]);
 
     const fetchDevices = useCallback(async () => {
+        // Если пользователь еще не загружен, не делаем запрос
+        if (!user) {
+            return;
+        }
+        
         setLoading(true);
         try {
             let url = '';
+            console.log('DevicesPage fetchDevices:', {
+                isSuperAdmin,
+                currentPlatform: currentPlatform?.id,
+                user: user?.role
+            });
+            
             if (isSuperAdmin) {
                 url = '/devices/';
+                console.log('Using superadmin endpoint:', url);
             } else if (currentPlatform?.id) {
                 url = `/platforms/${currentPlatform.id}/devices`;
+                console.log('Using platform endpoint:', url);
             } else {
-                setDevices([]);
+                console.log('No platform access, waiting for platform to load...');
                 setLoading(false);
                 return;
             }
             const data = await get(url);
             setDevices(data);
             setError(null);
-        } catch (e) {
+        } catch (e: any) {
+            console.log('Fetch devices error:', e);
             setDevices([]);
-            setError('Ошибка загрузки устройств');
+            if (e.response?.status === 403) {
+                setError('Недостаточно прав для просмотра устройств');
+            } else {
+                setError('Ошибка загрузки устройств');
+            }
         } finally {
             setLoading(false);
         }
-    }, [isSuperAdmin, currentPlatform, get]);
+    }, [isSuperAdmin, currentPlatform, get, user]);
 
     useEffect(() => {
         fetchDevices();

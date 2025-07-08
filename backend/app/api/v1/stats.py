@@ -8,6 +8,9 @@ from app.models.user import User # Добавил импорт User
 from app.services.sms_gateway import SMSGateway
 import asyncio
 import aiohttp
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -53,12 +56,14 @@ async def get_dashboard_stats(
     # Проверка статуса SMS шлюза
     sms_gateway = SMSGateway()
     try:
-        # Пробуем отправить тестовый запрос (например, GET /ping или аналогичный)
+        # Пробуем отправить тестовый запрос к реальному эндпоинту SMS шлюза с авторизацией
         async with aiohttp.ClientSession() as session:
             headers = {"Authorization": f"{sms_gateway.api_key}"}
-            async with session.get(f"{sms_gateway.base_url}/ping", headers=headers) as resp:
+            async with session.get(f"{sms_gateway.base_url}/sms", headers=headers) as resp:
                 sms_status = 'Подключен' if resp.status == 200 else 'Ошибка'
-    except Exception:
+                logger.info(f"SMS шлюз статус: {resp.status}, ответ: {sms_status}")
+    except Exception as e:
+        logger.error(f"Ошибка проверки статуса SMS шлюза: {e}")
         sms_status = 'Ошибка'
 
     return {

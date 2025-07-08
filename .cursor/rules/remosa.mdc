@@ -1,7 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-забудь про  Cannot find module 'react' и JSX element implicitly has type 'any'
-применяй все изменения самостоятельно 

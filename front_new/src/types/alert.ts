@@ -11,6 +11,7 @@ export interface Alert {
   description?: string;
   details?: any;
   data?: any;
+  platform_id?: number;
 }
 
 export interface AlertHistory {

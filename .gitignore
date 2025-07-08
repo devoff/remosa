@@ -48,9 +48,39 @@ docker-compose.override.yml
 *.sqlite3
 *.db 
 
+# Environment files
 .env
+.env.*
+!.env.example
+
+# Archives and backups
 *.tar*
+*.zip
+*.backup
 remosa_backend.tar
 remosa_frontend.tar
+
+# Logs
 *access.log
 *error.log
+*.log
+
+# IDE specific files
+.cursor/
+.bolt/
+
+# Internal documentation and development files
+memory-bank/
+**/memory-bank/
+
+# Temporary files
+FETCH_HEAD
+*.tmp
+*.temp
+
+# Documentation files that shouldn't be in repo
+FRONTEND_ENV_FIX.md
+PRODUCTION_FIX_COMMANDS.md
+fix_production_env.sh
+reflection-*.md
+*mindmap.xml
