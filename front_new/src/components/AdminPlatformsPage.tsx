@@ -36,9 +36,9 @@ const AdminPlatformsPage: React.FC = () => {
     try {
       let data;
       if (user?.role === 'superadmin') {
-        data = await get('/platforms/');
+        data = await get('/platforms');
       } else {
-        data = await get('/platforms/my-platforms/');
+        data = await get('/platforms/my-platforms');
       }
       setPlatforms(data);
     } catch (e: any) {
@@ -84,7 +84,7 @@ const AdminPlatformsPage: React.FC = () => {
         await put(`/platforms/${editPlatform.id}`, payload);
         notify('Платформа обновлена', 'success');
       } else {
-        await post('/platforms/', payload);
+        await post('/platforms', payload);
         notify('Платформа создана', 'success');
       }
       
@@ -102,7 +102,9 @@ const AdminPlatformsPage: React.FC = () => {
       notify('Платформа удалена', 'success');
       fetchPlatforms();
     } catch (e: any) {
-      notify(e.message || 'Ошибка удаления', 'error');
+      // Извлекаем детальное сообщение об ошибке из ответа API
+      const errorMessage = e.response?.data?.detail || e.message || 'Ошибка удаления платформы';
+      notify(errorMessage, 'error');
     }
   };
 

@@ -1,7 +1,7 @@
 from typing import Any, List
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
@@ -156,11 +156,25 @@ def delete_platform(
             tags=["Platforms"])
 def get_platform_users(
     platform_id: int,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> Any:
     """
     Получить список пользователей платформы.
     """
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    # Debug logging для отладки Mixed Content проблемы
+    logger.info(f"GET /platforms/{platform_id}/users - Request received")
+    logger.info(f"Request headers: {dict(request.headers)}")
+    logger.info(f"Request URL: {request.url}")
+    logger.info(f"Request scheme: {request.url.scheme}")
+    logger.info(f"X-Forwarded-Proto: {request.headers.get('x-forwarded-proto', 'NOT_SET')}")
+    logger.info(f"Host: {request.headers.get('host', 'NOT_SET')}")
+    logger.info(f"User-Agent: {request.headers.get('user-agent', 'NOT_SET')}")
+    
     from app.models.platform_user import PlatformUser
     from app.models.user import User
     
@@ -405,7 +419,7 @@ def remove_device_from_platform(
     log_audit(db, action="remove_device_from_platform", user_id=user.id, platform_id=platform_id, device_id=device_id, details=f"Удалено устройство: {device_id}")
     return {"message": "Устройство удалено из платформы"}
 
-@router.get("/my-platforms/", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
+@router.get("/my-platforms", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
 def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
     platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
     platform_ids = [pu.platform_id for pu in platform_links]

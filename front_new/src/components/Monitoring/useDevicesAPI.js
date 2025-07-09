@@ -1,24 +1,22 @@
+import apiClient from '../../lib/api';
+
 export const useDevicesAPI = () => {
     const fetchDevices = async () => {
-        const res = await fetch('/api/v1/devices/');
-        return await res.json();
+        const res = await apiClient.get('/devices');
+        return res.data;
     };
     const deleteDevice = async (id) => {
-        await fetch(`/api/v1/devices/${id}`, { method: 'DELETE' });
+        await apiClient.delete(`/devices/${id}`);
     };
     const saveDevice = async (deviceData) => {
         if (deviceData.phone && !/^\+?[0-9\s\-\(\)]+$/.test(deviceData.phone)) {
             throw new Error('Неверный формат телефона');
         }
-        const method = deviceData.id ? 'PUT' : 'POST';
+        const method = deviceData.id ? 'put' : 'post';
         const url = deviceData.id
-            ? `/api/v1/devices/${deviceData.id}`
-            : '/api/v1/devices/';
-        await fetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(deviceData)
-        });
+            ? `/devices/${deviceData.id}`
+            : '/devices';
+        await apiClient[method](url, deviceData);
     };
     return { fetchDevices, deleteDevice, saveDevice };
 };

@@ -27,9 +27,6 @@ services:
     build:
       context: ./front_new
       dockerfile: Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL}
-        VITE_WS_URL: ${VITE_WS_URL}
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -40,6 +37,7 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL}
       VITE_WS_URL: ${VITE_WS_URL}
+      VITE_DEBUG_LOGGING: ${VITE_DEBUG_LOGGING}
       NODE_ENV: production
       GENERATE_SOURCEMAP: "false"
     healthcheck:

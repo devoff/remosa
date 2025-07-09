@@ -86,6 +86,27 @@ import json
 allowed_origins = json.loads(settings.ALLOWED_ORIGINS) if isinstance(settings.ALLOWED_ORIGINS, str) else settings.ALLOWED_ORIGINS
 logger.info(f"CORS allowed origins: {allowed_origins}")
 
+# Middleware для логирования запросов (для отладки Mixed Content)
+@app.middleware("http")
+async def log_requests(request, call_next):
+    import time
+    start_time = time.time()
+    
+    # Логируем входящий запрос
+    logger.info(f"Incoming request: {request.method} {request.url}")
+    logger.info(f"Headers: {dict(request.headers)}")
+    logger.info(f"Scheme: {request.url.scheme}")
+    logger.info(f"Host: {request.url.hostname}")
+    logger.info(f"X-Forwarded-Proto: {request.headers.get('x-forwarded-proto', 'NOT_SET')}")
+    
+    response = await call_next(request)
+    
+    # Логируем ответ
+    process_time = time.time() - start_time
+    logger.info(f"Response: {response.status_code} for {request.method} {request.url} in {process_time:.4f}s")
+    
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

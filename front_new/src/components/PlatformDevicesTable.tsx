@@ -82,7 +82,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
     try {
       // Объединить оригинальные данные и изменения, platform_id всегда актуальный
       const payload = { ...original, ...updated, platform_id };
-      await apiClient.put(`/platforms/${platform_id}/devices/${payload.id}`, payload);
+      await apiClient.put(`/platforms/${platform_id}/devices/${payload.id}/`, payload);
       // Обновить список устройств после успешного редактирования
       const res = await apiClient.get(`/platforms/${platform_id}/devices/`);
       setDeviceList(res.data);
@@ -95,7 +95,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
     setAddModalOpen(false);
     if (!currentPlatform) return;
     try {
-      await apiClient.post(`/platforms/${currentPlatform.id}/devices`, newDevice);
+      await apiClient.post(`/platforms/${currentPlatform.id}/devices/`, newDevice);
       // Обновить список устройств после успешного добавления
       const res = await apiClient.get(`/platforms/${currentPlatform.id}/devices/`);
       setDeviceList(res.data);
