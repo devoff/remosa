@@ -76,12 +76,7 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
               <p>Конец: {alert.data.endsAt || 'Не указано'}</p>
               <p>Плеер: {alert.data.player_name || 'Неизвестный'}</p>
               <p>Платформа: {alert.data.platform || 'Неизвестная'}</p>
-<<<<<<< HEAD
-              {/* Добавляем остальные поля по необходимости */}
               {Object.entries(alert.data || {}).map(([key, value]) => (
-=======
-              {Object.entries(alert.data).map(([key, value]) => (
->>>>>>> pre-prod
                 key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && <p key={key}>{key}: {JSON.stringify(value)}</p>
               ))}
             </div>

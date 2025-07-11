@@ -68,14 +68,10 @@ const DevicesPage: React.FC = () => {
                   console.log('Using superadmin endpoint:', url);
                 }
             } else if (currentPlatform?.id) {
-<<<<<<< HEAD
                 url = `/platforms/${currentPlatform.id}/devices/`;
-=======
-                url = `/platforms/${currentPlatform.id}/devices`;
                 if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
                   console.log('Using platform endpoint:', url);
                 }
->>>>>>> pre-prod
             } else {
                 if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
                   console.log('No platform access, waiting for platform to load...');
