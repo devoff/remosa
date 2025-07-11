@@ -9,9 +9,13 @@ interface NotificationContextProps {
 const NotificationContext = createContext<NotificationContextProps | undefined>(undefined);
 
 export const useNotification = () => {
-  console.log('useNotification called');
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('useNotification called');
+  }
   const ctx = useContext(NotificationContext);
-  console.log('NotificationContext value:', ctx);
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('NotificationContext value:', ctx);
+  }
   if (!ctx) {
     console.error('NotificationContext is undefined');
     throw new Error('useNotification must be used within NotificationProvider');
@@ -20,13 +24,17 @@ export const useNotification = () => {
 };
 
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
-  console.log('NotificationProvider rendering');
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('NotificationProvider rendering');
+  }
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState<AlertColor>('info');
 
   const notify = (msg: string, sev: AlertColor = 'info') => {
-    console.log('NotificationProvider.notify called:', msg, sev);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('NotificationProvider.notify called:', msg, sev);
+    }
     setMessage(msg);
     setSeverity(sev);
     setOpen(true);

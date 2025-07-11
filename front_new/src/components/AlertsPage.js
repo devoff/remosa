@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import { api } from '@/lib/api';
 import { Card, Spin, Alert as AntdAlert, Typography } from 'antd';
 const { Title } = Typography;
-console.log('AlertsPage: Компонент загружен');
+if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+  console.log('AlertsPage: Компонент загружен');
+}
 const AlertItem = ({ alert, onResolve, setParentError }) => {
     const [expanded, setExpanded] = useState(false);
     const handleResolve = async () => {
@@ -27,7 +29,9 @@ const AlertsPage = () => {
     const fetchAlerts = useCallback(async () => {
         try {
             setLoading(true);
-            console.log('AlertsPage: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+              console.log('AlertsPage: Отправка запроса на алерты к API_URL:', `${import.meta.env.VITE_API_URL}/alerts`);
+            }
             const data = await api.getAlerts();
             // Сортируем алерты от новых к старым (по убыванию created_at)
             const sortedData = data.sort((a, b) => {
@@ -45,7 +49,9 @@ const AlertsPage = () => {
         }
     }, [setAlerts, setError, setLoading]);
     useEffect(() => {
-        console.log('AlertsPage: useEffect запущен');
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+          console.log('AlertsPage: useEffect запущен');
+        }
         fetchAlerts();
         const interval = setInterval(fetchAlerts, 60000);
         return () => clearInterval(interval);

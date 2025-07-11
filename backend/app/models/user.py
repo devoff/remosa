@@ -19,6 +19,7 @@ class User(Base):
     devices = relationship("Device", back_populates="user")
     user_limits = relationship("UserLimits", back_populates="user", uselist=False)
     platforms = relationship("PlatformUser", back_populates="user")
+    notifications = relationship("Notification", back_populates="user")
 
     def __repr__(self):
         return f"User(id={self.id}, email={self.email}, role={self.role})" 

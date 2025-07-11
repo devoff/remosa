@@ -31,7 +31,9 @@ export const CommandLogsPageContent: React.FC = () => {
         } else if (currentPlatform?.id) {
           url = `/platforms/${currentPlatform.id}/devices`;
         } else {
-          console.log('No platform access for device list');
+          if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+            console.log('No platform access for device list');
+          }
           return;
         }
         const deviceData = await get(url);

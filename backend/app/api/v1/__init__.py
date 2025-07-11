@@ -10,6 +10,7 @@ from .stats import router as stats_router
 from .endpoints.auth import router as auth_router  # Изменено с .auth на .endpoints.auth
 from .endpoints.users import router as users_router
 from .endpoints.platforms import router as platforms_router
+from .endpoints.notifications import router as notifications_router
 from .audit_logs import router as audit_logs_router
 from .health import router as health_router
 
@@ -25,5 +26,6 @@ router.include_router(stats_router, prefix="/stats", tags=["stats"])
 router.include_router(auth_router, prefix="/auth", tags=["auth"])
 router.include_router(users_router, prefix="/users", tags=["users"])
 router.include_router(platforms_router, prefix="/platforms", tags=["Platforms"])
+router.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
 router.include_router(audit_logs_router, prefix="/audit-logs", tags=["Audit Logs"])
 router.include_router(health_router, prefix="/health", tags=["Health"]) 

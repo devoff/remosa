@@ -18,12 +18,10 @@ export const getRuntimeConfig = () => {
     DEBUG_LOGGING: window.APP_CONFIG?.DEBUG_LOGGING || 'false'
   };
   
-  if (config.DEBUG_LOGGING === 'true') {
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
     console.log('Runtime Config Debug:', {
-      'window.APP_CONFIG': window.APP_CONFIG,
-      'final config': config,
-      'removeTrailingSlash applied to': window.APP_CONFIG?.API_URL,
-      'double slash prevention': 'enabled'
+      API_URL: config.API_URL,
+      WS_URL: config.WS_URL
     });
   }
   

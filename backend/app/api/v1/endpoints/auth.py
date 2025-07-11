@@ -1,11 +1,12 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from app.core.auth import authenticate_user, create_access_token, get_password_hash
+from app.core.auth import authenticate_user, create_access_token, get_password_hash, get_current_user
+from app.core.config import settings
 from app.db.session import get_db
 from app.schemas.token import Token
 from app.schemas.user import User, UserCreate, UserLogin
@@ -69,9 +70,22 @@ def login_for_access_token(
             detail="Неправильное имя пользователя или пароль",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=30)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": str(user.id), "role": user.role, "platform_id": user.platform_id, "user_id": user.id},
+        expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"} 
+
+@router.post("/refresh", response_model=Token)
+def refresh_access_token(current_user: DBUser = Depends(get_current_user)) -> Any:
+    """
+    Обновить access token, если пользователь активен (sliding expiration).
+    Требует валидного токена в Authorization header.
+    """
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(current_user.id), "role": current_user.role, "platform_id": current_user.platform_id, "user_id": current_user.id},
         expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"} 

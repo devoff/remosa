@@ -10,7 +10,7 @@ docker-compose down -v
 
 # Пересобираем все образы
 echo "🔨 Пересборка образов..."
-docker-compose build --no-cache frontend
+docker-compose build --no-cache 
 
 # Запускаем контейнеры
 echo "🚀 Запуск контейнеров..."

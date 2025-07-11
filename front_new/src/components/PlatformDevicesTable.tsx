@@ -72,6 +72,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
 
   const handleEditDevice = (device: Device) => {
     setEditDevice(device);
+    setAddModalOpen(false); // Закрыть окно добавления, если оно вдруг открыто
   };
   const handleSaveEditDevice = async (updated: Device) => {
     setEditDevice(null);

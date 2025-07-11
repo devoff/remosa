@@ -16,6 +16,8 @@ from contextlib import asynccontextmanager
 from app.db.session import get_db
 from app.db.base import Base
 from app.db.session import engine
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 # Configure a logger for this module
 logger = logging.getLogger(__name__)
@@ -118,6 +120,15 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # Дублированные определения lifespan и start_sms_polling_background_task удалены выше
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    body = await request.body()
+    logger.error(f"422 Validation Error: {exc.errors()} | Body: {body.decode('utf-8', errors='ignore')}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 
 @app.get("/health")
 async def health_check():

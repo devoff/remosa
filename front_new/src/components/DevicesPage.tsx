@@ -25,8 +25,12 @@ const { Title } = Typography;
 const DevicesPage: React.FC = () => {
     const { get, post, put, remove } = useApi();
     const { user, currentPlatform, isSuperAdmin } = useAuth();
-    console.log('user:', user);
-    console.log('currentPlatform:', currentPlatform);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('user:', user);
+    }
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('currentPlatform:', currentPlatform);
+    }
     const [devices, setDevices] = useState<Device[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -50,20 +54,28 @@ const DevicesPage: React.FC = () => {
         setLoading(true);
         try {
             let url = '';
-            console.log('DevicesPage fetchDevices:', {
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+              console.log('DevicesPage fetchDevices:', {
                 isSuperAdmin,
                 currentPlatform: currentPlatform?.id,
                 user: user?.role
-            });
+              });
+            }
             
             if (isSuperAdmin) {
                 url = '/devices/';
-                console.log('Using superadmin endpoint:', url);
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('Using superadmin endpoint:', url);
+                }
             } else if (currentPlatform?.id) {
                 url = `/platforms/${currentPlatform.id}/devices`;
-                console.log('Using platform endpoint:', url);
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('Using platform endpoint:', url);
+                }
             } else {
-                console.log('No platform access, waiting for platform to load...');
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('No platform access, waiting for platform to load...');
+                }
                 setLoading(false);
                 return;
             }
@@ -71,7 +83,9 @@ const DevicesPage: React.FC = () => {
             setDevices(data);
             setError(null);
         } catch (e: any) {
-            console.log('Fetch devices error:', e);
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+              console.log('Fetch devices error:', e);
+            }
             setDevices([]);
             if (e.response?.status === 403) {
                 setError('Недостаточно прав для просмотра устройств');

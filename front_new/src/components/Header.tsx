@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Settings, Terminal, Search, HelpCircle, AlertCircle } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 import { useFlowStore } from '../store/flowStore';
 import { useAuth } from '../lib/useAuth';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Divider, Avatar, Menu, MenuItem, IconButton } from '@mui/material';
@@ -80,29 +81,31 @@ const Header: React.FC = () => {
           </div>
           
           <div className="flex items-center">
-            <div className="flex space-x-1">
-              <button className="relative p-2 rounded-md hover:bg-gray-700 transition-colors">
-                <Bell size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button 
-                onClick={handleInfoClick}
-                className="p-2 rounded-md hover:bg-gray-700 transition-colors"
-              >
-                <HelpCircle size={20} />
-              </button>
-            </div>
-            {/* Блок профиля пользователя */}
-            <div className="ml-4">
-              <IconButton onClick={handleMenuOpen} size="small">
-                <Avatar>{user?.email?.[0]?.toUpperCase() || '?'}</Avatar>
-              </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                <MenuItem onClick={handleOpenProfile}>Личная информация</MenuItem>
-                <MenuItem onClick={handleOpenPlatformInfo}>Информация о платформе</MenuItem>
-                <MenuItem onClick={handleLogout}>Выйти</MenuItem>
-              </Menu>
-            </div>
+            {/* Показываем иконки только для авторизованных пользователей */}
+            {user && (
+              <>
+                <div className="flex space-x-1">
+                  <NotificationBell />
+                  <button 
+                    onClick={handleInfoClick}
+                    className="p-2 rounded-md hover:bg-gray-700 transition-colors"
+                  >
+                    <HelpCircle size={20} />
+                  </button>
+                </div>
+                {/* Блок профиля пользователя */}
+                <div className="ml-4">
+                  <IconButton onClick={handleMenuOpen} size="small">
+                    <Avatar>{user?.email?.[0]?.toUpperCase() || '?'}</Avatar>
+                  </IconButton>
+                  <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                    <MenuItem onClick={handleOpenProfile}>Личная информация</MenuItem>
+                    <MenuItem onClick={handleOpenPlatformInfo}>Информация о платформе</MenuItem>
+                    <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+                  </Menu>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </header>

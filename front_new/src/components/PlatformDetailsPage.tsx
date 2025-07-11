@@ -76,11 +76,13 @@ const PlatformDetailsPage: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     if (!platformId) return;
     try {
-      console.log('PlatformDetailsPage.fetchUsers Debug:', {
-        platformId,
-        'URL being requested': `/platforms/${platformId}/users`,
-        'get function': get
-      });
+      if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+        console.log('PlatformDetailsPage.fetchUsers Debug:', {
+          platformId,
+          'URL being requested': `/platforms/${platformId}/users`,
+          'get function': get
+        });
+      }
       const usersData = await get(`/platforms/${platformId}/users`);
       setUsers(usersData);
     } catch (e: any) {
@@ -111,7 +113,8 @@ const PlatformDetailsPage: React.FC = () => {
 
   useEffect(() => {
     fetchPlatformData();
-  }, [fetchPlatformData]);
+    fetchDevices(); // ДОБАВЛЕНО: всегда загружать устройства при монтировании/смене платформы
+  }, [fetchPlatformData, fetchDevices]);
 
   useEffect(() => {
     if (tab === 0) fetchUsers();

@@ -32,6 +32,15 @@ def read_platforms(
     platforms = db.query(Platform).offset(skip).limit(limit).all()
     return platforms
 
+@router.get("/my-platforms", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
+def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
+    platform_ids = [pu.platform_id for pu in platform_links]
+    if not platform_ids:
+        return []
+    platforms = db.query(Platform).filter(Platform.id.in_(platform_ids)).all()
+    return platforms
+
 @router.get("/{platform_id}", response_model=PlatformResponse, summary="Получить платформу",
             dependencies=[Depends(get_current_user)],
             tags=["Platforms"])
@@ -418,15 +427,6 @@ def remove_device_from_platform(
     db.commit()
     log_audit(db, action="remove_device_from_platform", user_id=user.id, platform_id=platform_id, device_id=device_id, details=f"Удалено устройство: {device_id}")
     return {"message": "Устройство удалено из платформы"}
-
-@router.get("/my-platforms", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
-def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
-    platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
-    platform_ids = [pu.platform_id for pu in platform_links]
-    if not platform_ids:
-        return []
-    platforms = db.query(Platform).filter(Platform.id.in_(platform_ids)).all()
-    return platforms
 
 @router.get("/{platform_id}/logs", summary="Получить логи команд платформы", tags=["Platforms"])
 def get_platform_logs(platform_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
