@@ -7,7 +7,7 @@ import sqlalchemy.dialects.postgresql as pg
 
 # revision identifiers, used by Alembic.
 revision = 'addcondactjobs1'
-down_revision = None
+down_revision = '027c9b714761'
 branch_labels = None
 depends_on = None
 
