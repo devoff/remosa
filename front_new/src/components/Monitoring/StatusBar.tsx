@@ -14,7 +14,12 @@ import { message } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import { useAuth } from '../../lib/useAuth';
 
-const StatusBar: React.FC = () => {
+interface StatusBarProps {
+  activeAlerts: number;
+  resolvedAlerts: number;
+}
+
+const StatusBar: React.FC<StatusBarProps> = ({ activeAlerts, resolvedAlerts }) => {
   const [status, setStatus] = useState<SystemStatus | null>(null);
   const { get } = useApi();
   const { isAuthenticated, isSuperAdmin, currentPlatform } = useAuth();
@@ -82,12 +87,12 @@ const StatusBar: React.FC = () => {
           
           <div className="flex items-center">
             <AlertCircle size={14} className="mr-1.5 text-red-500" />
-            <span>Активные алерты: {status.activeAlerts}</span>
+            <span>Активные алерты: {activeAlerts}</span>
           </div>
           
           <div className="flex items-center">
             <Check size={14} className="mr-1.5 text-green-500" />
-            <span>Решенные: {status.resolvedAlerts}</span>
+            <span>Решенные: {resolvedAlerts}</span>
           </div>
           
           <div className="flex items-center">

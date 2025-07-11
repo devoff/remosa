@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Key } from 'react';
-import { AlertCircle, ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, ExternalLink, History } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert } from '@/types/alert';
 import { api } from '@/lib/api';
@@ -9,7 +9,9 @@ import { config } from '../config/runtime';
 const { Title } = Typography;
 const { Option } = Select;
 
-console.log('AlertsPage: Компонент загружен');
+if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+  console.log('AlertsPage: Компонент загружен');
+}
 
 const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResolve: () => void; setParentError: (error: string | null) => void; }) => {
   const [expanded, setExpanded] = useState(false);
@@ -17,40 +19,47 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
   const handleResolve = async () => {
     try {
       await api.resolveAlert(Number(alert.id));
-      onResolve(); // Обновляем список алертов
-      setParentError(null); // Очищаем ошибку
+      onResolve();
+      setParentError(null);
     } catch (error) {
       console.error("Ошибка при разрешении алерта:", error);
       setParentError("Не удалось разрешить алерт.");
     }
   };
 
+  // Цвет кружка справа
+  const statusColor = alert.status === 'firing' ? 'bg-red-500' : 'bg-green-500';
+  // Цвет типа
+  const typeColor = alert.severity === 'info' ? 'text-blue-400' : alert.severity === 'warning' ? 'text-yellow-400' : alert.severity === 'critical' ? 'text-red-400' : 'text-gray-400';
+
   return (
-    <div className="border border-gray-700 rounded-lg mb-2 overflow-hidden bg-gray-800">
-      <div 
-        className="p-3 flex items-center justify-between cursor-pointer hover:bg-gray-750"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-center">
-          <div className={`w-2 h-2 rounded-full mr-3 ${
-            alert.status === 'firing' ? 'bg-red-500' : 'bg-green-500'
-          }`} />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium dark:text-gray-100">{alert.title}</h3>
-            <p className="text-xs dark:text-gray-300">
-              {format(new Date(alert.created_at), 'dd.MM.yyyy HH:mm:ss')} • {alert.data?.summary || 'Нет описания'}
-            </p>
-          </div>
+    <div className="border border-gray-700 rounded-lg mb-2 bg-gray-900/70 hover:bg-gray-800/40 transition-all duration-200 shadow-sm font-inter">
+      <div className="flex items-center px-6 py-3 cursor-pointer font-inter text-base text-gray-50" onClick={() => setExpanded(!expanded)}>
+        {/* Статус индикатор - цветная точка слева */}
+        <div className={`w-2 h-2 rounded-full ${statusColor} mr-6 flex-shrink-0`}></div>
+        {/* Основной контент - в одну строку */}
+        <div className="flex items-center flex-1 gap-8 min-w-0">
+          <span className="text-gray-50 font-semibold">ID: {alert.id}</span>
+          <span className="text-gray-200">{alert.data?.platform || 'PlatformA'}</span>
+          <span className="text-gray-300">Player: {alert.player_name || '—'}</span>
+          <span className="text-gray-400">{format(new Date(alert.created_at), 'dd.MM.yyyy HH:mm:ss')}</span>
         </div>
-        <div className={`text-xs px-2 py-1 rounded-full ${
-          alert.status === 'firing' ? 'bg-red-900/40 text-red-500' : 'bg-green-900/40 text-green-500'
-        }`}>
-          {alert.status === 'firing' ? 'Активен' : 'Решен'}
+        {/* Статусы справа */}
+        <div className="flex items-center gap-4 ml-6">
+          {alert.status === 'resolved' && (
+            <span className="text-green-500 font-semibold text-base">РЕШЕН</span>
+          )}
+          {alert.severity === 'critical' && (
+            <span className="text-red-500 font-semibold text-base">CRITICAL</span>
+          )}
+          <ChevronDown 
+            className={`text-gray-500 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} 
+            size={18}
+          />
         </div>
       </div>
-      
       {expanded && (
-        <div className="p-3 border-t border-gray-700 bg-gray-750">
+        <div className="px-6 pb-4 border-t border-gray-700/50 bg-gray-800/50 text-sm text-gray-200 font-inter">
           {alert.description && <p className="text-sm dark:text-gray-300 mb-2">Описание: {alert.description}</p>}
           <div className="mt-2 text-xs dark:text-gray-500">
             <p>ID: {alert.id}</p>
@@ -59,8 +68,6 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
                 <p className="text-xs dark:text-gray-400 mt-1">Разрешено: {format(new Date(alert.resolved_at), 'dd.MM.yyyy HH:mm:ss')}</p>
             )}
           </div>
-
-          {/* Дополнительная информация из поля data */}
           {alert.data && typeof alert.data === 'object' && (
             <div className="mt-3 text-xs dark:text-gray-400">
               <h4 className="font-semibold mb-1">Детали алерта из Grafana:</h4>
@@ -69,13 +76,11 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
               <p>Конец: {alert.data.endsAt || 'Не указано'}</p>
               <p>Плеер: {alert.data.player_name || 'Неизвестный'}</p>
               <p>Платформа: {alert.data.platform || 'Неизвестная'}</p>
-              {/* Добавляем остальные поля по необходимости */}
               {Object.entries(alert.data).map(([key, value]) => (
                 key !== 'severity' && key !== 'startsAt' && key !== 'endsAt' && key !== 'player_name' && key !== 'platform' && <p key={key}>{key}: {JSON.stringify(value)}</p>
               ))}
             </div>
           )}
-
           {alert.status === 'firing' && (
             <button
               onClick={handleResolve}
@@ -90,7 +95,7 @@ const AlertItem = ({ alert, onResolve, setParentError }: { alert: Alert; onResol
   );
 };
 
-const AlertsPage = () => {
+const AlertsPage = ({ onStatsChange }: { onStatsChange?: (active: number, resolved: number) => void }) => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,12 +112,18 @@ const AlertsPage = () => {
       });
       setAlerts(sortedData);
       setError(null);
+      // Вычисляем и пробрасываем статистику
+      if (onStatsChange) {
+        const activeCount = sortedData.filter(a => a.status === 'firing').length;
+        const resolvedCount = sortedData.filter(a => a.status === 'resolved').length;
+        onStatsChange(activeCount, resolvedCount);
+      }
     } catch (err) {
       setError("Не удалось загрузить алерты.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [onStatsChange]);
 
   useEffect(() => {
     fetchAlerts();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useApi } from '../lib/useApi';
 import { useNotification } from './NotificationProvider';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Typography, LinearProgress, Chip, Box } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, CircularProgress, Typography, LinearProgress, Chip, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -23,8 +23,7 @@ const AdminPlatformsPage: React.FC = () => {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [loading, setLoading] = useState(false);
   const [openWizard, setOpenWizard] = useState(false);
-  const [editPlatform, setEditPlatform] = useState<Platform | null>(null);
-  const [form, setForm] = useState({ name: '', description: '', devices_limit: '', sms_limit: '' });
+
   
   const { notify } = useNotification();
   const navigate = useNavigate();
@@ -36,9 +35,9 @@ const AdminPlatformsPage: React.FC = () => {
     try {
       let data;
       if (user?.role === 'superadmin') {
-        data = await get('/platforms/');
+        data = await get('/platforms');
       } else {
-        data = await get('/platforms/my-platforms/');
+        data = await get('/platforms/my-platforms');
       }
       setPlatforms(data);
     } catch (e: any) {
@@ -52,48 +51,7 @@ const AdminPlatformsPage: React.FC = () => {
     fetchPlatforms(); 
   }, [fetchPlatforms]);
 
-  const handleOpenDialog = (platform?: Platform) => {
-    setEditPlatform(platform || null);
-    setForm({
-      name: platform?.name || '',
-      description: platform?.description || '',
-      devices_limit: platform?.devices_limit?.toString() || '',
-      sms_limit: platform?.sms_limit?.toString() || '',
-    });
-  };
 
-  const handleCloseDialog = () => {
-    setEditPlatform(null);
-    setForm({ name: '', description: '', devices_limit: '', sms_limit: '' });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = async () => {
-    try {
-      const payload = {
-        name: form.name,
-        description: form.description || undefined,
-        devices_limit: form.devices_limit ? Number(form.devices_limit) : undefined,
-        sms_limit: form.sms_limit ? Number(form.sms_limit) : undefined,
-      };
-
-      if (editPlatform) {
-        await put(`/platforms/${editPlatform.id}`, payload);
-        notify('Платформа обновлена', 'success');
-      } else {
-        await post('/platforms/', payload);
-        notify('Платформа создана', 'success');
-      }
-      
-      handleCloseDialog();
-      fetchPlatforms();
-    } catch (e: any) {
-      notify(e.message || 'Ошибка сохранения', 'error');
-    }
-  };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Удалить платформу?')) return;
@@ -102,7 +60,9 @@ const AdminPlatformsPage: React.FC = () => {
       notify('Платформа удалена', 'success');
       fetchPlatforms();
     } catch (e: any) {
-      notify(e.message || 'Ошибка удаления', 'error');
+      // Извлекаем детальное сообщение об ошибке из ответа API
+      const errorMessage = e.response?.data?.detail || e.message || 'Ошибка удаления платформы';
+      notify(errorMessage, 'error');
     }
   };
 
@@ -175,7 +135,7 @@ const AdminPlatformsPage: React.FC = () => {
                   <Chip label="Активна" color="success" size="small" />
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleOpenDialog(p)}><EditIcon /></IconButton>
+                  <IconButton onClick={() => navigate(`/admin/platforms/${p.id}`)}><EditIcon /></IconButton>
                   <IconButton color="error" onClick={() => handleDelete(p.id)}><DeleteIcon /></IconButton>
                 </TableCell>
               </TableRow>

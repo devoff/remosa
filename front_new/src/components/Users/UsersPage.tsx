@@ -78,7 +78,7 @@ const UsersPage = () => {
       cancelText: 'Отмена',
       onOk: async () => {
       try {
-        await remove(`/users/${id}`);
+        await remove(`/users/${id}/`);
           fetchUsers();
           notification.success({ message: 'Пользователь удалён' });
       } catch (err) {
@@ -91,7 +91,7 @@ const UsersPage = () => {
   const handleSaveUser = async (values: any) => {
     try {
       if (editingUser) {
-        await put(`/users/${editingUser.id}`, values);
+        await put(`/users/${editingUser.id}/`, values);
         notification.success({ message: 'Пользователь обновлён' });
       } else {
         await post('/auth/register', values);

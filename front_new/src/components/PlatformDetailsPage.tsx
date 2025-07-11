@@ -76,9 +76,17 @@ const PlatformDetailsPage: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     if (!platformId) return;
     try {
-      const usersData = await get(`/platforms/${platformId}/users/`);
+      if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+        console.log('PlatformDetailsPage.fetchUsers Debug:', {
+          platformId,
+          'URL being requested': `/platforms/${platformId}/users`,
+          'get function': get
+        });
+      }
+      const usersData = await get(`/platforms/${platformId}/users`);
       setUsers(usersData);
     } catch (e: any) {
+      console.error('PlatformDetailsPage.fetchUsers Error:', e);
       notify('Ошибка загрузки пользователей', 'error');
     }
   }, [platformId, get, notify]);
@@ -86,7 +94,7 @@ const PlatformDetailsPage: React.FC = () => {
   const fetchDevices = useCallback(async () => {
     if (!platformId) return;
     try {
-      const devicesData = await get(`/platforms/${platformId}/devices/`);
+      const devicesData = await get(`/platforms/${platformId}/devices`);
       setDevices(devicesData);
     } catch (e: any) {
       notify('Ошибка загрузки устройств', 'error');
@@ -105,7 +113,8 @@ const PlatformDetailsPage: React.FC = () => {
 
   useEffect(() => {
     fetchPlatformData();
-  }, [fetchPlatformData]);
+    fetchDevices(); // ДОБАВЛЕНО: всегда загружать устройства при монтировании/смене платформы
+  }, [fetchPlatformData, fetchDevices]);
 
   useEffect(() => {
     if (tab === 0) fetchUsers();
@@ -118,7 +127,7 @@ const PlatformDetailsPage: React.FC = () => {
   const handleAddUser = async (userData: { user_id: number; role: string }) => {
     if (!platformId) return;
     try {
-      await post(`/platforms/${platformId}/users/`, userData);
+      await post(`/platforms/${platformId}/users`, userData);
       notify('Пользователь добавлен', 'success');
       fetchUsers();
     } catch (e: any) {
@@ -129,7 +138,7 @@ const PlatformDetailsPage: React.FC = () => {
   const handleEditUser = async (userId: number, roleData: { role: string }) => {
     if (!platformId) return;
     try {
-      await put(`/platforms/${platformId}/users/${userId}/`, roleData);
+      await put(`/platforms/${platformId}/users/${userId}`, roleData);
       notify('Роль обновлена', 'success');
       fetchUsers();
     } catch (e: any) {
@@ -140,7 +149,7 @@ const PlatformDetailsPage: React.FC = () => {
   const handleDeleteUser = async (userId: number) => {
     if (!platformId) return;
     try {
-      await remove(`/platforms/${platformId}/users/${userId}/`);
+      await remove(`/platforms/${platformId}/users/${userId}`);
       notify('Пользователь удален', 'success');
       fetchUsers();
     } catch (e: any) {
@@ -155,7 +164,7 @@ const PlatformDetailsPage: React.FC = () => {
   const handleConfirmAddDevice = async (deviceData: { name: string; description?: string }) => {
     if (!platformId) return;
     try {
-      await post(`/platforms/${platformId}/devices/`, deviceData);
+      await post(`/platforms/${platformId}/devices`, deviceData);
       notify('Устройство добавлено', 'success');
       fetchDevices();
     } catch (e: any) {
@@ -167,7 +176,7 @@ const PlatformDetailsPage: React.FC = () => {
     if (!platformId) return;
     if (!window.confirm('Удалить это устройство?')) return;
     try {
-      await remove(`/platforms/${platformId}/devices/${deviceId}/`);
+      await remove(`/platforms/${platformId}/devices/${deviceId}`);
       notify('Устройство удалено', 'success');
       fetchDevices();
     } catch (e: any) {

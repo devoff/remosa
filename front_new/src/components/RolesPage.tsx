@@ -45,7 +45,7 @@ const RolesPage: React.FC = () => {
     setUpdatingUsers(prev => new Set(prev).add(userId));
     try {
       // Для смены роли нужно передавать только изменяемое поле
-      await put(`/users/${userId}`, { role: newRole });
+      await put(`/users/${userId}/`, { role: newRole });
       message.success(`Роль для ${userToUpdate.email} успешно изменена.`);
       
       // Обновляем состояние локально для мгновенного отклика
