@@ -72,6 +72,7 @@ remosa_frontend.tar
 # Internal documentation and development files
 memory-bank/
 **/memory-bank/
+CLAUDE.md
 
 # Temporary files
 FETCH_HEAD
