@@ -18,41 +18,24 @@
     "antd": "^5.16.1",
     "axios": "^1.5.0",
     "classnames": "^2.5.1",
+    "clsx": "^2.1.0",
     "date-fns": "^3.6.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.344.0",
     "nanoid": "^5.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-<<<<<<< HEAD
-    "lucide-react": "^0.344.0",
-    "zustand": "^4.5.0",
-    "reactflow": "^11.10.4",
-    "classnames": "^2.5.1",
-    "date-fns": "^2.30.0",
-    "nanoid": "^5.0.6",
-    "react-router-dom": "^6.23.0",
-    "jwt-decode": "^4.0.0",
-    "axios": "^1.5.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0",
-    "class-variance-authority": "^0.7.0"
-=======
     "react-router-dom": "^6.23.0",
     "reactflow": "^11.10.4",
     "tailwind-merge": "^2.2.1",
-    "zustand": "^4.5.0"
->>>>>>> pre-prod
+    "zustand": "^4.5.0",
+    "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-<<<<<<< HEAD
-    "@types/node": "^20.11.0",
     "@types/jwt-decode": "^3.1.0",
-=======
->>>>>>> pre-prod
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",
     "eslint": "^9.9.1",
