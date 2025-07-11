@@ -84,3 +84,7 @@ PRODUCTION_FIX_COMMANDS.md
 fix_production_env.sh
 reflection-*.md
 *mindmap.xml
+*.claude*
+*.cursor*
+nginx/logs/access.log
+nginx/logs/error.log

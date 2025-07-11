@@ -1,0 +1,39 @@
+export const getRuntimeConfig = () => {
+    // Helper to enforce current page protocol (e.g., avoid mixed-content when app served via HTTPS)
+    const fixProtocol = (url, httpsReplacement) => {
+        if (!url)
+            return httpsReplacement;
+        // If app runs under https, upgrade any http:// URL pointing to the same host
+        if (window.location.protocol === 'https:' && url.startsWith('http://')) {
+            try {
+                // URL parses successfully, now replace only scheme, keep host/port/path
+                return url.replace('http://', 'https://');
+            }
+            catch {
+                // If URL invalid or relative, leave as is
+            }
+        }
+        return url;
+    };
+    const removeTrailingSlash = (url) => url.endsWith('/') ? url.slice(0, -1) : url;
+    const apiUrl = removeTrailingSlash(fixProtocol(window.APP_CONFIG?.API_URL, '/api/v1'));
+    const wsUrlRaw = fixProtocol(window.APP_CONFIG?.WS_URL, '/ws');
+    // Upgrade websocket protocol if needed (ws -> wss) under https
+    let wsUrl = wsUrlRaw;
+    if (window.location.protocol === 'https:' && wsUrlRaw.startsWith('ws://')) {
+        wsUrl = wsUrlRaw.replace('ws://', 'wss://');
+    }
+    const config = {
+        API_URL: apiUrl,
+        WS_URL: wsUrl,
+        DEBUG_LOGGING: window.APP_CONFIG?.DEBUG_LOGGING || 'false'
+    };
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+        console.log('Runtime Config Debug:', {
+            API_URL: config.API_URL,
+            WS_URL: config.WS_URL
+        });
+    }
+    return config;
+};
+export const config = getRuntimeConfig();

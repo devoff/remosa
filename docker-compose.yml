@@ -16,7 +16,6 @@ services:
     volumes:
       - ./backend/app:/app/app  # Только для разработки
       - ./backend/alembic:/app/alembic  # Для миграций
-      - ./memory-bank:/app/memory-bank:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -90,41 +89,6 @@ services:
       - addreality_exporter_cache:/app
     depends_on:
       - backend
-
-  rag-service:
-    build:
-      context: ./rag_service
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    env_file:
-      - ./rag_service/.env
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./memory-bank:/app/memory-bank:ro
-      - ./rag_service/.env:/app/.env:ro
-    depends_on:
-      - backend
-    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9090"]
-
-  mcp-service:
-    build:
-      context: ./rag_service
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    env_file:
-      - ./rag_service/.env
-    ports:
-      - "9091:9091"
-    volumes:
-      - ./memory-bank:/app/memory-bank:ro
-      - ./rag_service/.env:/app/.env:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - .:/opt/remosa:ro
-    depends_on:
-      - backend
-      - rag-service
-    command: ["python", "mcp_server_simple.py"]
 
 volumes:
   backend_code:

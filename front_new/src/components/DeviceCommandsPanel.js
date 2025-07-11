@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from 'react';
-import { Form, Input, Button, Select, Card, Spin, Typography, Alert, Switch } from 'antd';
+import { Form, Input, Button, Select, Card, Spin, Typography, Alert, Switch, message } from 'antd';
 import { useApi } from '../lib/useApi';
 const { Option, OptGroup } = Select;
 const { Title, Text } = Typography;
@@ -14,13 +14,20 @@ export const DeviceCommandsPanel = ({ device, onClose }) => {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     useEffect(() => {
-        const fetchCommandTemplates = async () => {
+        const fetchTemplates = async () => {
+            if (!device)
+                return;
             try {
                 setLoading(true);
-                console.log('Загрузка шаблонов команд для модели:', device.model);
-                const data = await get(`/api/v1/commands/templates/${device.model}`);
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                    console.log('Загрузка шаблонов команд для модели:', device.model);
+                }
+                const data = await get(`/commands/templates/${device.model}`);
                 setCommandTemplates(data);
-                console.log('Шаблоны команд успешно загружены:', data);
+                setSelectedCommand(null);
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                    console.log('Шаблоны команд успешно загружены:', data);
+                }
             }
             catch (err) {
                 console.error('Ошибка при загрузке шаблонов команд:', err);
@@ -30,16 +37,20 @@ export const DeviceCommandsPanel = ({ device, onClose }) => {
                 setLoading(false);
             }
         };
-        fetchCommandTemplates();
+        fetchTemplates();
     }, [device.model, get]);
     const onCommandSelect = (templateId) => {
-        console.log('Выбрана команда с ID:', templateId);
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+            console.log('Выбрана команда с ID:', templateId);
+        }
         const cmd = commandTemplates.find((t) => String(t.id) === String(templateId));
         setSelectedCommand(cmd || null);
         form.setFieldsValue({ command_template_id: templateId });
         setResponse(null);
         setError(null);
-        console.log('Установлена выбранная команда:', cmd);
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+            console.log('Установлена выбранная команда:', cmd);
+        }
     };
     const onFinish = async (values) => {
         if (!selectedCommand) {
@@ -50,7 +61,9 @@ export const DeviceCommandsPanel = ({ device, onClose }) => {
         setSendingCommand(true);
         setResponse(null);
         setError(null);
-        console.log('Значения формы перед отправкой:', values);
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+            console.log('Значения формы перед отправкой:', values);
+        }
         try {
             const { command_template_id, ...commandParams } = values;
             const payload = {
@@ -58,10 +71,16 @@ export const DeviceCommandsPanel = ({ device, onClose }) => {
                 template_id: selectedCommand.id,
                 params: commandParams,
             };
-            console.log('Отправка команды с полезной нагрузкой:', payload);
-            const result = await post('/api/v1/commands/execute', payload);
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                console.log('Отправка команды с полезной нагрузкой:', payload);
+            }
+            const result = await post('/commands/execute', payload);
             setResponse(JSON.stringify(result, null, 2));
-            console.log('Команда успешно отправлена. Ответ:', result);
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                console.log('Команда успешно отправлена. Ответ:', result);
+            }
+            message.success('Команда успешно выполнена!');
+            onClose();
         }
         catch (err) {
             console.error('Критическая ошибка при отправке команды:', err);
@@ -77,14 +96,14 @@ export const DeviceCommandsPanel = ({ device, onClose }) => {
     if (error && !commandTemplates.length) {
         return _jsx(Alert, { message: "\u041E\u0448\u0438\u0431\u043A\u0430", description: error, type: "error", showIcon: true });
     }
-    return (_jsx(Card, { title: `Команды для ${device.name}`, style: { width: '100%' }, children: _jsxs(Form, { form: form, layout: "vertical", onFinish: onFinish, children: [_jsx(Form.Item, { label: "\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u0443", name: "command_template_id", rules: [{ required: true, message: 'Пожалуйста, выберите команду!' }], children: _jsx(Select, { placeholder: "\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u0443", onChange: onCommandSelect, children: Object.entries(commandTemplates.reduce((acc, template) => {
+    return (_jsx(Card, { title: `Команды для ${device.name}`, style: { width: '100%' }, children: _jsxs(Form, { form: form, layout: "vertical", onFinish: onFinish, children: [_jsx(Form.Item, { label: "\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u0443", name: "command_template_id", rules: [{ required: true, message: 'Пожалуйста, выберите команду!' }], children: _jsx(Select, { placeholder: "\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u0443", onChange: onCommandSelect, children: Object.entries((commandTemplates || []).reduce((acc, template) => {
                             const category = template.category || 'Без категории';
                             if (!acc[category]) {
                                 acc[category] = [];
                             }
                             acc[category].push(template);
                             return acc;
-                        }, {})).map(([category, templates]) => (_jsx(OptGroup, { label: category, children: (templates || []).map((template) => (_jsx(Option, { value: template.id, children: template.name }, template.id))) }, category))) }) }), selectedCommand?.params_schema?.properties && Object.entries(selectedCommand.params_schema.properties).map(([paramName, param]) => {
+                        }, {}) || {}).map(([category, templates]) => (_jsx(OptGroup, { label: category, children: (templates || []).map((template) => (_jsx(Option, { value: template.id, children: template.name }, template.id))) }, category))) }) }), selectedCommand?.params_schema?.properties && Object.entries(selectedCommand.params_schema.properties || {}).map(([paramName, param]) => {
                     const isRequired = selectedCommand.params_schema.required?.includes(paramName);
                     let inputComponent;
                     if (param.type === 'string') {
