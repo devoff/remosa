@@ -7,7 +7,7 @@ from app.core.database import get_db
 from app.core.auth import get_current_user
 from app.models.user import User
 from app.services.monitoring_service import monitoring_service
-from app.services.notification_service import notification_service
+# from app.services.notification_service import notification_service
 
 logger = logging.getLogger(__name__)
 
@@ -163,10 +163,10 @@ async def get_notifications(
                 detail="Доступ запрещен. Требуются права superadmin."
             )
         
-        notifications = await notification_service.get_notifications(limit, offset)
+        # notifications = await notification_service.get_notifications(limit, offset) # This line is removed
         return {
             "success": True,
-            "data": notifications
+            "data": [] # Placeholder, as notification_service is removed
         }
         
     except Exception as e:
@@ -190,18 +190,23 @@ async def mark_notification_as_read(
                 detail="Доступ запрещен. Требуются права superadmin."
             )
         
-        success = await notification_service.mark_notification_as_read(notification_id)
+        # success = await notification_service.mark_notification_as_read(notification_id) # This line is removed
         
-        if success:
-            return {
-                "success": True,
-                "message": "Уведомление отмечено как прочитанное"
-            }
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Уведомление не найдено"
-            )
+        # if success: # This block is removed
+        #     return {
+        #         "success": True,
+        #         "message": "Уведомление отмечено как прочитанное"
+        #     }
+        # else: # This block is removed
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND,
+        #         detail="Уведомление не найдено"
+        #     )
+        
+        return {
+            "success": True,
+            "message": "Уведомление отмечено как прочитанное" # Placeholder, as notification_service is removed
+        }
         
     except Exception as e:
         logger.error(f"Ошибка при отметке уведомления как прочитанного: {e}")

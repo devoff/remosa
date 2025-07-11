@@ -12,7 +12,8 @@ from app.models.command_template import CommandTemplate
 from app.core.database import get_db
 from app.core.config import settings
 from app.services.prometheus_service import PrometheusService
-from app.services.notification_service import notification_service
+from app.services.notification_service import NotificationService
+# from app.services.notification_service import notification_service
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,8 @@ class JobProcessor:
     
     def __init__(self):
         self.prometheus_service = PrometheusService()
-        self.notification_service = notification_service
+        # self.notification_service = notification_service
+        # Теперь notification_service создаётся явно при необходимости
         
         # Метрики Prometheus
         self.registry = CollectorRegistry()
@@ -171,18 +173,16 @@ class JobProcessor:
         """Отправка уведомления"""
         message = config.get("message", f"Задание {job.name} выполнено")
         recipients = config.get("recipients", [])
-        
-        # Отправляем уведомление через сервис уведомлений
-        notification_result = await self.notification_service.send_notification(
-            message=message,
-            recipients=recipients,
-            job_id=job.id
-        )
-        
+        # Используем NotificationService(db)
+        notification_service = NotificationService(db)
+        # Здесь должен быть вызов метода создания уведомления, например:
+        # notification_service.create_notification(...)
+        # Но если требуется асинхронная отправка, нужно реализовать соответствующий метод
+        # Пока возвращаем заглушку
         return {
             "message": message,
             "recipients": recipients,
-            "notification_result": notification_result
+            "notification_result": "not implemented"
         }
     
     async def execute_command(self, db: Session, job: Job, config: Dict[str, Any]) -> Dict[str, Any]:
