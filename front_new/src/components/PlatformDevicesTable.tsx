@@ -72,14 +72,20 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
 
   const handleEditDevice = (device: Device) => {
     setEditDevice(device);
+    setAddModalOpen(false); // Закрыть окно добавления, если оно вдруг открыто
   };
   const handleSaveEditDevice = async (updated: Device) => {
     setEditDevice(null);
-    if (!updated.platform_id) return;
+    // fallback: если platform_id не пришёл из формы, взять из оригинального устройства
+    const original = deviceList.find(d => d.id === updated.id);
+    const platform_id = updated.platform_id || original?.platform_id;
+    if (!platform_id) return;
     try {
-      await apiClient.put(`/platforms/${updated.platform_id}/devices/${updated.id}`, updated);
+      // Объединить оригинальные данные и изменения, platform_id всегда актуальный
+      const payload = { ...original, ...updated, platform_id };
+      await apiClient.put(`/platforms/${platform_id}/devices/${payload.id}/`, payload);
       // Обновить список устройств после успешного редактирования
-      const res = await apiClient.get(`/platforms/${updated.platform_id}/devices/`);
+      const res = await apiClient.get(`/platforms/${platform_id}/devices/`);
       setDeviceList(res.data);
     } catch (e) { alert('Ошибка при сохранении изменений устройства'); }
   };
@@ -90,7 +96,7 @@ const PlatformDevicesTable: React.FC<PlatformDevicesTableProps> = ({ devices, on
     setAddModalOpen(false);
     if (!currentPlatform) return;
     try {
-      await apiClient.post(`/platforms/${currentPlatform.id}/devices`, newDevice);
+      await apiClient.post(`/platforms/${currentPlatform.id}/devices/`, newDevice);
       // Обновить список устройств после успешного добавления
       const res = await apiClient.get(`/platforms/${currentPlatform.id}/devices/`);
       setDeviceList(res.data);

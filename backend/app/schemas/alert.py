@@ -20,6 +20,14 @@ class AlertResponse(AlertBase):
     id: int
     created_at: datetime = Field(..., description="Дата и время создания алерта")
     updated_at: Optional[datetime] = Field(None, description="Дата и время последнего обновления алерта")
+    platform_id: Optional[int] = None
+
+    @classmethod
+    def from_orm_with_platform(cls, alert):
+        return cls(
+            **alert.__dict__,
+            platform_id=alert.device.platform_id if getattr(alert, 'device', None) else None
+        )
 
     class Config:
         from_attributes = True 

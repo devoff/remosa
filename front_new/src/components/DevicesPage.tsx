@@ -25,8 +25,12 @@ const { Title } = Typography;
 const DevicesPage: React.FC = () => {
     const { get, post, put, remove } = useApi();
     const { user, currentPlatform, isSuperAdmin } = useAuth();
-    console.log('user:', user);
-    console.log('currentPlatform:', currentPlatform);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('user:', user);
+    }
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('currentPlatform:', currentPlatform);
+    }
     const [devices, setDevices] = useState<Device[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -42,28 +46,60 @@ const DevicesPage: React.FC = () => {
     const [availableModels, setAvailableModels] = useState<string[]>([]);
 
     const fetchDevices = useCallback(async () => {
+        // Если пользователь еще не загружен, не делаем запрос
+        if (!user) {
+            return;
+        }
+        
         setLoading(true);
         try {
             let url = '';
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+              console.log('DevicesPage fetchDevices:', {
+                isSuperAdmin,
+                currentPlatform: currentPlatform?.id,
+                user: user?.role
+              });
+            }
+            
             if (isSuperAdmin) {
                 url = '/devices/';
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('Using superadmin endpoint:', url);
+                }
             } else if (currentPlatform?.id) {
+<<<<<<< HEAD
                 url = `/platforms/${currentPlatform.id}/devices/`;
+=======
+                url = `/platforms/${currentPlatform.id}/devices`;
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('Using platform endpoint:', url);
+                }
+>>>>>>> pre-prod
             } else {
-                setDevices([]);
+                if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+                  console.log('No platform access, waiting for platform to load...');
+                }
                 setLoading(false);
                 return;
             }
             const data = await get(url);
             setDevices(data);
             setError(null);
-        } catch (e) {
+        } catch (e: any) {
+            if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+              console.log('Fetch devices error:', e);
+            }
             setDevices([]);
-            setError('Ошибка загрузки устройств');
+            if (e.response?.status === 403) {
+                setError('Недостаточно прав для просмотра устройств');
+            } else {
+                setError('Ошибка загрузки устройств');
+            }
         } finally {
             setLoading(false);
         }
-    }, [isSuperAdmin, currentPlatform, get]);
+    }, [isSuperAdmin, currentPlatform, get, user]);
 
     useEffect(() => {
         fetchDevices();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Spin, Alert, Table, Tag, Typography, Select, DatePicker, Button, Space } from 'antd';
 import { useApi } from '../lib/useApi';
 import { CommandLog, Device } from '../types';
-import { api, fetchDevices as fetchDevicesApi } from '../lib/api';
+import { api } from '../lib/api';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useAuth } from '../lib/useAuth';
 
@@ -25,15 +25,28 @@ export const CommandLogsPageContent: React.FC = () => {
   useEffect(() => {
     const fetchDevicesList = async () => {
       try {
-        const deviceData = await fetchDevicesApi();
+        let url = '';
+        if (isSuperAdmin) {
+          url = '/devices/';
+        } else if (currentPlatform?.id) {
+          url = `/platforms/${currentPlatform.id}/devices`;
+        } else {
+          if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+            console.log('No platform access for device list');
+          }
+          return;
+        }
+        const deviceData = await get(url);
         setDevices(deviceData);
       } catch (err) {
         console.error('Ошибка при загрузке списка устройств:', err);
       }
     };
 
-    fetchDevicesList();
-  }, []);
+    if (isSuperAdmin !== undefined && (isSuperAdmin || currentPlatform)) {
+      fetchDevicesList();
+    }
+  }, [isSuperAdmin, currentPlatform, get]);
 
   useEffect(() => {
     const fetchCommandLogs = async () => {

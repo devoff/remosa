@@ -26,11 +26,15 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
       if (!device) return;
       try {
         setLoading(true);
-        console.log('Загрузка шаблонов команд для модели:', device.model);
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+          console.log('Загрузка шаблонов команд для модели:', device.model);
+        }
         const data = await get(`/commands/templates/${device.model}`);
         setCommandTemplates(data);
         setSelectedCommand(null);
-        console.log('Шаблоны команд успешно загружены:', data);
+        if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+          console.log('Шаблоны команд успешно загружены:', data);
+        }
       } catch (err) {
         console.error('Ошибка при загрузке шаблонов команд:', err);
         setError('Не удалось загрузить шаблоны команд.');
@@ -43,13 +47,17 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
   }, [device.model, get]);
 
   const onCommandSelect = (templateId: string) => {
-    console.log('Выбрана команда с ID:', templateId);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('Выбрана команда с ID:', templateId);
+    }
     const cmd = commandTemplates.find((t: CommandTemplate) => String(t.id) === String(templateId));
     setSelectedCommand(cmd || null);
     form.setFieldsValue({ command_template_id: templateId });
     setResponse(null);
     setError(null);
-    console.log('Установлена выбранная команда:', cmd);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('Установлена выбранная команда:', cmd);
+    }
   };
 
   const onFinish = async (values: any) => {
@@ -63,7 +71,9 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
     setResponse(null);
     setError(null);
 
-    console.log('Значения формы перед отправкой:', values);
+    if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+      console.log('Значения формы перед отправкой:', values);
+    }
 
     try {
       const { command_template_id, ...commandParams } = values;
@@ -73,10 +83,14 @@ export const DeviceCommandsPanel: React.FC<DeviceCommandsPanelProps> = ({ device
         template_id: selectedCommand.id,
         params: commandParams,
       };
-      console.log('Отправка команды с полезной нагрузкой:', payload);
+      if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+        console.log('Отправка команды с полезной нагрузкой:', payload);
+      }
       const result = await post('/commands/execute', payload);
       setResponse(JSON.stringify(result, null, 2));
-      console.log('Команда успешно отправлена. Ответ:', result);
+      if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+        console.log('Команда успешно отправлена. Ответ:', result);
+      }
       message.success('Команда успешно выполнена!');
       onClose();
     } catch (err: any) {

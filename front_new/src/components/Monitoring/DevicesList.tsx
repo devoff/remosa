@@ -131,9 +131,15 @@ const DevicesList = () => {
   };
 
   // DEBUG LOGS
-  console.log('user:', user);
-  console.log('currentPlatform:', currentPlatform);
-  console.log('platform_roles:', user?.platform_roles);
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('user:', user);
+  }
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('currentPlatform:', currentPlatform);
+  }
+  if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+    console.log('platform_roles:', user?.platform_roles);
+  }
 
   if (loading) return <div className="p-4 text-center">Загрузка устройств...</div>;
   if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;

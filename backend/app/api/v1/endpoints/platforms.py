@@ -1,7 +1,7 @@
 from typing import Any, List
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
@@ -30,6 +30,15 @@ def read_platforms(
     Получить список всех платформ.
     """
     platforms = db.query(Platform).offset(skip).limit(limit).all()
+    return platforms
+
+@router.get("/my-platforms", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
+def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
+    platform_ids = [pu.platform_id for pu in platform_links]
+    if not platform_ids:
+        return []
+    platforms = db.query(Platform).filter(Platform.id.in_(platform_ids)).all()
     return platforms
 
 @router.get("/{platform_id}", response_model=PlatformResponse, summary="Получить платформу",
@@ -156,11 +165,25 @@ def delete_platform(
             tags=["Platforms"])
 def get_platform_users(
     platform_id: int,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> Any:
     """
     Получить список пользователей платформы.
     """
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    # Debug logging для отладки Mixed Content проблемы
+    logger.info(f"GET /platforms/{platform_id}/users - Request received")
+    logger.info(f"Request headers: {dict(request.headers)}")
+    logger.info(f"Request URL: {request.url}")
+    logger.info(f"Request scheme: {request.url.scheme}")
+    logger.info(f"X-Forwarded-Proto: {request.headers.get('x-forwarded-proto', 'NOT_SET')}")
+    logger.info(f"Host: {request.headers.get('host', 'NOT_SET')}")
+    logger.info(f"User-Agent: {request.headers.get('user-agent', 'NOT_SET')}")
+    
     from app.models.platform_user import PlatformUser
     from app.models.user import User
     
@@ -405,15 +428,6 @@ def remove_device_from_platform(
     log_audit(db, action="remove_device_from_platform", user_id=user.id, platform_id=platform_id, device_id=device_id, details=f"Удалено устройство: {device_id}")
     return {"message": "Устройство удалено из платформы"}
 
-@router.get("/my-platforms/", response_model=List[PlatformResponse], summary="Платформы текущего пользователя", tags=["Platforms"])
-def my_platforms(db: Session = Depends(get_db), user=Depends(get_current_user)):
-    platform_links = db.query(PlatformUser).filter(PlatformUser.user_id == user.id).all()
-    platform_ids = [pu.platform_id for pu in platform_links]
-    if not platform_ids:
-        return []
-    platforms = db.query(Platform).filter(Platform.id.in_(platform_ids)).all()
-    return platforms
-
 @router.get("/{platform_id}/logs", summary="Получить логи команд платформы", tags=["Platforms"])
 def get_platform_logs(platform_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     require_platform_role(user, platform_id, allowed_roles=["admin", "manager", "user", "viewer"], db=db)
@@ -514,13 +528,25 @@ def get_platform_stats(
         uptime_parts.append(f"{minutes}м")
     uptime_str = " ".join(uptime_parts)
 
-    # Проверка статуса SMS шлюза
+    # Проверка статуса SMS шлюза (аналогично dashboard эндпоинту)
     try:
-        from app.services.sms_poller import ping_sms_gateway
-        sms_gateway_ok = ping_sms_gateway()
-        sms_gateway_status = "Подключен" if sms_gateway_ok else "Ошибка"
+        from app.services.sms_gateway import SMSGateway
+        import aiohttp
+        import asyncio
+        
+        async def check_sms_gateway():
+            sms_gateway = SMSGateway()
+            try:
+                async with aiohttp.ClientSession() as session:
+                    headers = {"Authorization": f"{sms_gateway.api_key}"}
+                    async with session.get(f"{sms_gateway.base_url}/sms", headers=headers) as resp:
+                        return 'Подключен' if resp.status == 200 else 'Ошибка'
+            except Exception:
+                return 'Ошибка'
+        
+        sms_status = asyncio.run(check_sms_gateway())
     except Exception:
-        sms_gateway_status = "Ошибка"
+        sms_status = 'Ошибка'
 
     return {
         "uptime": uptime_str,
@@ -528,6 +554,9 @@ def get_platform_stats(
         "activeAlerts": active_alerts,
         "resolvedAlerts": resolved_alerts,
         "latestAlert": latest_alert_time,
+        "dbStatus": "Онлайн",
+        "dbConnections": 5,
         "apiStatus": "Онлайн",  # Если endpoint работает, backend жив
-        "smsGatewayStatus": sms_gateway_status
+        "telegramStatus": "Подключен",
+        "smsStatus": sms_status
     }

@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from app.core.config import settings
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,13 +13,11 @@ import os
 import sys
 from datetime import datetime
 from contextlib import asynccontextmanager
-from sqlalchemy.orm import Session
-
-from app.db.session import get_db
+from app.db.session import get_db, engine
 from app.db.base import Base
-from app.db.session import engine
-from app.api.v1.endpoints import exporter_macs
-from app.api.v1.endpoints import auth, users, jobs
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from app.api.v1.endpoints import exporter_macs, auth, users, jobs
 from .models import User, Device, Job
 from . import models
 
@@ -106,6 +104,27 @@ import json
 allowed_origins = json.loads(settings.ALLOWED_ORIGINS) if isinstance(settings.ALLOWED_ORIGINS, str) else settings.ALLOWED_ORIGINS
 logger.info(f"CORS allowed origins: {allowed_origins}")
 
+# Middleware для логирования запросов (для отладки Mixed Content)
+@app.middleware("http")
+async def log_requests(request, call_next):
+    import time
+    start_time = time.time()
+    
+    # Логируем входящий запрос
+    logger.info(f"Incoming request: {request.method} {request.url}")
+    logger.info(f"Headers: {dict(request.headers)}")
+    logger.info(f"Scheme: {request.url.scheme}")
+    logger.info(f"Host: {request.url.hostname}")
+    logger.info(f"X-Forwarded-Proto: {request.headers.get('x-forwarded-proto', 'NOT_SET')}")
+    
+    response = await call_next(request)
+    
+    # Логируем ответ
+    process_time = time.time() - start_time
+    logger.info(f"Response: {response.status_code} for {request.method} {request.url} in {process_time:.4f}s")
+    
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -119,6 +138,15 @@ app.include_router(exporter_macs.router, prefix="/api/v1")
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(jobs.router)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    body = await request.body()
+    logger.error(f"422 Validation Error: {exc.errors()} | Body: {body.decode('utf-8', errors='ignore')}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 
 @app.get("/health")
 async def health_check():

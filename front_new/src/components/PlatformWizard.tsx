@@ -37,7 +37,7 @@ const PlatformWizard: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =
   React.useEffect(() => {
     if (activeStep === 2 && users.length === 0 && !loadingUsers) {
       setLoadingUsers(true);
-      get('/users/')
+      get('/users')
         .then((data: User[]) => setUsers(data))
         .catch(() => notify('Ошибка загрузки пользователей', 'error'))
         .finally(() => setLoadingUsers(false));
@@ -58,7 +58,7 @@ const PlatformWizard: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =
     setSubmitting(true);
     try {
       // 1. Создать платформу
-      const platform = await post('/platforms/', {
+      const platform = await post('/platforms', {
         name: basicInfo.name,
         description: basicInfo.description,
         devices_limit: limits.devices_limit,
@@ -66,7 +66,7 @@ const PlatformWizard: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =
       });
       // 2. Назначить администратора
       if (admin.user) {
-        await post(`/platforms/${platform.id}/users/`, {
+        await post(`/platforms/${platform.id}/users`, {
           user_id: admin.user.id,
           role: admin.role,
         });

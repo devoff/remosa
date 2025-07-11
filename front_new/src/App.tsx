@@ -26,8 +26,8 @@ import DevicesPrometheusPage from './components/DevicesPrometheusPage';
 import MonitoringPage from './pages/MonitoringPage';
 import { config } from './config/runtime';
 
-if (config.DEBUG_LOGGING === 'true' || config.DEBUG_LOGGING === 'full') {
-      console.log('API URL:', config.API_URL);
+if (import.meta.env.VITE_DEBUG_LOGGING === 'true') {
+  console.log('API URL:', config.API_URL);
 }
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -45,6 +45,8 @@ const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
+  const [activeAlerts, setActiveAlerts] = React.useState(0);
+  const [resolvedAlerts, setResolvedAlerts] = React.useState(0);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100 relative">
@@ -59,7 +61,7 @@ function AppContent() {
             <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
             <Route path="/roles" element={<PrivateRoute><RolesPage /></PrivateRoute>} />
             <Route path="/command-templates" element={<PrivateRoute><CommandTemplatesPage /></PrivateRoute>} />
-            <Route path="/logs" element={<PrivateRoute><AlertsPage /></PrivateRoute>} />
+            <Route path="/logs" element={<PrivateRoute><AlertsPage onStatsChange={(a, r) => { setActiveAlerts(a); setResolvedAlerts(r); }} /></PrivateRoute>} />
             <Route path="/command-logs" element={<PrivateRoute><CommandLogsPageContent /></PrivateRoute>} />
             <Route path="/audit-logs" element={<PrivateRoute><AuditLogsPage /></PrivateRoute>} />
             <Route path="/status" element={<PrivateRoute><StatusPage /></PrivateRoute>} />
@@ -73,7 +75,7 @@ function AppContent() {
           </Routes>
         </div>
       </div>
-      {isAuthenticated && <StatusBar />}
+      {isAuthenticated && <StatusBar activeAlerts={activeAlerts} resolvedAlerts={resolvedAlerts} />}
     </div>
   );
 }

@@ -131,7 +131,23 @@ export const AuditLogsPage: React.FC = () => {
             title: 'Действие',
             dataIndex: 'action',
             key: 'action',
-            render: (action: string) => <Tag color="purple">{action}</Tag>,
+            render: (action: string) => {
+                let color = 'purple';
+                let text = action;
+                
+                // Специальная обработка SMS действий
+                if (action === 'sms_gateway_error') {
+                    color = 'red';
+                    text = 'SMS Gateway Ошибка';
+                } else if (action === 'sms_command_sent') {
+                    color = 'green';
+                    text = 'SMS Команда Отправлена';
+                } else if (action.includes('sms')) {
+                    color = 'blue';
+                }
+                
+                return <Tag color={color}>{text}</Tag>;
+            },
         },
         {
             title: 'Детали',
@@ -175,12 +191,18 @@ export const AuditLogsPage: React.FC = () => {
                         <Option key={user.id} value={user.id}>{user.email}</Option>
                     ))}
                 </Select>
-                <Input
+                <Select
                     placeholder="Фильтр по действию"
                     style={{ width: 200 }}
-                    onChange={(e) => setActionFilter(e.target.value)}
+                    onChange={(value: string) => setActionFilter(value)}
                     allowClear
-                />
+                >
+                    <Option value="sms_gateway_error">🔴 SMS Gateway Ошибки</Option>
+                    <Option value="sms_command_sent">🟢 SMS Команды Отправлены</Option>
+                    <Option value="create_device">Создание устройства</Option>
+                    <Option value="update_device">Обновление устройства</Option>
+                    <Option value="delete_device">Удаление устройства</Option>
+                </Select>
                 <RangePicker 
                     showTime 
                     onChange={(dates: any) => setDateRange(dates)}

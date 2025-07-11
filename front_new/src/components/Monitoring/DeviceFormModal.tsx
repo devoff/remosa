@@ -37,10 +37,31 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
   const isSuperAdmin = user?.role === 'superadmin';
 
   const [saving, setSaving] = useState(false);
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+
+  const validate = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formData.name || formData.name.trim() === '') {
+      errors.name = 'Название обязательно';
+    }
+    if (!formData.phone || formData.phone.trim() === '') {
+      errors.phone = 'Телефон обязателен';
+    }
+    if (!formData.model || formData.model.trim() === '') {
+      errors.model = 'Модель обязательна';
+    }
+    return errors;
+  };
 
   useEffect(() => {
     if (device) {
-        setFormData(device);
+        setFormData({
+          ...device,
+          platform_id: typeof device.platform_id === 'number'
+            ? device.platform_id
+            : (isSuperAdmin ? undefined : currentPlatform?.id),
+          phone: device.phone || '',
+        });
     } else {
         setFormData({
             name: '',
@@ -51,7 +72,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             alert_sms_template_id: undefined,
             send_alert_sms: false,
             alert_sms_template_params: {},
-            platform_id: isSuperAdmin ? undefined : currentPlatform?.id
+            platform_id: isSuperAdmin ? undefined : currentPlatform?.id,
         });
     }
   }, [device, isSuperAdmin, currentPlatform]);
@@ -112,6 +133,9 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const errors = validate();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
     setSaving(true);
     try {
       await onSave(formData as Device);
@@ -230,7 +254,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
           </div>
         )}
         <div style={{ marginBottom: 18 }}>
-          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Название</label>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Название <span style={{color: 'red'}}>*</span></label>
           <Input
             prefix={<AppstoreOutlined />}
             value={formData.name}
@@ -240,9 +264,10 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             placeholder="Введите название устройства"
             style={{ borderRadius: 8 }}
           />
+          {formErrors.name && <div style={{color: 'red', fontSize: 12, marginTop: 2}}>{formErrors.name}</div>}
         </div>
         <div style={{ marginBottom: 18 }}>
-          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Телефон</label>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Телефон <span style={{color: 'red'}}>*</span></label>
           <Input
             prefix={<MobileOutlined />}
             value={formData.phone}
@@ -252,6 +277,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             placeholder="+7 (999) 123-45-67"
             style={{ borderRadius: 8 }}
           />
+          {formErrors.phone && <div style={{color: 'red', fontSize: 12, marginTop: 2}}>{formErrors.phone}</div>}
         </div>
         <div style={{ marginBottom: 18 }}>
           <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>ID плеера Grafana</label>
@@ -264,7 +290,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
           />
         </div>
         <div style={{ marginBottom: 18 }}>
-          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Модель</label>
+          <label style={{ color: '#b0b8c9', marginBottom: 4, display: 'block' }}>Модель <span style={{color: 'red'}}>*</span></label>
           <Select
             value={formData.model}
             onChange={value => setFormData({ ...formData, model: value })}
@@ -275,6 +301,7 @@ export const DeviceFormModal = ({ device, onSave, onClose, availableModels: _ava
             showSearch
             filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
           />
+          {formErrors.model && <div style={{color: 'red', fontSize: 12, marginTop: 2}}>{formErrors.model}</div>}
         </div>
         <div style={{ marginBottom: 18, display: 'flex', alignItems: 'center', gap: 12 }}>
           <Switch
